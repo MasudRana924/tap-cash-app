@@ -154,7 +154,7 @@ const HomeScreen = () => {
                   style={styles.profileImage}
                 />
                 <View style={styles.greetingSection}>
-                  <Text style={styles.greeting}>Hi, Jennifer</Text>
+                  <Text style={styles.greeting}>Hi, User</Text>
                   <Text style={styles.goodMorning}>Good Morning!</Text>
                 </View>
               </View>
@@ -187,7 +187,7 @@ const HomeScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuButton} onPress={() => setIsMenuExpanded(!isMenuExpanded)}>
                 <View style={styles.menuIconContainer}>
-                  <Icon name="ellipsis-horizontal" size={24} color="#fff" />
+                  <Icon name="ellipsis-horizontal" size={24} color="#37c667" />
                 </View>
               </TouchableOpacity>
             </View>

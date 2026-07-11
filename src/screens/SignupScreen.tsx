@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,18 +8,21 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+
+import CustomKeyboard from '../components/CustomKeyboard';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [referralCode, setReferralCode] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [activeField, setActiveField] = useState<'phone' | 'password' | 'referral'>('phone');
+
+  const phoneInputRef = useRef<TextInput>(null);
+  const referralInputRef = useRef<TextInput>(null);
 
   const handleSignup = () => {
     navigation.navigate('OTP' as never);
@@ -27,6 +30,34 @@ const SignupScreen = () => {
 
   const handleBackToLogin = () => {
     navigation.goBack();
+  };
+
+  const handleKeyboardPress = (key: string) => {
+    if (activeField === 'phone') {
+      if (key === 'back') {
+        setPhone((prev) => prev.slice(0, -1));
+      } else {
+        setPhone((prev) => prev + key);
+      }
+    } else if (activeField === 'password') {
+      if (key === 'back') {
+        setPassword((prev) => prev.slice(0, -1));
+      } else if (password.length < 4) {
+        setPassword((prev) => prev + key);
+      }
+    } else if (activeField === 'referral') {
+      if (key === 'back') {
+        setReferralCode((prev) => prev.slice(0, -1));
+      } else {
+        setReferralCode((prev) => prev + key);
+      }
+    }
+  };
+
+  const handlePinPress = () => {
+    setActiveField('password');
+    phoneInputRef.current?.blur();
+    referralInputRef.current?.blur();
   };
 
   return (
@@ -48,68 +79,52 @@ const SignupScreen = () => {
               <Text style={styles.countryCode}>+880</Text>
             </View>
             <TextInput
+              ref={phoneInputRef}
               style={styles.phoneInput}
               placeholder="1XXX-XXXXXX"
               placeholderTextColor="#999"
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
+              showSoftInputOnFocus={false}
+              onFocus={() => setActiveField('phone')}
+              autoFocus={true}
             />
           </View>
 
-          {/* Password Input */}
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.passwordInput}
-              placeholder="Password"
-              placeholderTextColor="#999"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              style={styles.eyeIcon}
-            >
-              <Icon
-                name={showPassword ? 'eye' : 'eye-off'}
-                size={24}
-                color="#999"
-              />
-            </TouchableOpacity>
-          </View>
+          {/* Password Input (4-digit PIN like Login) */}
+          <TouchableOpacity
+            style={styles.pinContainer}
+            activeOpacity={1}
+            onPress={handlePinPress}
+          >
+            {[0, 1, 2, 3].map((index) => (
+              <View
+                key={index}
+                style={[
+                  styles.pinInput,
+                  activeField === 'password' && password.length === index && styles.pinInputActive,
+                ]}
+              >
+                <Text style={styles.pinInputText}>
+                  {password.length > index ? '•' : ''}
+                </Text>
+              </View>
+            ))}
+          </TouchableOpacity>
 
           {/* Referral Code */}
           <TextInput
+            ref={referralInputRef}
             style={styles.input}
             placeholder="Referral Code (Optional)"
             placeholderTextColor="#999"
             value={referralCode}
             onChangeText={setReferralCode}
             autoCapitalize="none"
+            showSoftInputOnFocus={false}
+            onFocus={() => setActiveField('referral')}
           />
-
-          {/* Terms Checkbox */}
-          <View style={styles.checkboxContainer}>
-            <TouchableOpacity
-              onPress={() => setAgreeTerms(!agreeTerms)}
-              style={styles.checkbox}
-            >
-              <View
-                style={[
-                  styles.checkboxInner,
-                  agreeTerms && styles.checkboxChecked,
-                ]}
-              >
-                {agreeTerms && (
-                  <Icon name="checkmark" size={16} color="#fff" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.termsText}>
-              I agree to the TapCash Terms and Conditions and Privacy Policy
-            </Text>
-          </View>
 
           {/* Continue Button */}
           <TouchableOpacity
@@ -123,6 +138,9 @@ const SignupScreen = () => {
           <TouchableOpacity onPress={handleBackToLogin}>
             <Text style={styles.loginText}>Already have an account? <Text style={styles.loginLink}>Login</Text></Text>
           </TouchableOpacity>
+
+          {/* Custom Keyboard below button/links */}
+          <CustomKeyboard onKeyPress={handleKeyboardPress} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -162,10 +180,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 15,
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     borderRightWidth: 0,
@@ -187,8 +204,7 @@ const styles = StyleSheet.create({
     height: 58,
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 15,
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
@@ -205,26 +221,29 @@ const styles = StyleSheet.create({
     borderColor: '#F5F5F5',
     color: '#333',
   },
-  passwordContainer: {
+  pinContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
+    justifyContent: 'space-between',
+    marginBottom: 20,
   },
-  passwordInput: {
-    flex: 1,
+  pinInput: {
+    width: 70,
     height: 58,
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
-    paddingHorizontal: 15,
-    fontSize: 16,
     borderWidth: 1,
     borderColor: '#F5F5F5',
-    color: '#333',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  eyeIcon: {
-    position: 'absolute',
-    right: 15,
-    padding: 5,
+  pinInputActive: {
+    borderColor: '#37c667',
+  },
+  pinInputText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
   },
   requirements: {
     marginBottom: 20,

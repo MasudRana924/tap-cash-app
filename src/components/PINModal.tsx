@@ -109,14 +109,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
-    paddingVertical: 30,
-    paddingBottom: 40,
+    paddingVertical: 20,
+    paddingBottom: 25,
   },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 15,
   },
   closeButton: {
     padding: 5,
@@ -132,14 +132,14 @@ const styles = StyleSheet.create({
     width: 34,
   },
   pinSection: {
-    marginBottom: 30,
+    marginBottom: 15,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '400',
     color: '#333',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 15,
   },
   pinDisplay: {
     flexDirection: 'row',
@@ -159,15 +159,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginTop: 20
   },
   key: {
     width: '31%',
-    aspectRatio: 1.5,
+    aspectRatio: 1.8,
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   keyEmpty: {
     backgroundColor: 'transparent',

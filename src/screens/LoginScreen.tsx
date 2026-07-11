@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,16 +8,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image,
+  
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CustomKeyboard from '../components/CustomKeyboard';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [phone, setPhone] = useState('');
-  const [pin, setPin] = useState(['', '', '', '']);
+  const [pin, setPin] = useState('');
   const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
+  const [activeField, setActiveField] = useState<'phone' | 'pin'>('phone');
+
+  const phoneInputRef = useRef<TextInput>(null);
 
   const handleLogin = () => {
     navigation.navigate('MainHome' as never);
@@ -27,10 +31,25 @@ const LoginScreen = () => {
     navigation.navigate('Signup' as never);
   };
 
-  const handlePinChange = (index: number, value: string) => {
-    const newPin = [...pin];
-    newPin[index] = value;
-    setPin(newPin);
+  const handleKeyboardPress = (key: string) => {
+    if (activeField === 'phone') {
+      if (key === 'back') {
+        setPhone((prev) => prev.slice(0, -1));
+      } else {
+        setPhone((prev) => prev + key);
+      }
+    } else if (activeField === 'pin') {
+      if (key === 'back') {
+        setPin((prev) => prev.slice(0, -1));
+      } else if (pin.length < 4) {
+        setPin((prev) => prev + key);
+      }
+    }
+  };
+
+  const handlePinPress = () => {
+    setActiveField('pin');
+    phoneInputRef.current?.blur();
   };
 
   return (
@@ -73,32 +92,39 @@ const LoginScreen = () => {
               <Text style={styles.countryCode}>+880</Text>
             </View>
             <TextInput
+              ref={phoneInputRef}
               style={styles.phoneInput}
               placeholder="1XXX-XXXXXX"
               placeholderTextColor="#999"
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
+              showSoftInputOnFocus={false}
+              onFocus={() => setActiveField('phone')}
+              autoFocus={true}
             />
           </View>
 
           {/* PIN Input */}
-          <View style={styles.pinContainer}>
+          <TouchableOpacity
+            style={styles.pinContainer}
+            activeOpacity={1}
+            onPress={handlePinPress}
+          >
             {[0, 1, 2, 3].map((index) => (
-              <TextInput
+              <View
                 key={index}
-                style={styles.pinInput}
-                placeholder="•"
-                placeholderTextColor="#999"
-                value={pin[index]}
-                onChangeText={(value) => handlePinChange(index, value)}
-                keyboardType="numeric"
-                maxLength={1}
-                secureTextEntry
-                textAlign="center"
-              />
+                style={[
+                  styles.pinInput,
+                  activeField === 'pin' && pin.length === index && styles.pinInputActive,
+                ]}
+              >
+                <Text style={styles.pinInputText}>
+                  {pin.length > index ? '•' : ''}
+                </Text>
+              </View>
             ))}
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.loginRow}>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -112,11 +138,15 @@ const LoginScreen = () => {
           <TouchableOpacity onPress={handleSignup}>
             <Text style={styles.signupText}>Don't have an account? <Text style={styles.signupLink}>Sign Up</Text></Text>
           </TouchableOpacity>
+
+          {/* Custom Keyboard below button/links */}
+          <CustomKeyboard onKeyPress={handleKeyboardPress} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -189,10 +219,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 15,
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     borderRightWidth: 0,
@@ -214,8 +243,8 @@ const styles = StyleSheet.create({
     height: 58,
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 15,
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
+    // borderTopRightRadius: 12,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
@@ -231,12 +260,19 @@ const styles = StyleSheet.create({
     height: 58,
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
-    paddingHorizontal: 15,
-    fontSize: 24,
-    fontWeight: 'bold',
     borderWidth: 1,
     borderColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pinInputActive: {
+    borderColor: '#37c667',
+  },
+  pinInputText: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#333',
+    textAlign: 'center',
   },
   loginRow: {
     flexDirection: 'row',

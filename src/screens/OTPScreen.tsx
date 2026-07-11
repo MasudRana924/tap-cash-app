@@ -1,41 +1,27 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CustomKeyboard from '../components/CustomKeyboard';
 
 const OTPScreen = () => {
   const navigation = useNavigation();
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const inputRefs = useRef<any[]>([]);
+  const [otp, setOtp] = useState('');
 
-  const handleOTPChange = (text: string, index: number) => {
-    const newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
-
-    // Auto-focus next input
-    if (text && index < 5) {
-      setTimeout(() => {
-        inputRefs.current[index + 1]?.focus();
-      }, 10);
-    }
-  };
-
-  const handleKeyPress = (e: any, index: number) => {
-    // Handle backspace to focus previous input
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      setTimeout(() => {
-        inputRefs.current[index - 1]?.focus();
-      }, 10);
+  const handleKeyboardPress = (key: string) => {
+    if (key === 'back') {
+      setOtp((prev) => prev.slice(0, -1));
+    } else if (otp.length < 6) {
+      setOtp((prev) => prev + key);
     }
   };
 
@@ -77,22 +63,18 @@ const OTPScreen = () => {
 
           {/* OTP Inputs */}
           <View style={styles.otpContainer}>
-            {otp.map((digit, index) => (
-              <TextInput
+            {[0, 1, 2, 3, 4, 5].map((index) => (
+              <View
                 key={index}
-                ref={(ref: any) => {
-                  inputRefs.current[index] = ref;
-                }}
-                style={styles.otpInput}
-                placeholder=""
-                placeholderTextColor="#999"
-                value={digit}
-                onChangeText={(text) => handleOTPChange(text, index)}
-                onKeyPress={(e) => handleKeyPress(e, index)}
-                keyboardType="number-pad"
-                maxLength={1}
-                textAlign="center"
-              />
+                style={[
+                  styles.otpInput,
+                  otp.length === index && styles.otpInputActive,
+                ]}
+              >
+                <Text style={styles.otpInputText}>
+                  {otp[index] || ''}
+                </Text>
+              </View>
             ))}
           </View>
 
@@ -102,9 +84,12 @@ const OTPScreen = () => {
           </TouchableOpacity>
 
           {/* Resend Code Button */}
-          <TouchableOpacity onPress={handleResend}>
+          <TouchableOpacity onPress={handleResend} style={{ marginBottom: 20 }}>
             <Text style={styles.resendText}>Resend Code</Text>
           </TouchableOpacity>
+
+          {/* Custom Keyboard below buttons/links */}
+          <CustomKeyboard onKeyPress={handleKeyboardPress} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -167,9 +152,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     borderWidth: 1,
     borderColor: '#F6F6F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  otpInputActive: {
+    borderColor: '#37c667',
+  },
+  otpInputText: {
     fontSize: 20,
     fontWeight: '600',
     color: '#333',
+    textAlign: 'center',
   },
   resendText: {
     color: '#007AFF',

@@ -12,6 +12,7 @@ import {
   PermissionsAndroid,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -106,92 +107,101 @@ const SendMoneyScreen = () => {
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-    >
-      <View style={styles.content}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Icon name="arrow-back" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Send Money</Text>
-            <View style={styles.placeholder} />
-          </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <View style={styles.content}>
+          <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            {/* Header */}
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                <Icon name="arrow-back" size={24} color="#000" />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Send Money</Text>
+              <View style={styles.placeholder} />
+            </View>
 
-          {/* Phone Input */}
-          <View style={styles.phoneContainer}>
-            <TextInput
-              style={styles.phoneInput}
-              placeholder="Enter phone number"
-              placeholderTextColor="#999"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              keyboardType="phone-pad"
-            />
-          </View>
-
-          {/* Quick Send */}
-          <View style={styles.quickSendSection}>
-            <Text style={styles.quickSendTitle}>Quick Send</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.quickSendContainer}
-            >
-              {quickSendContacts.map((contact) => (
-                <TouchableOpacity
-                  key={contact.id}
-                  style={styles.quickSendItem}
-                  onPress={() => {
-                    setPhoneNumber(contact.phone);
-                    handlePhoneSubmit();
-                  }}
-                >
-                  <View style={[styles.quickSendAvatar, { backgroundColor: getAvatarColor(contact.name[0]) }]}>
-                    <Text style={styles.quickSendAvatarText}>{contact.name[0].toUpperCase()}</Text>
-                  </View>
-                  <Text style={styles.quickSendName} numberOfLines={1}>
-                    {contact.name.split(' ')[0]}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-
-          {/* Contacts List */}
-          {hasPermission && contacts.length > 0 && (
-            <View style={styles.contactsSection}>
-              <Text style={styles.contactsTitle}>Contacts</Text>
-              <FlatList
-                data={contacts}
-                renderItem={renderContact}
-                keyExtractor={(item) => item.id}
-                scrollEnabled={false}
+            {/* Phone Input with Bangladesh Flag */}
+            <View style={styles.phoneContainer}>
+              <View style={styles.countryCodeContainer}>
+                <Text style={styles.flag}>🇧🇩</Text>
+                <Text style={styles.countryCode}>+880</Text>
+              </View>
+              <TextInput
+                style={styles.phoneInput}
+                placeholder="1XXX-XXXXXX"
+                placeholderTextColor="#999"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
               />
             </View>
-          )}
-        </ScrollView>
 
-        {/* Fixed Bottom Button */}
-        <View style={styles.bottomButtonContainer}>
-          <TouchableOpacity
-            style={[styles.continueButton, phoneNumber.length === 0 && styles.continueButtonDisabled]}
-            onPress={handlePhoneSubmit}
-            disabled={phoneNumber.length === 0}
-          >
-            <Text style={styles.continueButtonText}>Continue</Text>
-          </TouchableOpacity>
+            {/* Quick Send */}
+            <View style={styles.quickSendSection}>
+              <Text style={styles.quickSendTitle}>Quick Send</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.quickSendContainer}
+              >
+                {quickSendContacts.map((contact) => (
+                  <TouchableOpacity
+                    key={contact.id}
+                    style={styles.quickSendItem}
+                    onPress={() => {
+                      setPhoneNumber(contact.phone);
+                      handlePhoneSubmit();
+                    }}
+                  >
+                    <View style={[styles.quickSendAvatar, { backgroundColor: getAvatarColor(contact.name[0]) }]}>
+                      <Text style={styles.quickSendAvatarText}>{contact.name[0].toUpperCase()}</Text>
+                    </View>
+                    <Text style={styles.quickSendName} numberOfLines={1}>
+                      {contact.name.split(' ')[0]}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {/* Contacts List */}
+            {hasPermission && contacts.length > 0 && (
+              <View style={styles.contactsSection}>
+                <Text style={styles.contactsTitle}>Contacts</Text>
+                <FlatList
+                  data={contacts}
+                  renderItem={renderContact}
+                  keyExtractor={(item) => item.id}
+                  scrollEnabled={false}
+                />
+              </View>
+            )}
+          </ScrollView>
+
+          {/* Fixed Bottom Button */}
+          <View style={styles.bottomButtonContainer}>
+            <TouchableOpacity
+              style={[styles.continueButton, phoneNumber.length === 0 && styles.continueButtonDisabled]}
+              onPress={handlePhoneSubmit}
+              disabled={phoneNumber.length === 0}
+            >
+              <Text style={styles.continueButtonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -202,7 +212,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
-    paddingBottom: 100,
+    paddingBottom: 20,
   },
   header: {
     flexDirection: 'row',
@@ -224,14 +234,39 @@ const styles = StyleSheet.create({
     width: 34,
   },
   phoneContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
+  },
+  countryCodeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+    borderWidth: 1,
+    borderColor: '#F5F5F5',
+    borderRightWidth: 0,
+    width: 95,
+    height: 58,
+    marginRight: 8,
+  },
+  flag: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  countryCode: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#333',
   },
   continueButton: {
     backgroundColor: '#37c667',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    marginBottom: 30,
   },
   continueButtonDisabled: {
     backgroundColor: '#ccc',
@@ -242,15 +277,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   bottomButtonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingVertical: 15,
-    borderTopWidth: 1,
-    borderTopColor: '#F5F5F5',
+
   },
   quickSendSection: {
     marginBottom: 20,
@@ -288,10 +318,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   phoneInput: {
+    flex: 1,
     height: 58,
     backgroundColor: '#F5F5F5',
-    borderRadius: 12,
     paddingHorizontal: 15,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
