@@ -6,68 +6,82 @@ import { useNavigation } from '@react-navigation/native';
 const ProfileScreen = () => {
   const navigation = useNavigation();
 
-  const menuItems = [
-    { id: '1', icon: 'person-outline', label: 'Edit Profile', color: '#37c667' },
-    { id: '2', icon: 'card-outline', label: 'My Cards', color: '#4ECDC4' },
-    { id: '3', icon: 'settings-outline', label: 'Settings', color: '#45B7D1' },
-    { id: '4', icon: 'shield-checkmark-outline', label: 'Security', color: '#96CEB4' },
-    { id: '5', icon: 'help-circle-outline', label: 'Help & Support', color: '#FFEAA7' },
-    { id: '6', icon: 'document-text-outline', label: 'Terms & Conditions', color: '#DDA0DD' },
-    { id: '7', icon: 'information-circle-outline', label: 'About', color: '#98D8C8' },
+  const accountItems = [
+    { id: '1', icon: 'person-outline', label: 'Edit Profile' },
+    { id: '2', icon: 'card-outline', label: 'My Cards' },
+    { id: '3', icon: 'shield-checkmark-outline', label: 'Security' },
+    { id: '4', icon: 'notifications-outline', label: 'Notifications' },
   ];
+
+  const supportItems = [
+    { id: '5', icon: 'help-circle-outline', label: 'Help & Support' },
+    { id: '6', icon: 'document-text-outline', label: 'Terms & Conditions' },
+    { id: '7', icon: 'information-circle-outline', label: 'About' },
+  ];
+
+  const renderMenuItem = (item: { id: string; icon: string; label: string }, isLast: boolean) => (
+    <TouchableOpacity key={item.id} style={[styles.menuItem, isLast && styles.menuItemLast]}>
+      <Icon name={item.icon as any} size={22} color="#333" />
+      <Text style={styles.menuLabel}>{item.label}</Text>
+      <Icon name="chevron-forward" size={18} color="#ccc" />
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* Header with back button */}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Profile</Text>
         </View>
 
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatarContainer}>
-            <Image
-              source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
-              style={styles.avatar}
-            />
-            <TouchableOpacity style={styles.editAvatarButton}>
-              <Icon name="camera-outline" size={20} color="#fff" />
-            </TouchableOpacity>
+        {/* Profile Info */}
+        <View style={styles.profileRow}>
+          <Image
+            source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+            style={styles.avatar}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.name}>Jennifer Smith</Text>
+            <Text style={styles.phone}>+880 1712-345678</Text>
           </View>
-          <Text style={styles.name}>Jennifer Smith</Text>
-          <Text style={styles.phone}>+880 1712-345678</Text>
-          <Text style={styles.emailJennifer}>jennifer.smith@email.com</Text>
+          <TouchableOpacity style={styles.editButton}>
+            <Icon name="create-outline" size={20} color="#37c667" />
+          </TouchableOpacity>
         </View>
 
-        {/* Balance Card */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Total Balance</Text>
-          <Text style={styles.balanceAmount}>৳ 25,450.00</Text>
+        {/* Balance Strip */}
+        <View style={styles.balanceStrip}>
+          <View>
+            <Text style={styles.balanceLabel}>Total Balance</Text>
+            <Text style={styles.balanceAmount}>৳ 25,450.00</Text>
+          </View>
+          <Icon name="eye-outline" size={20} color="rgba(255,255,255,0.7)" />
         </View>
 
-        {/* Menu Items */}
-        <View style={styles.menuContainer}>
-          {menuItems.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.menuItem}>
-              <View style={[styles.menuIcon, { backgroundColor: item.color }]}>
-                <Icon name={item.icon as any} size={24} color="#fff" />
-              </View>
-              <Text style={styles.menuText}>{item.label}</Text>
-              <Icon name="chevron-forward" size={20} color="#ccc" />
-            </TouchableOpacity>
-          ))}
+        {/* Account Section */}
+        <Text style={styles.sectionTitle}>Account</Text>
+        <View style={styles.menuGroup}>
+          {accountItems.map((item, index) =>
+            renderMenuItem(item, index === accountItems.length - 1)
+          )}
         </View>
 
-        {/* Logout Button */}
+        {/* Support Section */}
+        <Text style={styles.sectionTitle}>Support</Text>
+        <View style={styles.menuGroup}>
+          {supportItems.map((item, index) =>
+            renderMenuItem(item, index === supportItems.length - 1)
+          )}
+        </View>
+
+        {/* Logout */}
         <TouchableOpacity style={styles.logoutButton}>
-          <Icon name="log-out-outline" size={24} color="#FF3B30" />
+          <Icon name="log-out-outline" size={22} color="#FF3B30" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>TapCash v1.0.0</Text>
-        </View>
+        <Text style={styles.version}>TapCash v1.0.0</Text>
       </ScrollView>
     </View>
   );
@@ -76,142 +90,129 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: '#fff',
   },
-  scrollView: {
-    flex: 1,
+  scrollContent: {
+    paddingBottom: 100,
   },
   header: {
     paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
+    paddingBottom: 10,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
   },
-  profileCard: {
-    backgroundColor: '#fff',
-    margin: 20,
-    padding: 30,
-    borderRadius: 20,
+  profileRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  avatarContainer: {
-    position: 'relative',
-    marginBottom: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
-  editAvatarButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#37c667',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#fff',
+  profileInfo: {
+    flex: 1,
+    marginLeft: 15,
   },
   name: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#333',
-    marginBottom: 5,
+    marginBottom: 2,
   },
   phone: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 3,
-  },
-  emailJennifer: {
     fontSize: 14,
     color: '#999',
   },
-  balanceCard: {
+  editButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EAF7EE',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  balanceStrip: {
     backgroundColor: '#37c667',
     marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 20,
-    borderRadius: 16,
+    borderRadius: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 25,
   },
   balanceLabel: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: 2,
   },
   balanceAmount: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#fff',
   },
-  menuContainer: {
-    backgroundColor: '#fff',
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#999',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingHorizontal: 20,
+    marginBottom: 8,
+  },
+  menuGroup: {
     marginHorizontal: 20,
     marginBottom: 20,
-    borderRadius: 16,
-    paddingVertical: 10,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#F5F5F5',
   },
-  menuIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
+  menuItemLast: {
+    borderBottomWidth: 0,
   },
-  menuText: {
+  menuLabel: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: '#333',
+    marginLeft: 15,
     fontWeight: '500',
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
     marginHorizontal: 20,
-    marginBottom: 20,
-    padding: 16,
-    borderRadius: 16,
+    paddingVertical: 15,
+    marginTop: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFE5E5',
+    backgroundColor: '#FFF5F5',
   },
   logoutText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#FF3B30',
     fontWeight: '600',
     marginLeft: 10,
   },
-  footer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  footerText: {
+  version: {
+    textAlign: 'center',
     fontSize: 12,
-    color: '#999',
+    color: '#ccc',
+    marginTop: 20,
+    paddingBottom: 20,
   },
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import InsightsScreen from '../screens/InsightsScreen';
@@ -16,29 +16,38 @@ const MainTabs = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: 80,
-          paddingBottom: 15,
+          height: 70,
+          paddingBottom: 10,
           paddingTop: 10,
-          backgroundColor: '#fff',
-   
+          backgroundColor: '#1A1A2E',
+          borderRadius: 35,
+          marginHorizontal: 10,
+          marginBottom: 10,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          borderTopWidth: 0,
+
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '600',
+          marginTop: 2,
         },
         tabBarActiveTintColor: '#37c667',
-        tabBarInactiveTintColor: '#999',
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.5)',
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               name={focused ? 'home' : 'home-outline'}
               size={24}
-              color={focused ? '#37c667' : '#999'}
+              color={focused ? '#37c667' : 'rgba(255,255,255,0.5)'}
             />
           ),
         }}
@@ -50,7 +59,7 @@ const MainTabs = () => {
         options={{
           tabBarIcon: () => (
             <View style={styles.qrIconContainer}>
-              <Icon name="qr-code" size={28} color="#fff" />
+              <Icon name="qr-code" size={24} color="#fff" />
             </View>
           ),
           tabBarLabel: () => null,
@@ -61,11 +70,11 @@ const MainTabs = () => {
         name="Profile"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ focused }) => (
             <Icon
               name={focused ? 'person' : 'person-outline'}
               size={24}
-              color={focused ? '#37c667' : '#999'}
+              color={focused ? '#37c667' : 'rgba(255,255,255,0.5)'}
             />
           ),
         }}
@@ -76,14 +85,20 @@ const MainTabs = () => {
 
 const styles = StyleSheet.create({
   qrIconContainer: {
-    width: 65,
-    height: 65,
-    borderRadius: 32.5,
+    width: 55,
+    height: 55,
+    borderRadius: 28,
     backgroundColor: '#37c667',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -30,
-
+    marginTop: -25,
+    borderWidth: 4,
+    borderColor: '#1A1A2E',
+    shadowColor: '#37c667',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
 

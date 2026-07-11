@@ -16,6 +16,8 @@ interface Transaction {
   date: string;
   amount: string;
   icon: string;
+  color: string;
+  bg: string;
   isNegative: boolean;
 }
 
@@ -27,7 +29,7 @@ const TransactionsScreen = () => {
     { id: 'all', label: 'All', icon: 'list-outline' },
     { id: 'cashIn', label: 'Cash In', icon: 'arrow-down-circle-outline' },
     { id: 'cashOut', label: 'Cash Out', icon: 'arrow-up-circle-outline' },
-    { id: 'mobileRecharge', label: 'Mobile Recharge', icon: 'phone-portrait-outline' },
+    { id: 'mobileRecharge', label: 'Recharge', icon: 'phone-portrait-outline' },
     { id: 'payment', label: 'Payment', icon: 'card-outline' },
   ];
 
@@ -38,7 +40,9 @@ const TransactionsScreen = () => {
       category: 'Subscriptions',
       date: 'Today, 12:30 PM',
       amount: '-$250.00',
-      icon: '🎨',
+      icon: 'logo-figma',
+      color: '#A259FF',
+      bg: '#FAF5FF',
       isNegative: true,
     },
     {
@@ -47,7 +51,9 @@ const TransactionsScreen = () => {
       category: 'Money In',
       date: 'Yesterday, 08:00 AM',
       amount: '+$580.00',
-      icon: '⬇️',
+      icon: 'arrow-down-outline',
+      color: '#37c667',
+      bg: '#EAF7EE',
       isNegative: false,
     },
     {
@@ -56,7 +62,9 @@ const TransactionsScreen = () => {
       category: 'Subscriptions',
       date: 'Yesterday, 10:30 AM',
       amount: '-$99.00',
-      icon: '📝',
+      icon: 'book-outline',
+      color: '#1A1A1A',
+      bg: '#F5F5F5',
       isNegative: true,
     },
     {
@@ -65,7 +73,9 @@ const TransactionsScreen = () => {
       category: 'Mobile Recharge',
       date: 'Jun 25, 03:15 PM',
       amount: '-$100.00',
-      icon: '📱',
+      icon: 'phone-portrait-outline',
+      color: '#3B82F6',
+      bg: '#EDF5FF',
       isNegative: true,
     },
     {
@@ -74,7 +84,9 @@ const TransactionsScreen = () => {
       category: 'Payment',
       date: 'Jun 24, 11:20 AM',
       amount: '-$450.00',
-      icon: '💳',
+      icon: 'card-outline',
+      color: '#F59E0B',
+      bg: '#FFFBEB',
       isNegative: true,
     },
     {
@@ -83,7 +95,9 @@ const TransactionsScreen = () => {
       category: 'Cash Out',
       date: 'Jun 23, 04:45 PM',
       amount: '-$500.00',
-      icon: '💸',
+      icon: 'arrow-up-outline',
+      color: '#EF4444',
+      bg: '#FFF0EE',
       isNegative: true,
     },
   ];
@@ -126,7 +140,7 @@ const TransactionsScreen = () => {
           >
             <Icon
               name={filter.icon as any}
-              size={18}
+              size={16}
               color={selectedFilter === filter.id ? '#fff' : '#666'}
               style={styles.filterIcon}
             />
@@ -143,25 +157,27 @@ const TransactionsScreen = () => {
       </ScrollView>
 
       {/* Transactions List */}
-      <ScrollView style={styles.transactionsList}>
+      <ScrollView style={styles.transactionsList} showsVerticalScrollIndicator={false}>
         {filteredTransactions.map((transaction) => (
           <View key={transaction.id} style={styles.transactionItem}>
-            <View style={styles.transactionIcon}>
-              <Text style={styles.transactionIconText}>{transaction.icon}</Text>
+            <View style={[styles.transactionIcon, { backgroundColor: transaction.bg }]}>
+              <Icon name={transaction.icon} size={22} color={transaction.color} />
             </View>
             <View style={styles.transactionDetails}>
               <Text style={styles.transactionName}>{transaction.name}</Text>
               <Text style={styles.transactionCategory}>{transaction.category}</Text>
-              <Text style={styles.transactionDate}>{transaction.date}</Text>
             </View>
-            <Text
-              style={[
-                styles.transactionAmount,
-                transaction.isNegative ? styles.amountNegative : styles.amountPositive,
-              ]}
-            >
-              {transaction.amount}
-            </Text>
+            <View style={styles.transactionRight}>
+              <Text
+                style={[
+                  styles.transactionAmount,
+                  transaction.isNegative ? styles.amountNegative : styles.amountPositive,
+                ]}
+              >
+                {transaction.amount}
+              </Text>
+              <Text style={styles.transactionDate}>{transaction.date.split(',')[0]}</Text>
+            </View>
           </View>
         ))}
       </ScrollView>
@@ -196,8 +212,9 @@ const styles = StyleSheet.create({
     width: 34,
   },
   filterScrollView: {
+    maxHeight: 50,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   filterContainer: {
     paddingRight: 10,
@@ -205,23 +222,20 @@ const styles = StyleSheet.create({
   filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: '#F5F5F5',
     marginRight: 8,
-    borderWidth: 1,
-    borderColor: '#F5F5F5',
   },
   filterChipActive: {
     backgroundColor: '#37c667',
-    borderColor: '#37c667',
   },
   filterIcon: {
-    marginRight: 6,
+    marginRight: 5,
   },
   filterText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: '#666',
   },
@@ -235,43 +249,44 @@ const styles = StyleSheet.create({
   transactionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    borderBottomColor: '#F6F6F6',
   },
   transactionIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#F5F5F5',
+    width: 46,
+    height: 46,
+    borderRadius: 23,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
   },
-  transactionIconText: {
-    fontSize: 24,
-  },
   transactionDetails: {
     flex: 1,
+    justifyContent: 'center',
   },
   transactionName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   transactionCategory: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
+    fontSize: 12,
+    color: '#999',
+  },
+  transactionRight: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   transactionDate: {
     fontSize: 12,
     color: '#999',
+    marginTop: 2,
   },
   transactionAmount: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   amountNegative: {
     color: '#333',
