@@ -63,6 +63,146 @@ const HomeScreen = () => {
     { id: 6, name: 'Loan', icon: 'cash-outline' },
   ];
 
+  const promotions = [
+    {
+      id: 1,
+      title: 'Entertainment',
+      desc: '20% cashback on movies',
+      icon: 'film-outline',
+      color: '#7C3AED',
+      height: 155,
+    },
+    {
+      id: 2,
+      title: 'Shopping',
+      desc: '50% off on Daraz',
+      icon: 'cart-outline',
+      color: '#E0432E',
+      height: 115,
+    },
+    {
+      id: 3,
+      title: 'Food Delivery',
+      desc: 'Free delivery',
+      icon: 'fast-food-outline',
+      color: '#F4A93C',
+      height: 145,
+    },
+    {
+      id: 4,
+      title: 'Travel',
+      desc: 'Flight discounts',
+      icon: 'airplane-outline',
+      color: '#45B7D1',
+      height: 125,
+    },
+  ];
+
+  const quickStats = [
+    {
+      id: 1,
+      title: 'This Month',
+      value: '$4,250',
+      subtitle: 'Spent',
+      icon: 'card-outline',
+      height: 160,
+    },
+    {
+      id: 2,
+      title: 'Total Saved',
+      value: '$8,340',
+      subtitle: 'In savings',
+      icon: 'wallet-outline',
+      height: 120,
+    },
+    {
+      id: 3,
+      title: 'Rewards',
+      value: '$320',
+      subtitle: 'Cashback',
+      icon: 'gift-outline',
+      height: 140,
+    },
+    {
+      id: 4,
+      title: 'Income',
+      value: '$6,800',
+      subtitle: 'This month',
+      icon: 'trending-up-outline',
+      height: 100,
+    },
+  ];
+
+  const savingsGoals = [
+    {
+      id: 1,
+      title: 'Emergency Fund',
+      target: '$10,000',
+      current: '$7,500',
+      progress: 75,
+      icon: 'shield-checkmark-outline',
+      color: '#667EEA',
+      height: 170,
+    },
+    {
+      id: 2,
+      title: 'Vacation Trip',
+      target: '$5,000',
+      current: '$2,800',
+      progress: 56,
+      icon: 'airplane-outline',
+      color: '#764BA2',
+      height: 130,
+    },
+    {
+      id: 3,
+      title: 'New Car',
+      target: '$25,000',
+      current: '$12,500',
+      progress: 50,
+      icon: 'car-outline',
+      color: '#F093FB',
+      height: 150,
+    },
+    {
+      id: 4,
+      title: 'Home Down Payment',
+      target: '$50,000',
+      current: '$15,000',
+      progress: 30,
+      icon: 'home-outline',
+      color: '#4ECDC4',
+      height: 110,
+    },
+  ];
+
+  const upcomingBills = [
+    {
+      id: 1,
+      title: 'Netflix Subscription',
+      amount: '$15.99',
+      dueDate: 'Due in 3 days',
+      icon: 'tv-outline',
+      color: '#E50914',
+    },
+    {
+      id: 2,
+      title: 'Electricity Bill',
+      amount: '$85.00',
+      dueDate: 'Due in 5 days',
+      icon: 'flash-outline',
+      color: '#FFD93D',
+    },
+    {
+      id: 3,
+      title: 'Internet Bill',
+      amount: '$59.99',
+      dueDate: 'Due in 7 days',
+      icon: 'wifi-outline',
+      color: '#6BCB77',
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -142,6 +282,18 @@ const HomeScreen = () => {
                 </View>
               ))}
             </View>
+
+            {/* Discover Section Skeleton */}
+            <View style={styles.discoverSection}>
+              <View style={styles.sectionHeader}>
+                <View style={[styles.skeleton, { width: 120, height: 20 }]} />
+              </View>
+              <View style={styles.statsGrid}>
+                {[1, 2, 3, 4].map((item) => (
+                  <View key={item} style={[styles.statCard, styles.skeleton]} />
+                ))}
+              </View>
+            </View>
           </View>
         ) : (
           // Actual Content
@@ -173,6 +325,16 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
               <Text style={styles.balanceAmount}>$12,765.00</Text>
+              <View style={styles.balanceActions}>
+                <View style={styles.balanceAction}>
+                  <Icon name="arrow-up-outline" size={16} color="#37c667" />
+                  <Text style={styles.balanceActionText}>+$2,450</Text>
+                </View>
+                <View style={styles.balanceAction}>
+                  <Icon name="arrow-down-outline" size={16} color="#FF6B6B" />
+                  <Text style={styles.balanceActionText}>-$1,230</Text>
+                </View>
+              </View>
             </View>
 
             {/* Action Buttons */}
@@ -206,20 +368,62 @@ const HomeScreen = () => {
               </View>
             )}
 
+            {/* Quick Stats Section */}
+            <View style={styles.quickStatsSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Quick Stats</Text>
+              </View>
+              <View style={styles.statsGrid}>
+                {quickStats.map((stat) => (
+                  <View key={stat.id} style={[styles.statCard, { minHeight: stat.height }]}>
+                    <Icon name={stat.icon as any} size={20} color="#8E8E93" />
+                    <Text style={styles.statValue}>{stat.value}</Text>
+                    <Text style={styles.statTitle}>{stat.title}</Text>
+                    <Text style={styles.statSubtitle}>{stat.subtitle}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
             {/* Cashback Banner */}
             <View style={styles.cashbackBanner}>
-              <Text style={styles.cashbackTitle}>
-                Invite a friend and both earn cashback
-              </Text>
-              <TouchableOpacity>
-                <Text style={styles.inviteLink}>Invite friends →</Text>
-              </TouchableOpacity>
+              <View style={styles.cashbackContent}>
+                <View>
+                  <Text style={styles.cashbackTitle}>
+                    Invite a friend and both earn cashback
+                  </Text>
+                  <Text style={styles.cashbackSubtitle}>Get $10 for every friend you refer</Text>
+                </View>
+                <TouchableOpacity style={styles.inviteButton}>
+                  <Text style={styles.inviteButtonText}>Invite Now</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Savings Goals Section */}
+            <View style={styles.savingsSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Savings Goals</Text>
+              </View>
+              <View style={styles.statsGrid}>
+                {savingsGoals.map((goal) => (
+                  <View key={goal.id} style={[styles.statCard, { minHeight: goal.height }]}>
+                    <Icon name={goal.icon as any} size={20} color={goal.color} />
+                    <Text style={styles.statValue}>{goal.current}</Text>
+                    <Text style={styles.statTitle}>{goal.title}</Text>
+                    <Text style={styles.statSubtitle}>{goal.progress}% of {goal.target}</Text>
+                    <View style={styles.progressContainer}>
+                      <View style={[styles.progressBar, { width: `${goal.progress}%`, backgroundColor: goal.color }]} />
+                    </View>
+                  </View>
+                ))}
+              </View>
             </View>
 
             {/* Transactions Section */}
             <View style={styles.transactionsSection}>
               <View style={styles.transactionsHeader}>
-                <Text style={styles.transactionsTitle}>Transactions</Text>
+                <Text style={styles.transactionsTitle}>Recent Transactions</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Transactions' as never)}>
                   <Text style={styles.seeAll}>See All</Text>
                 </TouchableOpacity>
@@ -249,6 +453,46 @@ const HomeScreen = () => {
                   </Text>
                 </View>
               ))}
+            </View>
+
+            {/* Upcoming Bills Section */}
+            <View style={styles.billsSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Upcoming Bills</Text>
+                <TouchableOpacity>
+                  <Text style={styles.seeAll}>See All</Text>
+                </TouchableOpacity>
+              </View>
+              {upcomingBills.map((bill) => (
+                <View key={bill.id} style={styles.billItem}>
+                  <View style={[styles.billIconContainer, { backgroundColor: bill.color + '20' }]}>
+                    <Icon name={bill.icon as any} size={20} color={bill.color} />
+                  </View>
+                  <View style={styles.billDetails}>
+                    <Text style={styles.billTitle}>{bill.title}</Text>
+                    <Text style={styles.billDueDate}>{bill.dueDate}</Text>
+                  </View>
+                  <Text style={styles.billAmount}>{bill.amount}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Discover More Section */}
+            <View style={styles.discoverSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Discover More</Text>
+              </View>
+              <View style={styles.statsGrid}>
+                {promotions.map((promo) => (
+                  <TouchableOpacity key={promo.id} style={[styles.statCard, { minHeight: promo.height }]}>
+                    <View style={[styles.promoIconContainer, { backgroundColor: promo.color + '20' }]}>
+                      <Icon name={promo.icon as any} size={20} color={promo.color} />
+                    </View>
+                    <Text style={styles.statTitle}>{promo.title}</Text>
+                    <Text style={styles.statSubtitle}>{promo.desc}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           </View>
         )}
@@ -287,12 +531,13 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 14,
-    color: '#666',
+    color: '#8E8E93',
+    fontWeight: '400',
   },
   goodMorning: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#1C1C1E',
   },
   notificationButton: {
     position: 'relative',
@@ -309,25 +554,45 @@ const styles = StyleSheet.create({
   },
   balanceCard: {
     backgroundColor: '#fff',
-
-    padding: 5,
-    marginBottom: 20,
-
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 8,
   },
   balanceHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   balanceTitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 14,
+    color: '#8E8E93',
+    fontWeight: '400',
   },
   balanceAmount: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 16,
+  },
+  balanceActions: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  balanceAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  balanceActionText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#1C1C1E',
   },
   actionButtons: {
     flexDirection: 'row',
@@ -338,28 +603,38 @@ const styles = StyleSheet.create({
   actionButton: {
     flex: 1,
     backgroundColor: '#37c667',
-    borderRadius: 16,
-    height: 50,
+    borderRadius: 20,
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 5,
-    paddingHorizontal: 15,
+    marginHorizontal: 6,
+    paddingHorizontal: 16,
+    shadowColor: '#37c667',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   actionButtonText: {
     color: '#fff',
     fontSize: 14,
-    fontWeight: '400',
+    fontWeight: '500',
     marginLeft: 8,
   },
   menuButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#37c667',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 5,
+    marginLeft: 6,
+    shadowColor: '#37c667',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   menuIconContainer: {
     width: 36,
@@ -396,15 +671,46 @@ const styles = StyleSheet.create({
   },
   cashbackBanner: {
     backgroundColor: '#7C3AED',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 25,
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 28,
+    shadowColor: '#7C3AED',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  cashbackContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   cashbackTitle: {
     fontSize: 16,
     color: '#fff',
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: 6,
+  },
+  cashbackSubtitle: {
+    fontSize: 13,
+    color: '#C4B5FD',
+    fontWeight: '400',
+  },
+  inviteButton: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inviteButtonText: {
+    color: '#7C3AED',
+    fontSize: 13,
+    fontWeight: '600',
   },
   inviteLink: {
     fontSize: 14,
@@ -412,7 +718,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   transactionsSection: {
-    marginBottom: 100,
+    marginBottom: 25,
   },
   transactionsHeader: {
     flexDirection: 'row',
@@ -421,23 +727,22 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   transactionsTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1C1C1E',
   },
   seeAll: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#37c667',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   transactionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 15,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 20,
+    padding: 16,
     marginBottom: 12,
-    
   },
   transactionIcon: {
     width: 50,
@@ -455,23 +760,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   transactionName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#1C1C1E',
     marginBottom: 4,
   },
   transactionCategory: {
     fontSize: 12,
-    color: '#999',
+    color: '#8E8E93',
     marginBottom: 2,
+    fontWeight: '400',
   },
   transactionDate: {
     fontSize: 12,
-    color: '#999',
+    color: '#8E8E93',
   },
   transactionAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '600',
   },
   amountNegative: {
     color: '#333',
@@ -479,8 +785,116 @@ const styles = StyleSheet.create({
   amountPositive: {
     color: '#37c667',
   },
+  discoverSection: {
+    marginBottom: 100,
+  },
+  promoIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   skeleton: {
     backgroundColor: '#E0E0E0',
+  },
+  quickStatsSection: {
+    marginBottom: 28,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    width: '48%',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+  },
+  statTitle: {
+    fontSize: 13,
+    color: '#8E8E93',
+    fontWeight: '400',
+    marginTop: 8,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginTop: 4,
+  },
+  statSubtitle: {
+    fontSize: 11,
+    color: '#8E8E93',
+    fontWeight: '400',
+    marginTop: 2,
+  },
+  savingsSection: {
+    marginBottom: 28,
+  },
+  progressContainer: {
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    marginTop: 8,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  billsSection: {
+    marginBottom: 28,
+  },
+  billItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 12,
+  },
+  billIconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  billDetails: {
+    flex: 1,
+  },
+  billTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 4,
+  },
+  billDueDate: {
+    fontSize: 12,
+    color: '#8E8E93',
+    fontWeight: '400',
+  },
+  billAmount: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1C1C1E',
   },
 });
 

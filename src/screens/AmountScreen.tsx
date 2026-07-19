@@ -59,24 +59,22 @@ const AmountScreen = () => {
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
-          <Text style={styles.sectionTitle}>Enter Amount</Text>
           <View style={styles.amountInputContainer}>
-            <Text style={styles.currencySymbol}>৳</Text>
             <TextInput
               ref={amountInputRef}
               style={styles.amountInput}
-              placeholder="0.00"
+              placeholder="৳0.00"
               placeholderTextColor="#999"
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
+              textAlign="center"
             />
           </View>
         </View>
 
         {/* Available Balance */}
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Available Balance</Text>
           <Text style={styles.balanceAmount}>{availableBalance}</Text>
         </View>
 
@@ -131,26 +129,12 @@ const styles = StyleSheet.create({
   amountSection: {
     marginBottom: 30,
   },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 15,
-  },
   amountInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
-  currencySymbol: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginRight: 10,
-  },
   amountInput: {
-    flex: 1,
     fontSize: 32,
     fontWeight: 'bold',
     color: '#333',
@@ -158,19 +142,14 @@ const styles = StyleSheet.create({
   balanceCard: {
     borderRadius: 12,
     padding: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
   },
-  balanceLabel: {
-    fontSize: 14,
-    color: '#666',
-  },
   balanceAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#666',
   },
   confirmButton: {
     backgroundColor: '#37c667',
