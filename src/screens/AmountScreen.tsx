@@ -69,6 +69,8 @@ const AmountScreen = () => {
               onChangeText={setAmount}
               keyboardType="decimal-pad"
               textAlign="center"
+              textAlignVertical="center"
+              selectionColor="#37c667"
             />
           </View>
         </View>

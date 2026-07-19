@@ -65,8 +65,18 @@ const PINModal: React.FC<PINModalProps> = ({
               {[0, 1, 2, 3].map((index) => (
                 <View
                   key={index}
-                  style={[styles.pinDot, pin.length > index && styles.pinDotFilled]}
-                />
+                  style={[
+                    styles.pinDotContainer,
+                    pin.length > index && styles.pinDotContainerFocused,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.pinDot,
+                      pin.length > index && styles.pinDotFilled,
+                    ]}
+                  />
+                </View>
               ))}
             </View>
           </View>
@@ -83,6 +93,7 @@ const PINModal: React.FC<PINModalProps> = ({
                 ]}
                 onPress={() => key && handleKeyPress(key)}
                 disabled={key === ''}
+                activeOpacity={0.7}
               >
                 {key === 'back' ? (
                   <Icon name="backspace-outline" size={24} color="#333" />
@@ -101,85 +112,112 @@ const PINModal: React.FC<PINModalProps> = ({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    paddingBottom: 25,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
+    paddingBottom: 35,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
   },
   modalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   closeButton: {
-    padding: 5,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1C1C1E',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 34,
+    width: 36,
   },
   pinSection: {
-    marginBottom: 15,
+    marginBottom: 25,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#333',
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#8E8E93',
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   pinDisplay: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  pinDotContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  pinDotContainerFocused: {
+    borderColor: '#37c667',
+    backgroundColor: '#F0FDF4',
+  },
   pinDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#E0E0E0',
-    marginHorizontal: 8,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#D1D5DB',
   },
   pinDotFilled: {
     backgroundColor: '#37c667',
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   keyboard: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginTop: 20
+    marginTop: 10,
   },
   key: {
     width: '31%',
-    aspectRatio: 1.8,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
+    aspectRatio: 1.6,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   keyEmpty: {
     backgroundColor: 'transparent',
   },
   keyBack: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F9FA',
   },
   keyText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '600',
-    color: '#333',
+    color: '#1C1C1E',
   },
 });
 
