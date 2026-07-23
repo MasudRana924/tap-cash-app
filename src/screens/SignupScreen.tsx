@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   payloText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#37c667',
+    color: '#6b7280',
     marginBottom: 5,
   },
   title: {
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   pinInputActive: {
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
   },
   pinInputText: {
     fontSize: 24,
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loginLink: {
-    color: '#37c667',
+    color: '#6b7280',
     fontWeight: '600',
   },
 });

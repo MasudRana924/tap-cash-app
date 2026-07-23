@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,163 +6,237 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Notification {
   id: string;
-  type: 'offer' | 'notice' | 'announcement';
   title: string;
   message: string;
-  date: string;
+  time: string;
   icon: string;
-  color: string;
+  iconColor: string;
+  iconBg: string;
+  isUnread: boolean;
 }
 
 const NotificationsScreen = () => {
   const navigation = useNavigation();
 
-  const notifications: Notification[] = [
+  const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: '1',
-      type: 'offer',
-      title: 'Special Offer!',
-      message: 'Get 10% cashback on your next transaction. Limited time offer!',
-      date: 'Today, 10:30 AM',
-      icon: 'gift-outline',
-      color: '#FF6B6B',
+      title: 'Money Received',
+      message: 'Nadia Islam sent you ৳5,000',
+      time: '2 min ago',
+      icon: 'arrow-down',
+      iconColor: '#10b981',
+      iconBg: '#ecfdf5',
+      isUnread: true,
     },
     {
       id: '2',
-      type: 'notice',
-      title: 'System Maintenance',
-      message: 'Scheduled maintenance on June 30, 2026 from 2 AM to 4 AM.',
-      date: 'Yesterday, 05:00 PM',
-      icon: 'information-circle-outline',
-      color: '#4ECDC4',
+      title: 'Bill Paid',
+      message: 'DESCO ৳2,340 paid successfully',
+      time: '1 hr ago',
+      icon: 'flash',
+      iconColor: '#f59e0b',
+      iconBg: '#fffbeb',
+      isUnread: true,
     },
     {
       id: '3',
-      type: 'announcement',
-      title: 'New Feature',
-      message: 'We have added new security features to protect your account.',
-      date: 'Jun 27, 11:00 AM',
-      icon: 'megaphone-outline',
-      color: '#45B7D1',
+      title: 'Special Offer!',
+      message: 'Get 10% cashback on mobile recharge',
+      time: '3 hr ago',
+      icon: 'gift-outline',
+      iconColor: '#8b5cf6',
+      iconBg: '#ede9fe',
+      isUnread: false,
     },
     {
       id: '4',
-      type: 'offer',
-      title: 'Referral Bonus',
-      message: 'Invite friends and earn $5 for each successful signup!',
-      date: 'Jun 25, 03:00 PM',
-      icon: 'people-outline',
-      color: '#96CEB4',
+      title: 'Login Alert',
+      message: 'New login from Dhaka, Bangladesh',
+      time: 'Yesterday',
+      icon: 'shield-outline',
+      iconColor: '#6366f1',
+      iconBg: '#ede9fe',
+      isUnread: false,
     },
     {
       id: '5',
-      type: 'notice',
-      title: 'Payment Reminder',
-      message: 'Your utility bill payment is due in 3 days.',
-      date: 'Jun 24, 09:00 AM',
-      icon: 'time-outline',
-      color: '#FFEAA7',
+      title: 'Transfer Done',
+      message: 'You sent ৳800 to Karim Hossain',
+      time: '2 days ago',
+      icon: 'arrow-up',
+      iconColor: '#6b7280',
+      iconBg: '#f3f4f6',
+      isUnread: false,
     },
-  ];
+  ]);
 
-  const renderNotification = (notification: Notification) => (
-    <View key={notification.id} style={styles.notificationItem}>
-      <View style={[styles.notificationIcon, { backgroundColor: notification.color }]}>
-        <Icon name={notification.icon as any} size={24} color="#fff" />
-      </View>
-      <View style={styles.notificationContent}>
-        <Text style={styles.notificationTitle}>{notification.title}</Text>
-        <Text style={styles.notificationMessage}>{notification.message}</Text>
-        <Text style={styles.notificationDate}>{notification.date}</Text>
-      </View>
-    </View>
-  );
+  const markAllRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, isUnread: false })));
+  };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Icon name="chevron-back" size={22} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <View style={styles.placeholder} />
+        <TouchableOpacity onPress={markAllRead} activeOpacity={0.7}>
+          <Text style={styles.markAllText}>Mark all read</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Notifications List */}
-      <ScrollView style={styles.notificationsList}>
-        {notifications.map(renderNotification)}
+      {/* List */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+      >
+        {notifications.map((item, index) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[
+              styles.card,
+              index === notifications.length - 1 && { marginBottom: 0 },
+            ]}
+            activeOpacity={0.75}
+            onPress={() =>
+              setNotifications(prev =>
+                prev.map(n => (n.id === item.id ? { ...n, isUnread: false } : n)),
+              )
+            }
+          >
+            {/* Icon */}
+            <View style={[styles.iconWrap, { backgroundColor: item.iconBg }]}>
+              <Icon name={item.icon as any} size={18} color={item.iconColor} />
+            </View>
+
+            {/* Content */}
+            <View style={styles.cardContent}>
+              <View style={styles.cardTopRow}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <View style={styles.cardMeta}>
+                  <Text style={styles.cardTime}>{item.time}</Text>
+                  {item.isUnread && <View style={styles.unreadDot} />}
+                </View>
+              </View>
+              <Text style={styles.cardMessage}>{item.message}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
+
+  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 14,
   },
-  backButton: {
-    padding: 5,
+  backBtn: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-    textAlign: 'center',
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#111827',
   },
-  placeholder: {
-    width: 34,
+  markAllText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#9ca3af',
   },
-  notificationsList: {
-    flex: 1,
-    paddingHorizontal: 20,
+
+  // List
+  listContent: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 32,
   },
-  notificationItem: {
+
+  // Notification card
+  card: {
     flexDirection: 'row',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
   },
-  notificationIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  iconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 14,
+    flexShrink: 0,
   },
-  notificationContent: {
+  cardContent: {
     flex: 1,
   },
-  notificationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+  cardTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 4,
   },
-  notificationMessage: {
+  cardTitle: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: '#111827',
+    flex: 1,
+    marginRight: 8,
   },
-  notificationDate: {
-    fontSize: 12,
-    color: '#999',
+  cardMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  cardTime: {
+    fontSize: 11,
+    color: '#9ca3af',
+    fontWeight: '400',
+  },
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#374151',
+  },
+  cardMessage: {
+    fontSize: 13,
+    color: '#6b7280',
+    fontWeight: '400',
+    lineHeight: 18,
   },
 });
 

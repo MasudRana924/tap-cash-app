@@ -27,6 +27,8 @@ import PayBillScreen from '../screens/PayBillScreen';
 import PayBillAmountScreen from '../screens/PayBillAmountScreen';
 import LoanScreen from '../screens/LoanScreen';
 import LoanAmountScreen from '../screens/LoanAmountScreen';
+import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
+import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -55,6 +57,8 @@ export type RootStackParamList = {
   PayBillAmount: undefined;
   Loan: undefined;
   LoanAmount: undefined;
+  CreateSavingsPlan: undefined;
+  TransactionDetails: TransactionDetailParams;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -94,6 +98,8 @@ const RootNavigator = () => {
         <Stack.Screen name="PayBillAmount" component={PayBillAmountScreen} />
         <Stack.Screen name="Loan" component={LoanScreen} />
         <Stack.Screen name="LoanAmount" component={LoanAmountScreen} />
+        <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlanScreen} />
+        <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

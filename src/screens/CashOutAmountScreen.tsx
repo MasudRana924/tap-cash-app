@@ -70,7 +70,7 @@ const CashOutAmountScreen = () => {
               keyboardType="decimal-pad"
               textAlign="center"
               textAlignVertical="center"
-              selectionColor="#37c667"
+              selectionColor="#6b7280"
             />
           </View>
         </View>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   confirmButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',

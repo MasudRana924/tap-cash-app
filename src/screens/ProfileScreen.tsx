@@ -46,7 +46,7 @@ const ProfileScreen = () => {
             <Text style={styles.phone}>+880 1712-345678</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
-            <Icon name="create-outline" size={20} color="#37c667" />
+            <Icon name="create-outline" size={20} color="#6b7280" />
           </TouchableOpacity>
         </View>
 
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balanceStrip: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     marginHorizontal: 20,
     borderRadius: 14,
     paddingHorizontal: 20,

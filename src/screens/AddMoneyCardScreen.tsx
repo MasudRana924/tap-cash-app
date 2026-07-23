@@ -233,13 +233,13 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   radioSelected: {
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
   },
   radioDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
   },
   cardTypeText: {
     fontSize: 15,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   continueButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

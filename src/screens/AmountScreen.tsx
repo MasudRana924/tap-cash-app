@@ -84,7 +84,7 @@ const AmountScreen = () => {
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
-              selectionColor="#37c667"
+              selectionColor="#6b7280"
             />
           </View>
           <Text style={styles.balanceAmount}>Balance: {availableBalance}</Text>
@@ -114,6 +114,21 @@ const AmountScreen = () => {
             onChangeText={setNote}
           />
         </View>
+
+        {/* Summary Section */}
+        {amount.length > 0 && !isNaN(Number(amount)) && Number(amount) > 0 && (
+          <View style={styles.summarySection}>
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Fee</Text>
+              <Text style={styles.summaryValue}>৳5.00</Text>
+            </View>
+            <View style={styles.summaryDivider} />
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabelBold}>Total Amount</Text>
+              <Text style={styles.summaryValueBold}>৳{(Number(amount) + 5).toFixed(2)}</Text>
+            </View>
+          </View>
+        )}
 
         <View style={styles.flexSpacer} />
 
@@ -279,7 +294,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   confirmButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -295,6 +310,41 @@ const styles = StyleSheet.create({
   },
   confirmButtonTextDisabled: {
     color: '#9ea7b4',
+  },
+  summarySection: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 30,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: '#eee',
+    marginVertical: 12,
+  },
+  summaryLabel: {
+    fontSize: 14,
+    color: '#666',
+  },
+  summaryValue: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+  },
+  summaryLabelBold: {
+    fontSize: 15,
+    color: '#333',
+    fontWeight: '600',
+  },
+  summaryValueBold: {
+    fontSize: 15,
+    color: '#333',
+    fontWeight: 'bold',
   },
 });
 

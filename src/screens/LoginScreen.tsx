@@ -126,7 +126,7 @@ const LoginScreen = () => {
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.biometricButton}>
-              <Icon name="finger-print" size={24} color="#37c667" />
+              <Icon name="finger-print" size={24} color="#6b7280" />
             </TouchableOpacity>
           </View>
 
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 4,
     borderWidth: 1,
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
   },
   languageOption: {
     paddingHorizontal: 8,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   languageOptionActive: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
   },
   languageOptionText: {
     fontSize: 14,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   payloText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#37c667',
+    color: '#6b7280',
     marginBottom: 5,
   },
   appTitle: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   pinInputActive: {
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
   },
   pinInputText: {
     fontSize: 24,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   signupLink: {
-    color: '#37c667',
+    color: '#6b7280',
     fontWeight: '600',
   },
 });

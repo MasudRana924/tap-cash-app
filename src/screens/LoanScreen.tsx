@@ -73,7 +73,7 @@ const LoanScreen = () => {
         <View style={styles.creditCard}>
           <View style={styles.creditHeader}>
             <Text style={styles.creditLabel}>Your Credit Score</Text>
-            <Icon name="information-circle-outline" size={20} color="#37c667" />
+            <Icon name="information-circle-outline" size={20} color="#6b7280" />
           </View>
           <Text style={styles.creditScore}>750</Text>
           <Text style={styles.creditStatus}>Excellent</Text>
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     width: 34,
   },
   creditCard: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 16,
     padding: 20,
     marginBottom: 25,

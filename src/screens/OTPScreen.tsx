@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   otpInputActive: {
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
   },
   otpInputText: {
     fontSize: 20,

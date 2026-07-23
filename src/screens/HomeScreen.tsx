@@ -37,6 +37,73 @@ const HomeScreen = () => {
 
 
 
+  const recentTransactions = [
+    {
+      id: '1',
+      name: 'Arif Rahman',
+      time: 'Today, 2:34 PM',
+      amount: '-৳1,500',
+      icon: 'arrow-up',
+      iconColor: '#6b7280',
+      iconBg: '#f3f4f6',
+      isPositive: false,
+      category: 'Transfer',
+      date: 'Today',
+      transactionId: 'SWP2407210001',
+      dateTime: 'Jul 21, 2026 • 2:34 PM',
+      type: 'Money Transfer',
+      note: '—',
+    },
+    {
+      id: '2',
+      name: 'Nadia Islam',
+      time: 'Today, 11:10 AM',
+      amount: '+৳5,000',
+      icon: 'arrow-down',
+      iconColor: '#10b981',
+      iconBg: '#ecfdf5',
+      isPositive: true,
+      category: 'Transfer',
+      date: 'Today',
+      transactionId: 'SWP2407210042',
+      dateTime: 'Jul 21, 2026 • 11:10 AM',
+      type: 'Money Transfer',
+      note: 'For groceries',
+    },
+    {
+      id: '3',
+      name: 'DESCO Bill',
+      time: 'Yesterday, 5:00 PM',
+      amount: '-৳2,340',
+      icon: 'flash',
+      iconColor: '#f59e0b',
+      iconBg: '#fffbeb',
+      isPositive: false,
+      category: 'Bill Payment',
+      date: 'Yesterday',
+      transactionId: 'SWP2407200018',
+      dateTime: 'Jul 20, 2026 • 5:00 PM',
+      type: 'Bill Payment',
+      note: 'Electricity bill',
+    },
+    {
+      id: '4',
+      name: 'Grameenphone',
+      time: 'Yesterday, 9:22 AM',
+      amount: '-৳99',
+      icon: 'phone-portrait-outline',
+      iconColor: '#6366f1',
+      iconBg: '#ede9fe',
+      isPositive: false,
+      category: 'Mobile Recharge',
+      date: 'Yesterday',
+      transactionId: 'SWP2407200031',
+      dateTime: 'Jul 20, 2026 • 9:22 AM',
+      type: 'Mobile Recharge',
+      note: '—',
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -129,7 +196,7 @@ const HomeScreen = () => {
               </TouchableOpacity>
               <View style={styles.balanceActions}>
                 <View style={styles.balanceAction}>
-                  <Icon name="arrow-up-outline" size={16} color="#37c667" />
+                  <Icon name="arrow-up-outline" size={16} color="#6b7280" />
                   <Text style={styles.balanceActionText}>+$2,450</Text>
                 </View>
                 <View style={styles.balanceAction}>
@@ -143,7 +210,7 @@ const HomeScreen = () => {
             <View style={styles.actionButtons}>
               <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('SendMoney' as never)}>
                 <Icon name="arrow-up-outline" size={24} color="#fff" />
-                <Text style={styles.actionButtonText}>Send Money</Text>
+                <Text style={styles.actionButtonText}>Send</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('CashOut' as never)}>
                 <Icon name="arrow-down-outline" size={24} color="#fff" />
@@ -151,7 +218,7 @@ const HomeScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity style={styles.menuButton} onPress={() => setIsMenuExpanded(!isMenuExpanded)}>
                 <View style={styles.menuIconContainer}>
-                  <Icon name="ellipsis-horizontal" size={24} color="#37c667" />
+                  <Icon name="ellipsis-horizontal" size={24} color="#6b7280" />
                 </View>
               </TouchableOpacity>
             </View>
@@ -183,6 +250,42 @@ const HomeScreen = () => {
                 </View>
               </View>
             )}
+
+            {/* Recent Activity */}
+            <View style={styles.recentSection}>
+              <View style={styles.recentHeader}>
+                <Text style={styles.recentTitle}>Recent Activity</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Transactions' as never)}>
+                  <Text style={styles.viewAll}>View all</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.recentCard}>
+                {recentTransactions.map((tx, index) => (
+                  <TouchableOpacity
+                    key={tx.id}
+                    style={[
+                      styles.recentRow,
+                      index === recentTransactions.length - 1 && { borderBottomWidth: 0 },
+                    ]}
+                    onPress={() => navigation.navigate('TransactionDetails' as never, tx as never)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.recentIconWrap, { backgroundColor: tx.iconBg }]}>
+                      <Icon name={tx.icon as any} size={16} color={tx.iconColor} />
+                    </View>
+                    <View style={styles.recentMid}>
+                      <Text style={styles.recentName}>{tx.name}</Text>
+                      <Text style={styles.recentTime}>{tx.time}</Text>
+                    </View>
+                    <Text style={[styles.recentAmount, tx.isPositive ? styles.positiveAmt : styles.negativeAmt]}>
+                      {tx.amount}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
           </View>
         )}
       </ScrollView>
@@ -288,7 +391,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     flex: 1,
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 20,
     height: 56,
     flexDirection: 'row',
@@ -296,7 +399,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: 6,
     paddingHorizontal: 16,
-    shadowColor: '#37c667',
+    shadowColor: '#6b7280',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -312,11 +415,11 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 6,
-    shadowColor: '#37c667',
+    shadowColor: '#6b7280',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -419,7 +522,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 13,
-    color: '#37c667',
+    color: '#6b7280',
     fontWeight: '500',
   },
   transactionItem: {
@@ -469,7 +572,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   amountPositive: {
-    color: '#37c667',
+    color: '#6b7280',
   },
   discoverSection: {
     marginBottom: 100,
@@ -581,6 +684,79 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#1C1C1E',
+  },
+
+  // Recent Activity
+  recentSection: {
+    marginBottom: 32,
+  },
+  recentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+  recentTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+    letterSpacing: -0.2,
+  },
+  viewAll: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#9ca3af',
+  },
+  recentCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  recentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f9fafb',
+  },
+  recentIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  recentMid: {
+    flex: 1,
+  },
+  recentName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 3,
+  },
+  recentTime: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: '400',
+  },
+  recentAmount: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  positiveAmt: {
+    color: '#10b981',
+  },
+  negativeAmt: {
+    color: '#111827',
   },
 });
 

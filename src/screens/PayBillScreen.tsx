@@ -47,7 +47,7 @@ const PayBillScreen = () => {
 
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Icon name="receipt-outline" size={20} color="#37c667" />
+          <Icon name="receipt-outline" size={20} color="#6b7280" />
           <Text style={styles.infoText}>Pay your utility bills instantly</Text>
         </View>
 

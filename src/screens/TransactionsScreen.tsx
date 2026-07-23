@@ -6,293 +6,362 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { TransactionDetailParams } from './TransactionDetailsScreen';
 
-interface Transaction {
-  id: string;
-  name: string;
-  category: string;
-  date: string;
-  amount: string;
-  icon: string;
-  color: string;
-  bg: string;
-  isNegative: boolean;
+type FilterId = 'all' | 'sent' | 'received' | 'bill' | 'recharge';
+
+interface Transaction extends TransactionDetailParams {
+  filter: FilterId[];
 }
+
+const transactions: Transaction[] = [
+  {
+    id: '1',
+    name: 'Arif Rahman',
+    category: 'Transfer',
+    date: 'Today',
+    amount: '-৳1,500',
+    icon: 'arrow-up',
+    iconColor: '#6b7280',
+    iconBg: '#f3f4f6',
+    isPositive: false,
+    filter: ['all', 'sent'],
+    transactionId: 'SWP2407210001',
+    dateTime: 'Jul 21, 2026 • 2:34 PM',
+    type: 'Money Transfer',
+    note: '—',
+  },
+  {
+    id: '2',
+    name: 'Nadia Islam',
+    category: 'Transfer',
+    date: 'Today',
+    amount: '+৳5,000',
+    icon: 'arrow-down',
+    iconColor: '#10b981',
+    iconBg: '#ecfdf5',
+    isPositive: true,
+    filter: ['all', 'received'],
+    transactionId: 'SWP2407210042',
+    dateTime: 'Jul 21, 2026 • 11:10 AM',
+    type: 'Money Transfer',
+    note: 'For groceries',
+  },
+  {
+    id: '3',
+    name: 'DESCO Bill',
+    category: 'Bill Payment',
+    date: 'Yesterday',
+    amount: '-৳2,340',
+    icon: 'flash',
+    iconColor: '#f59e0b',
+    iconBg: '#fffbeb',
+    isPositive: false,
+    filter: ['all', 'bill'],
+    transactionId: 'SWP2407200018',
+    dateTime: 'Jul 20, 2026 • 5:00 PM',
+    type: 'Bill Payment',
+    note: 'Electricity bill',
+  },
+  {
+    id: '4',
+    name: 'Grameenphone',
+    category: 'Mobile Recharge',
+    date: 'Yesterday',
+    amount: '-৳99',
+    icon: 'phone-portrait-outline',
+    iconColor: '#6366f1',
+    iconBg: '#ede9fe',
+    isPositive: false,
+    filter: ['all', 'recharge'],
+    transactionId: 'SWP2407200031',
+    dateTime: 'Jul 20, 2026 • 9:22 AM',
+    type: 'Mobile Recharge',
+    note: '—',
+  },
+  {
+    id: '5',
+    name: 'Salary',
+    category: 'Add Money',
+    date: 'Jul 1',
+    amount: '+৳35,000',
+    icon: 'arrow-down',
+    iconColor: '#10b981',
+    iconBg: '#ecfdf5',
+    isPositive: true,
+    filter: ['all', 'received'],
+    transactionId: 'SWP2407010055',
+    dateTime: 'Jul 1, 2026 • 9:00 AM',
+    type: 'Add Money',
+    note: 'Monthly salary',
+  },
+  {
+    id: '6',
+    name: 'Karim Hossain',
+    category: 'Transfer',
+    date: 'Jun 30',
+    amount: '-৳800',
+    icon: 'arrow-up',
+    iconColor: '#6b7280',
+    iconBg: '#f3f4f6',
+    isPositive: false,
+    filter: ['all', 'sent'],
+    transactionId: 'SWP2406300088',
+    dateTime: 'Jun 30, 2026 • 4:15 PM',
+    type: 'Money Transfer',
+    note: '—',
+  },
+];
+
+const filters: { id: FilterId; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'sent', label: 'Sent' },
+  { id: 'received', label: 'Received' },
+  { id: 'bill', label: 'Bill' },
+  { id: 'recharge', label: 'Recharge' },
+];
 
 const TransactionsScreen = () => {
   const navigation = useNavigation();
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState<FilterId>('all');
 
-  const filters = [
-    { id: 'all', label: 'All', icon: 'list-outline' },
-    { id: 'cashIn', label: 'Cash In', icon: 'arrow-down-circle-outline' },
-    { id: 'cashOut', label: 'Cash Out', icon: 'arrow-up-circle-outline' },
-    { id: 'mobileRecharge', label: 'Recharge', icon: 'phone-portrait-outline' },
-    { id: 'payment', label: 'Payment', icon: 'card-outline' },
-  ];
-
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      name: 'Figma',
-      category: 'Subscriptions',
-      date: 'Today, 12:30 PM',
-      amount: '-$250.00',
-      icon: 'logo-figma',
-      color: '#A259FF',
-      bg: '#FAF5FF',
-      isNegative: true,
-    },
-    {
-      id: '2',
-      name: 'Receive from Alex',
-      category: 'Money In',
-      date: 'Yesterday, 08:00 AM',
-      amount: '+$580.00',
-      icon: 'arrow-down-outline',
-      color: '#37c667',
-      bg: '#EAF7EE',
-      isNegative: false,
-    },
-    {
-      id: '3',
-      name: 'Medium',
-      category: 'Subscriptions',
-      date: 'Yesterday, 10:30 AM',
-      amount: '-$99.00',
-      icon: 'book-outline',
-      color: '#1A1A1A',
-      bg: '#F5F5F5',
-      isNegative: true,
-    },
-    {
-      id: '4',
-      name: 'Mobile Recharge',
-      category: 'Mobile Recharge',
-      date: 'Jun 25, 03:15 PM',
-      amount: '-$100.00',
-      icon: 'phone-portrait-outline',
-      color: '#3B82F6',
-      bg: '#EDF5FF',
-      isNegative: true,
-    },
-    {
-      id: '5',
-      name: 'Payment to Merchant',
-      category: 'Payment',
-      date: 'Jun 24, 11:20 AM',
-      amount: '-$450.00',
-      icon: 'card-outline',
-      color: '#F59E0B',
-      bg: '#FFFBEB',
-      isNegative: true,
-    },
-    {
-      id: '6',
-      name: 'Cash Out',
-      category: 'Cash Out',
-      date: 'Jun 23, 04:45 PM',
-      amount: '-$500.00',
-      icon: 'arrow-up-outline',
-      color: '#EF4444',
-      bg: '#FFF0EE',
-      isNegative: true,
-    },
-  ];
-
-  const filteredTransactions = transactions.filter((transaction) => {
-    if (selectedFilter === 'all') return true;
-    if (selectedFilter === 'cashIn') return !transaction.isNegative;
-    if (selectedFilter === 'cashOut') return transaction.isNegative && transaction.category === 'Cash Out';
-    if (selectedFilter === 'mobileRecharge') return transaction.category === 'Mobile Recharge';
-    if (selectedFilter === 'payment') return transaction.category === 'Payment';
-    return true;
-  });
+  const filtered = transactions.filter(t => t.filter.includes(activeFilter));
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Transactions</Text>
-        <View style={styles.placeholder} />
+        <TouchableOpacity style={styles.filterIconBtn} activeOpacity={0.7}>
+          <Icon name="options-outline" size={22} color="#374151" />
+        </TouchableOpacity>
       </View>
 
-      {/* Filter Options */}
+      {/* Filter Chips */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={styles.filterScrollView}
-        contentContainerStyle={styles.filterContainer}
+        style={styles.filterScroll}
+        contentContainerStyle={styles.filterContent}
       >
-        {filters.map((filter) => (
+        {filters.map(f => (
           <TouchableOpacity
-            key={filter.id}
-            style={[
-              styles.filterChip,
-              selectedFilter === filter.id && styles.filterChipActive,
-            ]}
-            onPress={() => setSelectedFilter(filter.id)}
+            key={f.id}
+            onPress={() => setActiveFilter(f.id)}
+            style={[styles.filterChip, activeFilter === f.id && styles.filterChipActive]}
+            activeOpacity={0.75}
           >
-            <Icon
-              name={filter.icon as any}
-              size={16}
-              color={selectedFilter === filter.id ? '#fff' : '#666'}
-              style={styles.filterIcon}
-            />
-            <Text
-              style={[
-                styles.filterText,
-                selectedFilter === filter.id && styles.filterTextActive,
-              ]}
-            >
-              {filter.label}
+            <Text style={[styles.filterLabel, activeFilter === f.id && styles.filterLabelActive]}>
+              {f.label}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Transactions List */}
-      <ScrollView style={styles.transactionsList} showsVerticalScrollIndicator={false}>
-        {filteredTransactions.map((transaction) => (
-          <View key={transaction.id} style={styles.transactionItem}>
-            <View style={[styles.transactionIcon, { backgroundColor: transaction.bg }]}>
-              <Icon name={transaction.icon} size={22} color={transaction.color} />
-            </View>
-            <View style={styles.transactionDetails}>
-              <Text style={styles.transactionName}>{transaction.name}</Text>
-              <Text style={styles.transactionCategory}>{transaction.category}</Text>
-            </View>
-            <View style={styles.transactionRight}>
-              <Text
-                style={[
-                  styles.transactionAmount,
-                  transaction.isNegative ? styles.amountNegative : styles.amountPositive,
-                ]}
-              >
-                {transaction.amount}
-              </Text>
-              <Text style={styles.transactionDate}>{transaction.date.split(',')[0]}</Text>
-            </View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Summary Cards */}
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryCardLabel}>Total In</Text>
+            <Text style={[styles.summaryAmount, styles.amountIn]}>+৳40,000</Text>
+            <Text style={styles.summaryPeriod}>This month</Text>
           </View>
-        ))}
+          <View style={styles.summaryCard}>
+            <Text style={styles.summaryCardLabel}>Total Out</Text>
+            <Text style={[styles.summaryAmount, styles.amountOut]}>-৳8,519</Text>
+            <Text style={styles.summaryPeriod}>This month</Text>
+          </View>
+        </View>
+
+        {/* Transaction List */}
+        <View style={styles.listContainer}>
+          {filtered.map((tx, index) => (
+            <TouchableOpacity
+              key={tx.id}
+              style={[styles.txRow, index === filtered.length - 1 && { borderBottomWidth: 0 }]}
+              onPress={() => navigation.navigate('TransactionDetails' as never, tx as never)}
+              activeOpacity={0.7}
+            >
+              {/* Icon */}
+              <View style={[styles.txIconWrap, { backgroundColor: tx.iconBg }]}>
+                <Icon name={tx.icon as any} size={18} color={tx.iconColor} />
+              </View>
+
+              {/* Name + Category */}
+              <View style={styles.txMid}>
+                <Text style={styles.txName}>{tx.name}</Text>
+                <Text style={styles.txCategory}>{tx.category}</Text>
+              </View>
+
+              {/* Amount + Date */}
+              <View style={styles.txRight}>
+                <Text style={[styles.txAmount, tx.isPositive ? styles.txPositive : styles.txNegative]}>
+                  {tx.amount}
+                </Text>
+                <Text style={styles.txDate}>{tx.date}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
+
+  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-  },
-  backButton: {
-    padding: 5,
+    paddingTop: 12,
+    paddingBottom: 14,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#111827',
+    letterSpacing: -0.3,
   },
-  placeholder: {
-    width: 34,
+  filterIconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    backgroundColor: '#f3f4f6',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  filterScrollView: {
+
+  // Filter chips
+  filterScroll: {
     maxHeight: 50,
-    paddingHorizontal: 20,
-    marginBottom: 10,
   },
-  filterContainer: {
-    paddingRight: 10,
+  filterContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 4,
+    gap: 8,
   },
   filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F5F5F5',
-    marginRight: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+    borderRadius: 50,
+    backgroundColor: '#f3f4f6',
   },
   filterChipActive: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#374151',
   },
-  filterIcon: {
-    marginRight: 5,
-  },
-  filterText: {
+  filterLabel: {
     fontSize: 13,
-    fontWeight: '500',
-    color: '#666',
+    fontWeight: '600',
+    color: '#6b7280',
   },
-  filterTextActive: {
-    color: '#fff',
+  filterLabelActive: {
+    color: '#ffffff',
   },
-  transactionsList: {
-    flex: 1,
+
+  // Scroll body
+  scrollContent: {
     paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 32,
   },
-  transactionItem: {
+
+  // Summary cards
+  summaryRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  summaryCard: {
+    flex: 1,
+    backgroundColor: '#f9fafb',
+    borderRadius: 16,
+    padding: 16,
+  },
+  summaryCardLabel: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  summaryAmount: {
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+    marginBottom: 4,
+  },
+  amountIn: {
+    color: '#10b981',
+  },
+  amountOut: {
+    color: '#111827',
+  },
+  summaryPeriod: {
+    fontSize: 11,
+    color: '#9ca3af',
+    fontWeight: '500',
+  },
+
+  // Transaction list
+  listContainer: {
+    backgroundColor: '#ffffff',
+  },
+  txRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#F6F6F6',
+    borderBottomColor: '#f3f4f6',
   },
-  transactionIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+  txIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 14,
   },
-  transactionDetails: {
+  txMid: {
     flex: 1,
-    justifyContent: 'center',
   },
-  transactionName: {
+  txName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 2,
+    color: '#111827',
+    marginBottom: 3,
   },
-  transactionCategory: {
+  txCategory: {
     fontSize: 12,
-    color: '#999',
+    color: '#9ca3af',
+    fontWeight: '400',
   },
-  transactionRight: {
+  txRight: {
     alignItems: 'flex-end',
-    justifyContent: 'center',
   },
-  transactionDate: {
-    fontSize: 12,
-    color: '#999',
-    marginTop: 2,
-  },
-  transactionAmount: {
-    fontSize: 16,
+  txAmount: {
+    fontSize: 14,
     fontWeight: '700',
+    marginBottom: 3,
   },
-  amountNegative: {
-    color: '#333',
+  txPositive: {
+    color: '#10b981',
   },
-  amountPositive: {
-    color: '#37c667',
+  txNegative: {
+    color: '#111827',
+  },
+  txDate: {
+    fontSize: 12,
+    color: '#9ca3af',
+    fontWeight: '400',
   },
 });
 

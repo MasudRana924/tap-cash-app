@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   amountCard: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 20,
     flexDirection: 'row',
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   confirmButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',

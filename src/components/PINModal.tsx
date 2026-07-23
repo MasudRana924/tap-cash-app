@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   pinDotContainerFocused: {
-    borderColor: '#37c667',
+    borderColor: '#6b7280',
     backgroundColor: '#F0FDF4',
   },
   pinDot: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D1D5DB',
   },
   pinDotFilled: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     width: 20,
     height: 20,
     borderRadius: 10,

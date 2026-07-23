@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,154 +10,91 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-interface SavingsOption {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  color: string;
-}
-
-interface Goal {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
-
 const SavingsScreen = () => {
   const navigation = useNavigation();
-  const [selectedOption, setSelectedOption] = useState<SavingsOption | null>(null);
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
 
-  const savingsOptions: SavingsOption[] = [
+  const savingsPlans = [
     {
       id: '1',
-      name: 'Regular Savings',
-      description: 'Save daily, weekly or monthly',
-      icon: 'wallet-outline',
-      color: '#37c667',
+      name: 'Emergency Fund',
+      rate: '5.5% p.a.',
+      saved: '৳8,000',
+      goal: '৳50,000',
+      progress: 0.16,
     },
     {
       id: '2',
-      name: 'Fixed Deposit',
-      description: 'Lock money for fixed period',
-      icon: 'lock-closed-outline',
-      color: '#667EEA',
-    },
-    {
-      id: '3',
-      name: 'Goal Based Savings',
-      description: 'Save for specific goals',
-      icon: 'flag-outline',
-      color: '#F093FB',
+      name: 'Vacation 2027',
+      rate: '4.8% p.a.',
+      saved: '৳12,000',
+      goal: '৳30,000',
+      progress: 0.4,
     },
   ];
-
-  const goals: Goal[] = [
-    { id: '1', name: 'Emergency Fund', icon: 'shield-checkmark-outline', color: '#667EEA' },
-    { id: '2', name: 'Vacation', icon: 'airplane-outline', color: '#764BA2' },
-    { id: '3', name: 'New Car', icon: 'car-outline', color: '#F093FB' },
-    { id: '4', name: 'Home', icon: 'home-outline', color: '#4ECDC4' },
-    { id: '5', name: 'Education', icon: 'book-outline', color: '#45B7D1' },
-    { id: '6', name: 'Wedding', icon: 'heart-outline', color: '#FF6B6B' },
-  ];
-
-  const handleOptionSelect = (option: SavingsOption) => {
-    setSelectedOption(option);
-    if (option.id !== '3') {
-      navigation.navigate('SavingsAmount' as never);
-    }
-  };
-
-  const handleGoalSelect = (goal: Goal) => {
-    setSelectedGoal(goal);
-  };
-
-  const handleContinue = () => {
-    if (selectedOption && selectedGoal) {
-      navigation.navigate('SavingsAmount' as never);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Savings</Text>
-          <View style={styles.placeholder} />
-        </View>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="chevron-back" size={24} color="#333" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Savings</Text>
+        <View style={styles.placeholder} />
+      </View>
 
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Total Savings Card */}
         <View style={styles.totalSavingsCard}>
           <Text style={styles.totalLabel}>Total Savings</Text>
-          <Text style={styles.totalAmount}>৳ 45,000.00</Text>
-          <View style={styles.growthContainer}>
-            <Icon name="trending-up-outline" size={16} color="#37c667" />
-            <Text style={styles.growthText}>+12% this month</Text>
-          </View>
-        </View>
+          <Text style={styles.totalAmount}>৳8,000.00</Text>
 
-        {/* Savings Options */}
-        <View style={styles.optionsSection}>
-          <Text style={styles.sectionTitle}>Choose Savings Type</Text>
-          <View style={styles.optionsGrid}>
-            {savingsOptions.map((option) => (
-              <TouchableOpacity
-                key={option.id}
-                style={[
-                  styles.optionItem,
-                  selectedOption?.id === option.id && styles.optionItemSelected,
-                ]}
-                onPress={() => handleOptionSelect(option)}
-              >
-                <View style={[styles.optionIconContainer, { backgroundColor: option.color + '20' }]}>
-                  <Icon name={option.icon as any} size={24} color={option.color} />
-                </View>
-                <Text style={styles.optionName}>{option.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Goal Selection (only for Goal Based Savings) */}
-        {selectedOption?.id === '3' && (
-          <View style={styles.goalsSection}>
-            <Text style={styles.sectionTitle}>Select Your Goal</Text>
-            <View style={styles.goalsGrid}>
-              {goals.map((goal) => (
-                <TouchableOpacity
-                  key={goal.id}
-                  style={[
-                    styles.goalItem,
-                    selectedGoal?.id === goal.id && styles.goalItemSelected,
-                  ]}
-                  onPress={() => handleGoalSelect(goal)}
-                >
-                  <View style={[styles.goalIconContainer, { backgroundColor: goal.color + '20' }]}>
-                    <Icon name={goal.icon as any} size={20} color={goal.color} />
-                  </View>
-                  <Text style={styles.goalName}>{goal.name}</Text>
-                </TouchableOpacity>
-              ))}
+          <View style={styles.progressInfoRow}>
+            <View style={styles.progressInfoItem}>
+              <Text style={styles.progressInfoLabel}>Monthly Goal</Text>
+              <Text style={styles.progressInfoValue}>৳10,000</Text>
+            </View>
+            <View style={styles.progressInfoItem}>
+              <Text style={styles.progressInfoLabel}>Progress</Text>
+              <Text style={styles.progressInfoValue}>80%</Text>
             </View>
           </View>
-        )}
 
-        {/* Continue Button */}
-        {selectedOption?.id === '3' && (
-          <TouchableOpacity
-            style={[styles.continueButton, !selectedGoal && styles.continueButtonDisabled]}
-            onPress={handleContinue}
-            disabled={!selectedGoal}
-          >
-            <Text style={styles.continueButtonText}>Continue</Text>
+          {/* Progress Bar */}
+          <View style={styles.progressBarBg}>
+            <View style={[styles.progressBarFill, { width: '80%' }]} />
+          </View>
+        </View>
+
+        {/* Savings Plans Section */}
+        <Text style={styles.sectionTitle}>Savings Plans</Text>
+
+        {savingsPlans.map((plan) => (
+          <View key={plan.id} style={styles.planCard}>
+            <View style={styles.planHeader}>
+              <Text style={styles.planName}>{plan.name}</Text>
+              <View style={styles.ratePill}>
+                <Text style={styles.rateText}>{plan.rate}</Text>
+              </View>
+            </View>
+            <View style={styles.planDetailsRow}>
+              <Text style={styles.planSaved}>{plan.saved} saved</Text>
+              <Text style={styles.planGoal}>Goal: {plan.goal}</Text>
+            </View>
+            <View style={styles.planProgressBarBg}>
+              <View style={[styles.planProgressBarFill, { width: `${plan.progress * 100}%` }]} />
+            </View>
+          </View>
+        ))}
+
+        {/* Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('CreateSavingsPlan' as never)}>
+            <Text style={styles.createButtonText}>+ Create New Savings Plan</Text>
           </TouchableOpacity>
-        )}
+          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('SavingsAmount' as never)}>
+            <Text style={styles.addButtonText}>Add to Savings</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -168,21 +105,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  scrollContent: {
-    padding: 20,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 25,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   backButton: {
     padding: 5,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
     flex: 1,
     textAlign: 'center',
@@ -190,119 +126,144 @@ const styles = StyleSheet.create({
   placeholder: {
     width: 34,
   },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
   totalSavingsCard: {
-    backgroundColor: '#F0FDF4',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 25,
+    backgroundColor: '#596372',
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 30,
+    overflow: 'hidden',
   },
   totalLabel: {
+    color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 14,
-    color: '#166534',
     marginBottom: 8,
   },
   totalAmount: {
-    fontSize: 32,
+    color: '#fff',
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#166534',
-    marginBottom: 12,
+    marginBottom: 30,
   },
-  growthContainer: {
+  progressInfoRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    marginBottom: 16,
   },
-  growthText: {
-    fontSize: 13,
-    color: '#37c667',
+  progressInfoItem: {
+    marginRight: 40,
+  },
+  progressInfoLabel: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  progressInfoValue: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '600',
   },
-  optionsSection: {
-    marginTop: 10,
-    marginBottom: 25,
+  progressBarBg: {
+    height: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 4,
+    width: '100%',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 4,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 15,
+    marginBottom: 16,
   },
-  optionsGrid: {
+  planCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  planHeader: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  optionItem: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
+  planName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  ratePill: {
+    backgroundColor: '#f3f4f6',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 12,
-    padding: 16,
+  },
+  rateText: {
+    color: '#6b7280',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  planDetailsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    marginBottom: 12,
   },
-  optionItemSelected: {
-    borderColor: '#37c667',
-    backgroundColor: '#F0FDF4',
-  },
-  optionIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  optionName: {
+  planSaved: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
+    color: '#9ca3af',
   },
-  goalsSection: {
-    marginBottom: 20,
+  planGoal: {
+    fontSize: 13,
+    color: '#9ca3af',
   },
-  goalsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+  planProgressBarBg: {
+    height: 6,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 3,
+    width: '100%',
   },
-  goalItem: {
-    width: '31%',
-    backgroundColor: '#F8F9FA',
-    borderRadius: 12,
-    padding: 12,
+  planProgressBarFill: {
+    height: '100%',
+    backgroundColor: '#6b7280',
+    borderRadius: 3,
+  },
+  buttonContainer: {
+    marginTop: 10,
+  },
+  createButton: {
+    backgroundColor: '#f4f5f7',
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    marginBottom: 12,
   },
-  goalItemSelected: {
-    borderColor: '#F093FB',
-    backgroundColor: '#FDF2FF',
-  },
-  goalIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  goalName: {
-    fontSize: 11,
+  createButtonText: {
+    color: '#6b7280',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
   },
-  continueButton: {
-    backgroundColor: '#37c667',
-    borderRadius: 12,
+  addButton: {
+    backgroundColor: '#6b7280',
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
   },
-  continueButtonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  continueButtonText: {
+  addButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',

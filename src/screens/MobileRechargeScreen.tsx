@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     borderColor: '#E5E5E5',
   },
   quickAmountSelected: {
-    backgroundColor: '#37c667',
-    borderColor: '#37c667',
+    backgroundColor: '#6b7280',
+    borderColor: '#6b7280',
   },
   quickAmountText: {
     fontSize: 15,
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   continueButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
