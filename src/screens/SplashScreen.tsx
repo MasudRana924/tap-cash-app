@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const SplashScreen = () => {
@@ -15,7 +15,9 @@ const SplashScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
+      <Text style={styles.logo}>
+        Pay<Text style={styles.logoGray}>lo</Text>
+      </Text>
     </View>
   );
 };
@@ -23,14 +25,18 @@ const SplashScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', // Using the same background color as Onboarding
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 250,
-    height: 250,
-    resizeMode: 'contain',
+    fontSize: 56,
+    fontWeight: '900',
+    color: '#5b6161',
+    letterSpacing: -1.5,
+  },
+  logoGray: {
+    color: '#5b6161',
   },
 });
 

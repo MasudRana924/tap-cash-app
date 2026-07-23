@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Contacts from 'react-native-contacts';
 
 interface Contact {
   id: string;
@@ -55,6 +56,11 @@ const SendMoneyScreen = () => {
         }
       } else {
         console.log('Not Android platform');
+        const permission = await Contacts.requestPermission();
+        if (permission === 'authorized') {
+          setHasPermission(true);
+          loadContacts();
+        }
       }
     } catch (err) {
       console.warn('Permission error:', err);
@@ -62,23 +68,24 @@ const SendMoneyScreen = () => {
   };
 
   const loadContacts = () => {
-    // Mock contacts for now - in production, use react-native-contacts
-    const mockContacts: Contact[] = [
-      { id: '1', name: 'John Doe', phone: '+8801712345678' },
-      { id: '2', name: 'Jane Smith', phone: '+8801812345678' },
-      { id: '3', name: 'Mike Johnson', phone: '+8801912345678' },
-      { id: '4', name: 'Sarah Williams', phone: '+8801612345678' },
-      { id: '5', name: 'David Brown', phone: '+8801512345678' },
-    ];
-    setContacts(mockContacts);
+    Contacts.getAll()
+      .then((contactsData: any[]) => {
+        const formattedContacts: Contact[] = contactsData
+          .filter((c: any) => c.phoneNumbers && c.phoneNumbers.length > 0)
+          .map((c: any) => ({
+            id: c.recordID,
+            name: c.displayName || `${c.givenName} ${c.familyName}`.trim() || 'Unknown',
+            phone: c.phoneNumbers[0].number,
+          }));
+        setContacts(formattedContacts);
+      })
+      .catch((e: any) => {
+        console.warn('Error fetching contacts:', e);
+        setContacts([]);
+      });
   };
 
-  const quickSendContacts: Contact[] = [
-    { id: '1', name: 'John Doe', phone: '+8801712345678' },
-    { id: '2', name: 'Jane Smith', phone: '+8801812345678' },
-    { id: '3', name: 'Mike Johnson', phone: '+8801912345678' },
-    { id: '4', name: 'Sarah Williams', phone: '+8801612345678' },
-  ];
+  const quickSendContacts = contacts.slice(0, 5);
 
   const handlePhoneSubmit = () => {
     if (phoneNumber.length > 0) {
@@ -141,32 +148,34 @@ const SendMoneyScreen = () => {
             </View>
 
             {/* Quick Send */}
-            <View style={styles.quickSendSection}>
-              <Text style={styles.quickSendTitle}>Quick Send</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.quickSendContainer}
-              >
-                {quickSendContacts.map((contact) => (
-                  <TouchableOpacity
-                    key={contact.id}
-                    style={styles.quickSendItem}
-                    onPress={() => {
-                      setPhoneNumber(contact.phone);
-                      handlePhoneSubmit();
-                    }}
-                  >
-                    <View style={[styles.quickSendAvatar, { backgroundColor: getAvatarColor(contact.name[0]) }]}>
-                      <Text style={styles.quickSendAvatarText}>{contact.name[0].toUpperCase()}</Text>
-                    </View>
-                    <Text style={styles.quickSendName} numberOfLines={1}>
-                      {contact.name.split(' ')[0]}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
+            {quickSendContacts.length > 0 && (
+              <View style={styles.quickSendSection}>
+                <Text style={styles.quickSendTitle}>Quick Send</Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.quickSendContainer}
+                >
+                  {quickSendContacts.map((contact) => (
+                    <TouchableOpacity
+                      key={contact.id}
+                      style={styles.quickSendItem}
+                      onPress={() => {
+                        setPhoneNumber(contact.phone);
+                        handlePhoneSubmit();
+                      }}
+                    >
+                      <View style={[styles.quickSendAvatar, { backgroundColor: getAvatarColor(contact.name[0]) }]}>
+                        <Text style={styles.quickSendAvatarText}>{contact.name[0]?.toUpperCase()}</Text>
+                      </View>
+                      <Text style={styles.quickSendName} numberOfLines={1}>
+                        {contact.name.split(' ')[0]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
 
             {/* Contacts List */}
             {hasPermission && contacts.length > 0 && (
@@ -185,11 +194,17 @@ const SendMoneyScreen = () => {
           {/* Fixed Bottom Button */}
           <View style={styles.bottomButtonContainer}>
             <TouchableOpacity
-              style={[styles.continueButton, phoneNumber.length === 0 && styles.continueButtonDisabled]}
+              style={[
+                styles.nextButton,
+                phoneNumber.length === 0 && styles.nextButtonDisabled
+              ]}
               onPress={handlePhoneSubmit}
               disabled={phoneNumber.length === 0}
             >
-              <Text style={styles.continueButtonText}>Continue</Text>
+              <Text style={[
+                styles.nextButtonText,
+                phoneNumber.length === 0 && styles.nextButtonTextDisabled
+              ]}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -262,25 +277,9 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#333',
   },
-  continueButton: {
-    backgroundColor: '#37c667',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  continueButtonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  continueButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   bottomButtonContainer: {
+    padding: 20,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-
   },
   quickSendSection: {
     marginBottom: 20,
@@ -341,7 +340,6 @@ const styles = StyleSheet.create({
   contactItem: {
     height: 58,
     backgroundColor: '#fff',
-    // paddingHorizontal: 15,
     justifyContent: 'center',
     marginBottom: 10,
   },
@@ -371,9 +369,25 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   contactPhone: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 2,
+    fontSize: 13,
+    color: '#999',
+  },
+  nextButton: {
+    backgroundColor: '#6b7280',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  nextButtonDisabled: {
+    backgroundColor: '#cfd4db',
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  nextButtonTextDisabled: {
+    color: '#9ea7b4',
   },
 });
 

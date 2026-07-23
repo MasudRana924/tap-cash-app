@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import CustomKeyboard from '../components/CustomKeyboard';
-
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [phone, setPhone] = useState('');
@@ -23,6 +21,7 @@ const SignupScreen = () => {
 
   const phoneInputRef = useRef<TextInput>(null);
   const referralInputRef = useRef<TextInput>(null);
+  const passwordInputRef = useRef<TextInput>(null);
 
   const handleSignup = () => {
     navigation.navigate('OTP' as never);
@@ -32,34 +31,6 @@ const SignupScreen = () => {
     navigation.goBack();
   };
 
-  const handleKeyboardPress = (key: string) => {
-    if (activeField === 'phone') {
-      if (key === 'back') {
-        setPhone((prev) => prev.slice(0, -1));
-      } else {
-        setPhone((prev) => prev + key);
-      }
-    } else if (activeField === 'password') {
-      if (key === 'back') {
-        setPassword((prev) => prev.slice(0, -1));
-      } else if (password.length < 4) {
-        setPassword((prev) => prev + key);
-      }
-    } else if (activeField === 'referral') {
-      if (key === 'back') {
-        setReferralCode((prev) => prev.slice(0, -1));
-      } else {
-        setReferralCode((prev) => prev + key);
-      }
-    }
-  };
-
-  const handlePinPress = () => {
-    setActiveField('password');
-    phoneInputRef.current?.blur();
-    referralInputRef.current?.blur();
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -67,12 +38,14 @@ const SignupScreen = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
+          <Text style={styles.payloText}>Paylo</Text>
           <Text style={styles.title}>Let's get started!</Text>
           <Text style={styles.subtitle}>
             Let's set up your money transfer account. Enter your details below.
           </Text>
 
           {/* Phone Input with Bangladesh Flag */}
+          <Text style={styles.inputLabel}>Phone Number</Text>
           <View style={styles.phoneContainer}>
             <View style={styles.countryCodeContainer}>
               <Text style={styles.flag}>🇧🇩</Text>
@@ -86,32 +59,45 @@ const SignupScreen = () => {
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
-              showSoftInputOnFocus={false}
               onFocus={() => setActiveField('phone')}
               autoFocus={true}
             />
           </View>
 
           {/* Password Input (4-digit PIN like Login) */}
-          <TouchableOpacity
-            style={styles.pinContainer}
-            activeOpacity={1}
-            onPress={handlePinPress}
-          >
-            {[0, 1, 2, 3].map((index) => (
-              <View
-                key={index}
-                style={[
-                  styles.pinInput,
-                  activeField === 'password' && password.length === index && styles.pinInputActive,
-                ]}
-              >
-                <Text style={styles.pinInputText}>
-                  {password.length > index ? '•' : ''}
-                </Text>
-              </View>
-            ))}
-          </TouchableOpacity>
+          <Text style={styles.inputLabel}>Pin</Text>
+          <View>
+            <TextInput
+              ref={passwordInputRef}
+              style={styles.hiddenInput}
+              value={password}
+              onChangeText={(text) => {
+                if (text.length <= 4) setPassword(text);
+              }}
+              keyboardType="number-pad"
+              maxLength={4}
+              onFocus={() => setActiveField('password')}
+            />
+            <TouchableOpacity
+              style={styles.pinContainer}
+              activeOpacity={1}
+              onPress={() => passwordInputRef.current?.focus()}
+            >
+              {[0, 1, 2, 3].map((index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.pinInput,
+                    activeField === 'password' && password.length === index && styles.pinInputActive,
+                  ]}
+                >
+                  <Text style={styles.pinInputText}>
+                    {password.length > index ? '•' : ''}
+                  </Text>
+                </View>
+              ))}
+            </TouchableOpacity>
+          </View>
 
           {/* Referral Code */}
           <TextInput
@@ -122,7 +108,6 @@ const SignupScreen = () => {
             value={referralCode}
             onChangeText={setReferralCode}
             autoCapitalize="none"
-            showSoftInputOnFocus={false}
             onFocus={() => setActiveField('referral')}
           />
 
@@ -138,9 +123,6 @@ const SignupScreen = () => {
           <TouchableOpacity onPress={handleBackToLogin}>
             <Text style={styles.loginText}>Already have an account? <Text style={styles.loginLink}>Login</Text></Text>
           </TouchableOpacity>
-
-          {/* Custom Keyboard below button/links */}
-          <CustomKeyboard onKeyPress={handleKeyboardPress} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -159,6 +141,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  payloText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#37c667',
+    marginBottom: 5,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -170,6 +158,12 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 30,
     lineHeight: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4f5866',
+    marginBottom: 8,
   },
   phoneContainer: {
     flexDirection: 'row',
@@ -223,18 +217,25 @@ const styles = StyleSheet.create({
   },
   pinContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 15,
     marginBottom: 20,
   },
   pinInput: {
-    width: 70,
-    height: 58,
+    width: 48,
+    height: 48,
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  hiddenInput: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    opacity: 0,
   },
   pinInputActive: {
     borderColor: '#37c667',
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   continueButton: {
-    backgroundColor: '#37c667',
+    backgroundColor: '#6b7280',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

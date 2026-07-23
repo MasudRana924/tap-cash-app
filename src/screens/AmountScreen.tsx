@@ -17,9 +17,10 @@ const AmountScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [amount, setAmount] = useState('');
+  const [note, setNote] = useState('');
   const [showPINModal, setShowPINModal] = useState(false);
   const amountInputRef = useRef<TextInput>(null);
-  const availableBalance = '৳ 25,450.00';
+  const availableBalance = '৳52,340.00';
 
   useEffect(() => {
     setTimeout(() => {
@@ -42,51 +43,87 @@ const AmountScreen = () => {
     setShowPINModal(false);
   };
 
+  const quickAmounts = ['500', '1,000', '2,000', '5,000'];
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
+            <Icon name="chevron-back" size={24} color="#000" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Send Money</Text>
+          <Text style={styles.headerTitle}>Enter Amount</Text>
           <View style={styles.placeholder} />
+        </View>
+
+        {/* Recipient Info */}
+        <View style={styles.recipientContainer}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>NI</Text>
+          </View>
+          <View style={styles.recipientDetails}>
+            <Text style={styles.recipientName}>Nadia</Text>
+            <Text style={styles.recipientPhone}>+8801700000002</Text>
+          </View>
         </View>
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
+          <Text style={styles.amountLabel}>Amount (BDT)</Text>
           <View style={styles.amountInputContainer}>
+            <Text style={styles.currencySymbol}>৳</Text>
             <TextInput
               ref={amountInputRef}
               style={styles.amountInput}
-              placeholder="৳0.00"
+              placeholder="0"
               placeholderTextColor="#999"
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
-              textAlign="center"
-              textAlignVertical="center"
               selectionColor="#37c667"
             />
           </View>
+          <Text style={styles.balanceAmount}>Balance: {availableBalance}</Text>
         </View>
 
-        {/* Available Balance */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceAmount}>{availableBalance}</Text>
+        {/* Quick Amounts */}
+        <View style={styles.quickAmountContainer}>
+          {quickAmounts.map((amt) => (
+            <TouchableOpacity 
+              key={amt} 
+              style={styles.quickAmountButton}
+              onPress={() => setAmount(amt.replace(',', ''))}
+            >
+              <Text style={styles.quickAmountText}>৳{amt}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Confirm Button */}
+        {/* Note Section */}
+        <View style={styles.noteSection}>
+          <Text style={styles.noteLabel}>Note (optional)</Text>
+          <TextInput
+            style={styles.noteInput}
+            placeholder="What's this for?"
+            placeholderTextColor="#999"
+            value={note}
+            onChangeText={setNote}
+          />
+        </View>
+
+        <View style={styles.flexSpacer} />
+
+        {/* Continue Button */}
         <TouchableOpacity
           style={[styles.confirmButton, amount.length === 0 && styles.confirmButtonDisabled]}
           onPress={handleConfirm}
           disabled={amount.length === 0}
         >
-          <Text style={styles.confirmButtonText}>Confirm</Text>
+          <Text style={[styles.confirmButtonText, amount.length === 0 && styles.confirmButtonTextDisabled]}>Continue</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -108,64 +145,156 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
+    paddingBottom: 30,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   backButton: {
-    padding: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#333',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 34,
+    width: 40,
   },
-  amountSection: {
+  recipientContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    padding: 16,
+    borderRadius: 16,
     marginBottom: 30,
   },
-  amountInputContainer: {
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  amountInput: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  balanceCard: {
-    borderRadius: 12,
-    padding: 20,
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#797c83',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginRight: 16,
+  },
+  avatarText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  recipientDetails: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  recipientName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  recipientPhone: {
+    fontSize: 14,
+    color: '#999',
+  },
+  amountSection: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  amountLabel: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 10,
+  },
+  amountInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  currencySymbol: {
+    fontSize: 48,
+    fontWeight: '500',
+    color: '#8e96a3',
+    marginRight: 10,
+  },
+  amountInput: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#333',
+    minWidth: 40,
+    paddingVertical: 0,
   },
   balanceAmount: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: '#666',
+    fontSize: 13,
+    color: '#999',
+  },
+  quickAmountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  quickAmountButton: {
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    borderRadius: 20,
+    flex: 1,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  quickAmountText: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
+  },
+  noteSection: {
+    marginBottom: 30,
+  },
+  noteLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 10,
+  },
+  noteInput: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 14,
+    color: '#333',
+  },
+  flexSpacer: {
+    flex: 1,
   },
   confirmButton: {
     backgroundColor: '#37c667',
     borderRadius: 12,
-    padding: 18,
+    padding: 16,
     alignItems: 'center',
+    marginTop: 20,
   },
   confirmButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#d6d9df',
   },
   confirmButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
+  },
+  confirmButtonTextDisabled: {
+    color: '#9ea7b4',
   },
 });
 
