@@ -60,7 +60,7 @@ const PINModal: React.FC<PINModalProps> = ({
 
           {/* PIN Display */}
           <View style={styles.pinSection}>
-            <Text style={styles.sectionTitle}>Enter your 4-digit PIN</Text>
+            {/* <Text style={styles.sectionTitle}>Enter your 4-digit PIN</Text> */}
             <View style={styles.pinDisplay}>
               {[0, 1, 2, 3].map((index) => (
                 <View

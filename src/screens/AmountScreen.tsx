@@ -9,16 +9,17 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation,  } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
+import TransferSummaryModal from '../components/TransferSummaryModal';
 
 const AmountScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [showPINModal, setShowPINModal] = useState(false);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
   const amountInputRef = useRef<TextInput>(null);
   const availableBalance = '৳52,340.00';
 
@@ -30,8 +31,19 @@ const AmountScreen = () => {
 
   const handleConfirm = () => {
     if (amount.length > 0) {
-      setShowPINModal(true);
+      setShowSummaryModal(true);
     }
+  };
+
+  const handleSummaryConfirm = () => {
+    setShowSummaryModal(false);
+    setTimeout(() => {
+      setShowPINModal(true);
+    }, 300);
+  };
+
+  const handleSummaryClose = () => {
+    setShowSummaryModal(false);
   };
 
   const handlePINSuccess = () => {
@@ -61,7 +73,7 @@ const AmountScreen = () => {
         </View>
 
         {/* Recipient Info */}
-        <View style={styles.recipientContainer}>
+        {/* <View style={styles.recipientContainer}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>NI</Text>
           </View>
@@ -69,7 +81,7 @@ const AmountScreen = () => {
             <Text style={styles.recipientName}>Nadia</Text>
             <Text style={styles.recipientPhone}>+8801700000002</Text>
           </View>
-        </View>
+        </View> */}
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
@@ -116,7 +128,7 @@ const AmountScreen = () => {
         </View>
 
         {/* Summary Section */}
-        {amount.length > 0 && !isNaN(Number(amount)) && Number(amount) > 0 && (
+        {/* {amount.length > 0 && !isNaN(Number(amount)) && Number(amount) > 0 && (
           <View style={styles.summarySection}>
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Fee</Text>
@@ -128,7 +140,7 @@ const AmountScreen = () => {
               <Text style={styles.summaryValueBold}>৳{(Number(amount) + 5).toFixed(2)}</Text>
             </View>
           </View>
-        )}
+        )} */}
 
         <View style={styles.flexSpacer} />
 
@@ -141,6 +153,18 @@ const AmountScreen = () => {
           <Text style={[styles.confirmButtonText, amount.length === 0 && styles.confirmButtonTextDisabled]}>Continue</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Transfer Summary Modal */}
+      <TransferSummaryModal
+        visible={showSummaryModal}
+        onClose={handleSummaryClose}
+        onConfirm={handleSummaryConfirm}
+        recipientName="Nadia"
+        recipientPhone="+8801700000002"
+        recipientInitials="NI"
+        amount={amount}
+        balance="৳52,340.00"
+      />
 
       {/* PIN Modal */}
       <PINModal

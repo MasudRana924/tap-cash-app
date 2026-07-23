@@ -91,9 +91,6 @@ const SavingsScreen = () => {
           <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('CreateSavingsPlan' as never)}>
             <Text style={styles.createButtonText}>+ Create New Savings Plan</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('SavingsAmount' as never)}>
-            <Text style={styles.addButtonText}>Add to Savings</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -140,13 +137,13 @@ const styles = StyleSheet.create({
   totalLabel: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   totalAmount: {
     color: '#fff',
     fontSize: 36,
     fontWeight: 'bold',
-    marginBottom: 30,
+    // marginBottom: 30,
   },
   progressInfoRow: {
     flexDirection: 'row',
@@ -166,15 +163,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   progressBarBg: {
-    height: 8,
+    height: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 4,
+    borderRadius: 12,
     width: '100%',
   },
   progressBarFill: {
     height: '100%',
     backgroundColor: '#fff',
-    borderRadius: 4,
+    borderRadius: 12,
   },
   sectionTitle: {
     fontSize: 16,
@@ -232,15 +229,15 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
   },
   planProgressBarBg: {
-    height: 6,
+    height: 8,
     backgroundColor: '#f3f4f6',
-    borderRadius: 3,
+    borderRadius: 4,
     width: '100%',
   },
   planProgressBarFill: {
     height: '100%',
     backgroundColor: '#6b7280',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   buttonContainer: {
     marginTop: 10,
