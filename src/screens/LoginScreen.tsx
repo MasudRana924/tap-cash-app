@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,30 +8,84 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const [phone, setPhone] = useState('');
-  const [pin, setPin] = useState('');
-  const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
-  const [activeField, setActiveField] = useState<'phone' | 'pin'>('phone');
 
-  const phoneInputRef = useRef<TextInput>(null);
+  const [phone, setPhone]             = useState('');
+  const [pin, setPin]                 = useState('');
+  const [language, setLanguage]       = useState<'EN' | 'BN'>('EN');
+  const [savedPhone, setSavedPhone]   = useState<string | null>(null);
+  const [isLoading, setIsLoading]     = useState(true);
+  const [activePinIndex, setActivePinIndex] = useState(0);
 
-  const pinInputRef = useRef<TextInput>(null);
+  const phoneInputRef   = useRef<TextInput>(null);
+  const pinInputRef     = useRef<TextInput>(null);
+  const pinBoxInputRef  = useRef<TextInput>(null);
+console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoading);
+  // Read AsyncStorage on mount AND every time screen is focused
+  useEffect(() => {
+    const loadPhone = () => {
+      setIsLoading(true);
+      setPin('');
+      AsyncStorage.getItem('user_phone')
+        .then((stored) => setSavedPhone(stored))
+        .catch(() => setSavedPhone(null))
+        .finally(() => setIsLoading(false));
+    };
 
-  const handleLogin = () => {
-    navigation.navigate('MainHome' as never);
+    // Run immediately on mount
+    loadPhone();
+
+    // Also re-run whenever this screen comes back into focus
+    const unsubscribe = navigation.addListener('focus', loadPhone);
+    return unsubscribe;
+  }, [navigation]);
+
+  // Auto-focus PIN box when in PIN-only mode
+  useEffect(() => {
+    if (!isLoading && savedPhone) {
+      const t = setTimeout(() => pinBoxInputRef.current?.focus(), 300);
+      return () => clearTimeout(t);
+    }
+  }, [isLoading, savedPhone]);
+
+  // ── Handlers ──────────────────────────────────────────
+  const handleLogin = async () => {
+    if (savedPhone) {
+      navigation.navigate('MainHome' as never);
+    } else {
+      try {
+        await AsyncStorage.setItem('user_phone', '+880' + phone);
+      } catch (_) {}
+      navigation.navigate('MainHome' as never);
+    }
   };
 
-  const handleSignup = () => {
-    navigation.navigate('Signup' as never);
+  const handleSignup = () => navigation.navigate('Signup' as never);
+
+  const handleSwitchAccount = async () => {
+    await AsyncStorage.removeItem('user_phone');
+    setSavedPhone(null);
+    setPin('');
+    setTimeout(() => phoneInputRef.current?.focus(), 200);
   };
 
+  // ── Loading ────────────────────────────────────────────
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6b7280" />
+      </View>
+    );
+  }
+
+  // ── UI ────────────────────────────────────────────────
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -39,108 +93,179 @@ const LoginScreen = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
-          {/* Language Toggle at top right */}
+
+          {/* Language Toggle */}
           <View style={styles.languageContainer}>
             <View style={styles.languageToggleContainer}>
-              <TouchableOpacity
-                style={[styles.languageOption, language === 'EN' && styles.languageOptionActive]}
-                onPress={() => setLanguage('EN')}
-              >
-                <Text style={[styles.languageOptionText, language === 'EN' && styles.languageOptionTextActive]}>EN</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.languageOption, language === 'BN' && styles.languageOptionActive]}
-                onPress={() => setLanguage('BN')}
-              >
-                <Text style={[styles.languageOptionText, language === 'BN' && styles.languageOptionTextActive]}>BN</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Logo centered */}
-          {/* <View style={styles.logoContainer}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-          </View> */}
-
-          <Text style={styles.payloText}>Paylo</Text>
-          <Text style={styles.appTitle}>Let's get started!</Text>
-          <Text style={styles.welcomeTitle}>Welcome back! Enter your details to login.</Text>
-
-          {/* Phone Input with Bangladesh Flag */}
-          <Text style={styles.inputLabel}>Phone Number</Text>
-          <View style={styles.phoneContainer}>
-            <View style={styles.countryCodeContainer}>
-              <Text style={styles.flag}>🇧🇩</Text>
-              <Text style={styles.countryCode}>+880</Text>
-            </View>
-            <TextInput
-              ref={phoneInputRef}
-              style={styles.phoneInput}
-              placeholder="1XXX-XXXXXX"
-              placeholderTextColor="#999"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              onFocus={() => setActiveField('phone')}
-              autoFocus={true}
-            />
-          </View>
-
-          {/* PIN Input */}
-          <Text style={styles.inputLabel}>Pin</Text>
-          <View>
-            <TextInput
-              ref={pinInputRef}
-              style={styles.hiddenInput}
-              value={pin}
-              onChangeText={(text) => {
-                if (text.length <= 4) setPin(text);
-              }}
-              keyboardType="number-pad"
-              maxLength={4}
-              onFocus={() => setActiveField('pin')}
-            />
-            <TouchableOpacity
-              style={styles.pinContainer}
-              activeOpacity={1}
-              onPress={() => pinInputRef.current?.focus()}
-            >
-              {[0, 1, 2, 3].map((index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.pinInput,
-                    activeField === 'pin' && pin.length === index && styles.pinInputActive,
-                  ]}
+              {(['EN', 'BN'] as const).map((lang) => (
+                <TouchableOpacity
+                  key={lang}
+                  style={[styles.languageOption, language === lang && styles.languageOptionActive]}
+                  onPress={() => setLanguage(lang)}
                 >
-                  <Text style={styles.pinInputText}>
-                    {pin.length > index ? '•' : ''}
+                  <Text style={[styles.languageOptionText, language === lang && styles.languageOptionTextActive]}>
+                    {lang}
                   </Text>
-                </View>
+                </TouchableOpacity>
               ))}
-            </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.loginRow}>
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.biometricButton}>
-              <Icon name="finger-print" size={24} color="#6b7280" />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.payloText}>TapCash</Text>
+          <Text style={styles.appTitle}>
+            {savedPhone ? 'Welcome back!' : "Let's get started!"}
+          </Text>
 
-          <TouchableOpacity onPress={handleSignup}>
-            <Text style={styles.signupText}>Don't have an account? <Text style={styles.signupLink}>Sign Up</Text></Text>
-          </TouchableOpacity>
+          {/* ── PIN-ONLY MODE (phone already saved) ── */}
+          {savedPhone ? (
+            <>
+              {/* Saved phone display — NO input field */}
+              <View style={styles.savedPhoneCard}>
+                <View style={styles.savedPhoneAvatar}>
+                  <Icon name="person" size={22} color="#fff" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.savedPhoneLabel}>Logged in as</Text>
+                  <Text style={styles.savedPhoneNumber}>{savedPhone}</Text>
+                </View>
+                <TouchableOpacity onPress={handleSwitchAccount} style={styles.switchBtn}>
+                  <Text style={styles.switchBtnText}>Switch</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 4-box PIN */}
+              <Text style={styles.inputLabel}>Enter your PIN</Text>
+              <View style={styles.pinBoxSection}>
+                <TextInput
+                  ref={pinBoxInputRef}
+                  style={styles.hiddenInput}
+                  value={pin}
+                  onChangeText={(text) => {
+                    if (text.length <= 4) {
+                      setPin(text);
+                      setActivePinIndex(text.length);
+                    }
+                  }}
+                  onFocus={() => setActivePinIndex(pin.length)}
+                  onBlur={() => setActivePinIndex(-1)}
+                  keyboardType="number-pad"
+                  maxLength={4}
+                  secureTextEntry
+                />
+                <TouchableOpacity
+                  style={styles.pinContainer}
+                  activeOpacity={1}
+                  onPress={() => pinBoxInputRef.current?.focus()}
+                >
+                  {[0, 1, 2, 3].map((index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.pinBox,
+                        activePinIndex === index && styles.pinBoxActive,
+                      ]}
+                    >
+                      <Text style={styles.pinBoxText}>
+                        {pin.length > index ? '•' : ''}
+                      </Text>
+                    </View>
+                  ))}
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.loginRow}>
+                <TouchableOpacity
+                  style={[styles.loginButton, pin.length < 4 && styles.loginButtonDisabled]}
+                  onPress={handleLogin}
+                  disabled={pin.length < 4}
+                >
+                  <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.biometricButton}>
+                  <Icon name="finger-print" size={24} color="#6b7280" />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity onPress={handleSwitchAccount} style={styles.bottomLink}>
+                <Text style={styles.bottomLinkText}>
+                  Not you?{' '}
+                  <Text style={styles.bottomLinkBold}>Use a different account</Text>
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              {/* ── FULL MODE (first time / switched account) ── */}
+              <Text style={styles.welcomeTitle}>
+                Welcome back! Enter your details to login.
+              </Text>
+
+              {/* Phone input */}
+              <Text style={styles.inputLabel}>Phone Number</Text>
+              <View style={styles.phoneContainer}>
+                <View style={styles.countryCodeContainer}>
+                  <Text style={styles.flag}>🇧🇩</Text>
+                  <Text style={styles.countryCode}>+880</Text>
+                </View>
+                <TextInput
+                  ref={phoneInputRef}
+                  style={styles.phoneInput}
+                  placeholder="1XXX-XXXXXX"
+                  placeholderTextColor="#999"
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  autoFocus
+                />
+              </View>
+
+              {/* Single PIN text input */}
+              <Text style={styles.inputLabel}>PIN</Text>
+              <View style={styles.pinFieldWrapper}>
+                <Icon name="lock-closed-outline" size={20} color="#9ea3ad" style={styles.pinFieldIcon} />
+                <TextInput
+                  ref={pinInputRef}
+                  style={styles.pinFieldInput}
+                  placeholder="Enter your 4-digit PIN"
+                  placeholderTextColor="#bbb"
+                  value={pin}
+                  onChangeText={(text) => { if (text.length <= 4) setPin(text); }}
+                  keyboardType="number-pad"
+                  maxLength={4}
+                  secureTextEntry
+                />
+              </View>
+
+              <View style={styles.loginRow}>
+                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                  <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.biometricButton}>
+                  <Icon name="finger-print" size={24} color="#6b7280" />
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity onPress={handleSignup} style={styles.bottomLink}>
+                <Text style={styles.bottomLinkText}>
+                  Don't have an account?{' '}
+                  <Text style={styles.bottomLinkBold}>Sign Up</Text>
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -152,19 +277,11 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  // Language
   languageContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginBottom: 20,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    // marginBottom: 10,
-  },
-  logo: {
-    width: 150,
-    height: 150,
-    resizeMode: 'contain',
   },
   languageToggleContainer: {
     flexDirection: 'row',
@@ -179,17 +296,14 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 12,
   },
-  languageOptionActive: {
-    backgroundColor: '#6b7280',
-  },
+  languageOptionActive: { backgroundColor: '#6b7280' },
   languageOptionText: {
     fontSize: 14,
     fontWeight: '600',
     color: '#666',
   },
-  languageOptionTextActive: {
-    color: '#fff',
-  },
+  languageOptionTextActive: { color: '#fff' },
+  // Titles
   payloText: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -214,6 +328,7 @@ const styles = StyleSheet.create({
     color: '#4f5866',
     marginBottom: 8,
   },
+  // Phone input
   phoneContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -224,51 +339,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 10,
-    paddingVertical: 15,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
-    borderRightWidth: 0,
     width: 95,
     height: 58,
     marginRight: 8,
   },
-  flag: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-  countryCode: {
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#333',
-  },
+  flag: { fontSize: 16, marginRight: 8 },
+  countryCode: { fontSize: 16, fontWeight: '400', color: '#333' },
   phoneInput: {
     flex: 1,
     height: 58,
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 15,
-    // borderTopRightRadius: 12,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
     color: '#333',
   },
-  pinContainer: {
+  // Single PIN field (full mode)
+  pinFieldWrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 15,
-    marginBottom: 20,
-  },
-  pinInput: {
-    width: 48,
-    height: 48,
+    alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 58,
+    paddingHorizontal: 15,
+    marginBottom: 20,
+  },
+  pinFieldIcon: { marginRight: 10 },
+  pinFieldInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+
+  },
+  // 4-box PIN (PIN-only mode)
+  pinBoxSection: {
+    marginBottom: 20,
   },
   hiddenInput: {
     position: 'absolute',
@@ -276,15 +388,32 @@ const styles = StyleSheet.create({
     height: 1,
     opacity: 0,
   },
-  pinInputActive: {
-    borderColor: '#6b7280',
+  pinContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 15,
   },
-  pinInputText: {
-    fontSize: 24,
+  pinBox: {
+    width: 58,
+    height: 58,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pinBoxActive: {
+    borderColor: '#6b7280',
+    backgroundColor: '#f0f1f3',
+  },
+  pinBoxText: {
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     textAlign: 'center',
   },
+  // Buttons
   loginRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -298,6 +427,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
+  loginButtonDisabled: { backgroundColor: '#c5c9d1' },
   loginButtonText: {
     color: '#fff',
     fontSize: 18,
@@ -313,13 +443,54 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F5F5F5',
   },
-  signupText: {
+  bottomLink: { marginTop: 20 },
+  bottomLinkText: {
     color: '#333',
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 20,
   },
-  signupLink: {
+  bottomLinkBold: {
+    color: '#6b7280',
+    fontWeight: '600',
+  },
+  // Saved phone card
+  savedPhoneCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f5f6f8',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 28,
+    borderWidth: 1,
+    borderColor: '#ebebeb',
+  },
+  savedPhoneAvatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: '#6b7280',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  savedPhoneLabel: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 2,
+  },
+  savedPhoneNumber: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+  switchBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    backgroundColor: '#e8e9ec',
+  },
+  switchBtnText: {
+    fontSize: 13,
     color: '#6b7280',
     fontWeight: '600',
   },

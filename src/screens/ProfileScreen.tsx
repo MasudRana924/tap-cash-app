@@ -6,6 +6,15 @@ import { useNavigation } from '@react-navigation/native';
 const ProfileScreen = () => {
   const navigation = useNavigation();
 
+  const handleLogout = () => {
+    // Phone stays in AsyncStorage — Login screen will read & show it
+    // Only "Switch Account" clears the saved phone
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' as never }],
+    });
+  };
+
   const accountItems = [
     { id: '1', icon: 'person-outline', label: 'Edit Profile' },
     { id: '2', icon: 'card-outline', label: 'My Cards' },
@@ -76,7 +85,7 @@ const ProfileScreen = () => {
         </View>
 
         {/* Logout */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Icon name="log-out-outline" size={22} color="#FF3B30" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>

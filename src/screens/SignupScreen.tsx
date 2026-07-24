@@ -8,16 +8,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [referralCode, setReferralCode] = useState('');
-  const [activeField, setActiveField] = useState<'phone' | 'password' | 'referral'>('phone');
 
   const phoneInputRef = useRef<TextInput>(null);
   const referralInputRef = useRef<TextInput>(null);
@@ -59,44 +58,27 @@ const SignupScreen = () => {
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
-              onFocus={() => setActiveField('phone')}
               autoFocus={true}
             />
           </View>
 
-          {/* Password Input (4-digit PIN like Login) */}
-          <Text style={styles.inputLabel}>Pin</Text>
-          <View>
+          {/* PIN — single normal secure input field */}
+          <Text style={styles.inputLabel}>PIN</Text>
+          <View style={styles.pinFieldWrapper}>
+            <Icon name="lock-closed-outline" size={20} color="#9ea3ad" style={styles.pinFieldIcon} />
             <TextInput
               ref={passwordInputRef}
-              style={styles.hiddenInput}
+              style={styles.pinFieldInput}
+              placeholder="Create a 4-digit PIN"
+              placeholderTextColor="#bbb"
               value={password}
               onChangeText={(text) => {
                 if (text.length <= 4) setPassword(text);
               }}
               keyboardType="number-pad"
               maxLength={4}
-              onFocus={() => setActiveField('password')}
+              secureTextEntry
             />
-            <TouchableOpacity
-              style={styles.pinContainer}
-              activeOpacity={1}
-              onPress={() => passwordInputRef.current?.focus()}
-            >
-              {[0, 1, 2, 3].map((index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.pinInput,
-                    activeField === 'password' && password.length === index && styles.pinInputActive,
-                  ]}
-                >
-                  <Text style={styles.pinInputText}>
-                    {password.length > index ? '•' : ''}
-                  </Text>
-                </View>
-              ))}
-            </TouchableOpacity>
           </View>
 
           {/* Referral Code */}
@@ -215,36 +197,25 @@ const styles = StyleSheet.create({
     borderColor: '#F5F5F5',
     color: '#333',
   },
-  pinContainer: {
+  pinFieldWrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 15,
-    marginBottom: 20,
-  },
-  pinInput: {
-    width: 48,
-    height: 48,
+    alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 58,
+    paddingHorizontal: 15,
+    marginBottom: 20,
   },
-  hiddenInput: {
-    position: 'absolute',
-    width: 1,
-    height: 1,
-    opacity: 0,
+  pinFieldIcon: {
+    marginRight: 10,
   },
-  pinInputActive: {
-    borderColor: '#6b7280',
-  },
-  pinInputText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  pinFieldInput: {
+    flex: 1,
+    fontSize: 16,
     color: '#333',
-    textAlign: 'center',
+
   },
   requirements: {
     marginBottom: 20,
