@@ -63,7 +63,7 @@ const LoanScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Loan</Text>
           <View style={styles.placeholder} />
@@ -73,7 +73,7 @@ const LoanScreen = () => {
         <View style={styles.creditCard}>
           <View style={styles.creditHeader}>
             <Text style={styles.creditLabel}>Your Credit Score</Text>
-            <Icon name="information-circle-outline" size={20} color="#6b7280" />
+            <Icon name="information-circle-outline" size={20} color="#11182e" />
           </View>
           <Text style={styles.creditScore}>750</Text>
           <Text style={styles.creditStatus}>Excellent</Text>
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     width: 34,
   },
   creditCard: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 16,
     padding: 20,
     marginBottom: 25,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   optionItem: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   optionName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 4,
   },
   optionAmount: {

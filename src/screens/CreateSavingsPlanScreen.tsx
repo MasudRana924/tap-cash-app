@@ -39,7 +39,7 @@ const CreateSavingsPlanScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back" size={22} color="#111827" />
+            <Icon name="chevron-back-circle-outline" size={22} color="#111827" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Create Savings Plan</Text>
           <View style={styles.placeholder} />
@@ -168,7 +168,7 @@ const CreateSavingsPlanScreen = () => {
           {/* Interest Info Card */}
           <View style={styles.infoCard}>
             <View style={styles.infoIconWrap}>
-              <Icon name="trending-up" size={18} color="#6b7280" />
+              <Icon name="trending-up" size={18} color="#11182e" />
             </View>
             <View style={styles.infoTextWrap}>
               <Text style={styles.infoTitle}>Earn 5.5% interest p.a.</Text>
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   },
   takaSign: {
     fontSize: 18,
-    color: '#6b7280',
+    color: '#11182e',
     marginRight: 6,
     paddingVertical: 14,
   },
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#6b7280',
+    color: '#11182e',
   },
   chipTextActive: {
     color: '#ffffff',
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   durationText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6b7280',
+    color: '#11182e',
   },
   durationTextActive: {
     color: '#ffffff',

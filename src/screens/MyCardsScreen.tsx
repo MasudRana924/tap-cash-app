@@ -41,15 +41,15 @@ const MyCardsScreen = () => {
         <View style={styles.actionsSection}>
           <Text style={styles.actionsTitle}>Card Actions</Text>
           <TouchableOpacity style={styles.actionItem}>
-            <Icon name="lock-closed-outline" size={24} color="#333" />
+            <Icon name="lock-closed-outline" size={24} color="#11182e" />
             <Text style={styles.actionText}>Freeze Card</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionItem}>
-            <Icon name="settings-outline" size={24} color="#333" />
+            <Icon name="settings-outline" size={24} color="#11182e" />
             <Text style={styles.actionText}>Card Settings</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionItem}>
-            <Icon name="document-text-outline" size={24} color="#333" />
+            <Icon name="document-text-outline" size={24} color="#11182e" />
             <Text style={styles.actionText}>Card Statement</Text>
           </TouchableOpacity>
         </View>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 5,
   },
   subtitle: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   actionsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   actionItem: {
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
     marginLeft: 15,
   },
 });

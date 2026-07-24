@@ -30,7 +30,7 @@ const ProfileScreen = () => {
 
   const renderMenuItem = (item: { id: string; icon: string; label: string }, isLast: boolean) => (
     <TouchableOpacity key={item.id} style={[styles.menuItem, isLast && styles.menuItemLast]}>
-      <Icon name={item.icon as any} size={22} color="#333" />
+      <Icon name={item.icon as any} size={22} color="#11182e" />
       <Text style={styles.menuLabel}>{item.label}</Text>
       <Icon name="chevron-forward" size={18} color="#ccc" />
     </TouchableOpacity>
@@ -55,7 +55,7 @@ const ProfileScreen = () => {
             <Text style={styles.phone}>+880 1712-345678</Text>
           </View>
           <TouchableOpacity style={styles.editButton}>
-            <Icon name="create-outline" size={20} color="#6b7280" />
+            <Icon name="create-outline" size={20} color="#11182e" />
           </TouchableOpacity>
         </View>
 
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
   },
   profileRow: {
     flexDirection: 'row',
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 2,
   },
   phone: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balanceStrip: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     marginHorizontal: 20,
     borderRadius: 14,
     paddingHorizontal: 20,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   menuLabel: {
     flex: 1,
     fontSize: 15,
-    color: '#333',
+    color: '#11182e',
     marginLeft: 15,
     fontWeight: '500',
   },

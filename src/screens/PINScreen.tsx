@@ -48,7 +48,7 @@ const PINScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Enter PIN</Text>
           <View style={styles.placeholder} />
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     borderColor: '#F5F5F5',
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     textAlign: 'center',
   },
   receiverCard: {
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   receiverName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 4,
   },
   receiverPhone: {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   amountCard: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 20,
     flexDirection: 'row',
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   confirmButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',

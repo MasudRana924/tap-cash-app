@@ -24,7 +24,7 @@ const CustomKeyboard: React.FC<CustomKeyboardProps> = ({ onKeyPress, style }) =>
           disabled={key === ''}
         >
           {key === 'back' ? (
-            <Icon name="backspace-outline" size={24} color="#333" />
+            <Icon name="backspace-outline" size={24} color="#11182e" />
           ) : (
             <Text style={styles.keyText}>{key}</Text>
           )}
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   keyText: {
     fontSize: 24,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
   },
 });
 

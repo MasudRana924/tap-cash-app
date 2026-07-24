@@ -66,7 +66,7 @@ const AmountScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back" size={24} color="#000" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Enter Amount</Text>
           <View style={styles.placeholder} />
@@ -96,7 +96,7 @@ const AmountScreen = () => {
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
-              selectionColor="#6b7280"
+              selectionColor="#11182e"
             />
           </View>
           <Text style={styles.balanceAmount}>Balance: {availableBalance}</Text>
@@ -193,17 +193,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
-    justifyContent: 'center',
-    alignItems: 'center',
+     padding: 5,
   },
   headerTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: 'bold',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -239,7 +234,7 @@ const styles = StyleSheet.create({
   recipientName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 4,
   },
   recipientPhone: {
@@ -270,7 +265,7 @@ const styles = StyleSheet.create({
   amountInput: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     minWidth: 40,
     paddingVertical: 0,
   },
@@ -303,7 +298,7 @@ const styles = StyleSheet.create({
   noteLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 10,
   },
   noteInput: {
@@ -312,13 +307,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 14,
-    color: '#333',
+    color: '#11182e',
   },
   flexSpacer: {
     flex: 1,
   },
   confirmButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -357,17 +352,17 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     fontSize: 14,
-    color: '#333',
+    color: '#11182e',
     fontWeight: '500',
   },
   summaryLabelBold: {
     fontSize: 15,
-    color: '#333',
+    color: '#11182e',
     fontWeight: '600',
   },
   summaryValueBold: {
     fontSize: 15,
-    color: '#333',
+    color: '#11182e',
     fontWeight: 'bold',
   },
 });

@@ -90,7 +90,7 @@ const TransactionDetailsScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerBtn}>
-          <Icon name="chevron-back" size={22} color="#111827" />
+          <Icon name="chevron-back-circle-outline" size={22} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Transaction Details</Text>
         <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 18,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,

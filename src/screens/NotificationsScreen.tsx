@@ -71,7 +71,7 @@ const NotificationsScreen = () => {
       message: 'You sent ৳800 to Karim Hossain',
       time: '2 days ago',
       icon: 'arrow-up',
-      iconColor: '#6b7280',
+      iconColor: '#11182e',
       iconBg: '#f3f4f6',
       isUnread: false,
     },
@@ -86,7 +86,7 @@ const NotificationsScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Icon name="chevron-back" size={22} color="#111827" />
+          <Icon name="chevron-back-circle-outline" size={22} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
         <TouchableOpacity onPress={markAllRead} activeOpacity={0.7}>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   },
   cardMessage: {
     fontSize: 13,
-    color: '#6b7280',
+    color: '#11182e',
     fontWeight: '400',
     lineHeight: 18,
   },

@@ -35,7 +35,7 @@ const MainTabs = () => {
           fontWeight: '600',
           marginTop: 2,
         },
-        tabBarActiveTintColor: '#6b7280',
+        tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: 'rgba(255,255,255,0.5)',
       }}
     >
@@ -47,7 +47,7 @@ const MainTabs = () => {
             <Icon
               name={focused ? 'home' : 'home-outline'}
               size={24}
-              color={focused ? '#6b7280' : 'rgba(255,255,255,0.5)'}
+              color={focused ? '#fff' : 'rgba(255,255,255,0.5)'}
             />
           ),
         }}
@@ -59,7 +59,7 @@ const MainTabs = () => {
         options={{
           tabBarIcon: () => (
             <View style={styles.qrIconContainer}>
-              <Icon name="qr-code" size={24} color="#fff" />
+              <Icon name="qr-code" size={24} color="#11182e" />
             </View>
           ),
           tabBarLabel: () => null,
@@ -74,7 +74,7 @@ const MainTabs = () => {
             <Icon
               name={focused ? 'person' : 'person-outline'}
               size={24}
-              color={focused ? '#6b7280' : 'rgba(255,255,255,0.5)'}
+              color={focused ? '#11182e' : 'rgba(255,255,255,0.5)'}
             />
           ),
         }}
@@ -88,13 +88,13 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 28,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#F8623F',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -25,
+    marginTop: -50,
     borderWidth: 4,
-    borderColor: '#1A1A2E',
-    shadowColor: '#6b7280',
+    borderColor: '#F8623F',
+    shadowColor: '#F8623F',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 8,

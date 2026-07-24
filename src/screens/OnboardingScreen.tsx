@@ -566,7 +566,7 @@ const OnboardingScreen = ({ navigation }: any) => {
               }}
               style={[
                 styles.nextButton,
-                active === slides.length - 1 && { backgroundColor: '#6b7280' }
+                active === slides.length - 1 && { backgroundColor: '#11182e' }
               ]}
             >
               <Text style={[styles.arrow, active === slides.length - 1 && { color: '#ffffff' }]}>Go</Text>

@@ -50,7 +50,7 @@ const LoanAmountScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Loan</Text>
           <View style={styles.placeholder} />
@@ -69,7 +69,7 @@ const LoanAmountScreen = () => {
               keyboardType="decimal-pad"
               textAlign="center"
               textAlignVertical="center"
-              selectionColor="#6b7280"
+              selectionColor="#11182e"
             />
           </View>
         </View>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   amountInput: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
   },
   balanceCard: {
     borderRadius: 12,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   confirmButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',

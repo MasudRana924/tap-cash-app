@@ -125,7 +125,7 @@ const SendMoneyScreen = () => {
             {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="arrow-back" size={24} color="#000" />
+                <Icon name="chevron-back-circle-outline" size={24} color="#000" />
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Send Money</Text>
               <View style={styles.placeholder} />
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -257,10 +257,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 15,
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#F5F5F5',
     borderRightWidth: 0,
@@ -275,7 +274,7 @@ const styles = StyleSheet.create({
   countryCode: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#333',
+    color: '#11182e',
   },
   bottomButtonContainer: {
     padding: 20,
@@ -287,7 +286,7 @@ const styles = StyleSheet.create({
   quickSendTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   quickSendContainer: {
@@ -311,9 +310,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   quickSendName: {
-    fontSize: 12,
-    color: '#666',
-    maxWidth: 60,
+    fontSize: 14,
+    color: '#11182e',
+    // maxWidth: 60,
+    fontWeight: '500',
     textAlign: 'center',
   },
   phoneInput: {
@@ -321,20 +321,20 @@ const styles = StyleSheet.create({
     height: 58,
     backgroundColor: '#F5F5F5',
     paddingHorizontal: 15,
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
+    borderRadius: 12,
+  
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   contactsSection: {
     marginTop: 20,
   },
   contactsTitle: {
     fontSize: 16,
-    fontWeight: '400',
-    color: '#333',
+    fontWeight: '600',
+    color: '#11182e',
     marginBottom: 15,
   },
   contactItem: {
@@ -364,16 +364,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contactName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#11182e',
   },
   contactPhone: {
-    fontSize: 13,
+    fontSize: 10,
     color: '#999',
   },
   nextButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

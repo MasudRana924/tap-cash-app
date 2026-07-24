@@ -80,7 +80,7 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6b7280" />
+        <ActivityIndicator size="large" color="#11182e" />
       </View>
     );
   }
@@ -111,9 +111,9 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
             </View>
           </View>
 
-          <Text style={styles.payloText}>TapCash</Text>
+          {/* <Text style={styles.payloText}>Paylo</Text> */}
           <Text style={styles.appTitle}>
-            {savedPhone ? 'Welcome back!' : "Let's get started!"}
+            Let's get started!
           </Text>
 
           {/* ── PIN-ONLY MODE (phone already saved) ── */}
@@ -182,7 +182,7 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
                   <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.biometricButton}>
-                  <Icon name="finger-print" size={24} color="#6b7280" />
+                  <Icon name="finger-print" size={24} color="#11182e" />
                 </TouchableOpacity>
               </View>
 
@@ -241,7 +241,7 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
                   <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.biometricButton}>
-                  <Icon name="finger-print" size={24} color="#6b7280" />
+                  <Icon name="finger-print" size={24} color="#F8623F" />
                 </TouchableOpacity>
               </View>
 
@@ -289,14 +289,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 4,
     borderWidth: 1,
-    borderColor: '#6b7280',
+    borderColor: '#F5F5F5',
   },
   languageOption: {
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
   },
-  languageOptionActive: { backgroundColor: '#6b7280' },
+  languageOptionActive: { backgroundColor: '#11182e' },
   languageOptionText: {
     fontSize: 14,
     fontWeight: '600',
@@ -307,25 +307,26 @@ const styles = StyleSheet.create({
   payloText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#6b7280',
+   
+    color: '#11182e',
     marginBottom: 5,
   },
   appTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 10,
   },
   welcomeTitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#11182e',
     marginBottom: 30,
     lineHeight: 20,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4f5866',
+    color: '#11182e',
     marginBottom: 8,
   },
   // Phone input
@@ -347,7 +348,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   flag: { fontSize: 16, marginRight: 8 },
-  countryCode: { fontSize: 16, fontWeight: '400', color: '#333' },
+  countryCode: { fontSize: 16, fontWeight: '400', color: '#11182e' },
   phoneInput: {
     flex: 1,
     height: 58,
@@ -357,7 +358,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   // Single PIN field (full mode)
   pinFieldWrapper: {
@@ -375,7 +376,7 @@ const styles = StyleSheet.create({
   pinFieldInput: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
 
   },
   // 4-box PIN (PIN-only mode)
@@ -404,13 +405,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pinBoxActive: {
-    borderColor: '#6b7280',
+    borderColor: '#11182e',
     backgroundColor: '#f0f1f3',
   },
   pinBoxText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     textAlign: 'center',
   },
   // Buttons
@@ -421,7 +422,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     flex: 1,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -445,12 +446,12 @@ const styles = StyleSheet.create({
   },
   bottomLink: { marginTop: 20 },
   bottomLinkText: {
-    color: '#333',
+    color: '#11182e',
     fontSize: 16,
     textAlign: 'center',
   },
   bottomLinkBold: {
-    color: '#6b7280',
+    color: '#11182e',
     fontWeight: '600',
   },
   // Saved phone card
@@ -468,7 +469,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -481,7 +482,7 @@ const styles = StyleSheet.create({
   savedPhoneNumber: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
   },
   switchBtn: {
     paddingHorizontal: 12,
@@ -491,7 +492,7 @@ const styles = StyleSheet.create({
   },
   switchBtnText: {
     fontSize: 13,
-    color: '#6b7280',
+    color: '#11182e',
     fontWeight: '600',
   },
 });

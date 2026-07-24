@@ -71,7 +71,7 @@ const AddMoneyCardScreen = () => {
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Icon name="arrow-back" size={24} color="#000" />
+              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Add Money</Text>
             <View style={styles.placeholder} />
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   cardTypeContainer: {
@@ -233,18 +233,18 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   radioSelected: {
-    borderColor: '#6b7280',
+    borderColor: '#11182e',
   },
   radioDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
   },
   cardTypeText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
   },
   inputSection: {
     marginBottom: 20,
@@ -279,10 +279,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingLeft: 45,
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   continueButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

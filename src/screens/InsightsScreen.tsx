@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 5,
   },
   subtitle: {
@@ -90,13 +90,13 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginLeft: 10,
   },
   cardAmount: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 5,
   },
   cardSubtitle: {
@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   categoryAmount: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
   },
 });
 

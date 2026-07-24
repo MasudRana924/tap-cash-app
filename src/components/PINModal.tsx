@@ -52,7 +52,7 @@ const PINModal: React.FC<PINModalProps> = ({
           {/* Header */}
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Icon name="close" size={24} color="#333" />
+              <Icon name="close" size={24} color="#11182e" />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Enter PIN</Text>
             <View style={styles.placeholder} />
@@ -96,7 +96,7 @@ const PINModal: React.FC<PINModalProps> = ({
                 activeOpacity={0.7}
               >
                 {key === 'back' ? (
-                  <Icon name="backspace-outline" size={24} color="#333" />
+                  <Icon name="backspace-outline" size={24} color="#11182e" />
                 ) : (
                   <Text style={styles.keyText}>{key}</Text>
                 )}
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   pinDotContainerFocused: {
-    borderColor: '#6b7280',
+    borderColor: '#11182e',
     backgroundColor: '#F0FDF4',
   },
   pinDot: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D1D5DB',
   },
   pinDotFilled: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     width: 20,
     height: 20,
     borderRadius: 10,

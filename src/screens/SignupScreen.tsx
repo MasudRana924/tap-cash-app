@@ -37,7 +37,7 @@ const SignupScreen = () => {
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
-          <Text style={styles.payloText}>Paylo</Text>
+          {/* <Text style={styles.payloText}>Paylo</Text> */}
           <Text style={styles.title}>Let's get started!</Text>
           <Text style={styles.subtitle}>
             Let's set up your money transfer account. Enter your details below.
@@ -126,13 +126,13 @@ const styles = StyleSheet.create({
   payloText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#6b7280',
+    color: '#11182e',
     marginBottom: 5,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 10,
   },
   subtitle: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4f5866',
+    color: '#11182e',
     marginBottom: 8,
   },
   phoneContainer: {
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   countryCode: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#333',
+    color: '#11182e',
   },
   phoneInput: {
     flex: 1,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   input: {
     height: 58,
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#F5F5F5',
-    color: '#333',
+    color: '#11182e',
   },
   pinFieldWrapper: {
     flexDirection: 'row',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   pinFieldInput: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
 
   },
   requirements: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   continueButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -267,12 +267,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   loginText: {
-    color: '#333',
+    color: '#11182e',
     fontSize: 14,
     textAlign: 'center',
   },
   loginLink: {
-    color: '#6b7280',
+    color: '#11182e',
     fontWeight: '600',
   },
 });

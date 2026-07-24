@@ -31,11 +31,11 @@ const HomeScreen = () => {
     icon: string;
     route: keyof RootStackParamList;
   }> = [
-    { id: '1', name: 'Send', icon: 'paper-plane-outline', route: 'SendMoney' },
+    // { id: '1', name: 'Send', icon: 'paper-plane-outline', route: 'SendMoney' },
     { id: '2', name: 'Add Money', icon: 'add-circle-outline', route: 'AddMoney' },
     { id: '3', name: 'Cash Out', icon: 'wallet-outline', route: 'CashOut' },
     { id: '4', name: 'Payment', icon: 'qr-code-outline', route: 'Payment' },
-    { id: '5', name: 'Bill', icon: 'flash-outline', route: 'PayBill' },
+    // { id: '5', name: 'Bill', icon: 'flash-outline', route: 'PayBill' },
     { id: '6', name: 'Recharge', icon: 'phone-portrait-outline', route: 'MobileRecharge' },
     { id: '7', name: 'Savings', icon: 'save-outline', route: 'Savings' },
     { id: '8', name: 'Loan', icon: 'cash-outline', route: 'Loan' },
@@ -177,7 +177,7 @@ const HomeScreen = () => {
                 onPress={() => navigation.navigate('Notifications')}
                 activeOpacity={0.8}
               >
-                <Icon name="notifications-outline" size={20} color="#0F172A" />
+                <Icon name="notifications-outline" size={20} color="#F8623F" />
               </TouchableOpacity>
             </View>
 
@@ -259,7 +259,7 @@ const HomeScreen = () => {
                   activeOpacity={0.7}
                 >
                   <View style={styles.gridIconBox}>
-                    <Icon name={item.icon} size={24} color="#334155" />
+                    <Icon name={item.icon} size={24} color="#F8623F" />
                   </View>
                   <Text style={styles.gridItemText}>{item.name}</Text>
                 </TouchableOpacity>
@@ -310,7 +310,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
@@ -355,16 +355,12 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#f6f6f6',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: '#f6f6f6',
   },
 
   // Balance Card
@@ -471,8 +467,9 @@ const styles = StyleSheet.create({
   // Grid Services
   gridContainer: {
     flexDirection: 'row',
+gap: 14,
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-around',
     marginBottom: 16,
   },
   gridItem: {
@@ -484,16 +481,16 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 20,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#f6f6f6',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: '#f6f6f6',
   },
   gridItemText: {
     fontSize: 12,
-    color: '#334155',
+    color: '#11182e',
     fontWeight: '500',
     textAlign: 'center',
     lineHeight: 16,
@@ -511,9 +508,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   recentTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#0F172A',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#11182e',
   },
   viewAll: {
     fontSize: 13,
@@ -525,7 +522,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // borderWidth: 1,
     // borderColor: '#F1F5F9',
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
 
   },
   recentRow: {

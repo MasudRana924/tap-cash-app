@@ -39,7 +39,7 @@ const PayBillScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#000" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Pay Bill</Text>
           <View style={styles.placeholder} />
@@ -47,7 +47,7 @@ const PayBillScreen = () => {
 
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <Icon name="receipt-outline" size={20} color="#6b7280" />
+          <Icon name="receipt-outline" size={20} color="#11182e" />
           <Text style={styles.infoText}>Pay your utility bills instantly</Text>
         </View>
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   categoriesGrid: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
   },
 });
 

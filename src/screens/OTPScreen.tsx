@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Keyboard,
+  
   TextInput,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -61,9 +61,9 @@ const OTPScreen = () => {
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <Icon name="arrow-back" size={24} color="#000" />
+              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Enter Code</Text>
+            <Text style={styles.headerTitle}>Verify</Text>
           </View>
 
           {/* Instruction Text */}
@@ -93,7 +93,7 @@ const OTPScreen = () => {
               activeOpacity={1}
               onPress={() => otpInputRef.current?.focus()}
             >
-              {[0, 1, 2, 3, 4, 5].map((index) => (
+              {[0, 1, 2, 3,4,5].map((index) => (
                 <View
                   key={index}
                   style={[
@@ -152,9 +152,9 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
   },
   instructionText: {
     fontSize: 14,
@@ -164,13 +164,13 @@ const styles = StyleSheet.create({
   emailText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 40,
   },
   codeLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   otpContainer: {
@@ -181,10 +181,10 @@ const styles = StyleSheet.create({
   otpInput: {
     width: 48,
     height: 48,
-    borderRadius: 12,
-    backgroundColor: '#F6F6F6',
+    borderRadius: 25,
+    backgroundColor: '#f6f6f6',
     borderWidth: 1,
-    borderColor: '#F6F6F6',
+    borderColor: '#f6f6f6',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -195,12 +195,12 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   otpInputActive: {
-    borderColor: '#6b7280',
+    borderColor: '#11182e',
   },
   otpInputText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     textAlign: 'center',
   },
   resendContainer: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   verifyButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

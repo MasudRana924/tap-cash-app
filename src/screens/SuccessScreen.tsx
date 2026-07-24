@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   successMessage: {
     fontSize: 15,
-    color: '#6b7280',
+    color: '#11182e',
     textAlign: 'center',
     marginBottom: 40,
   },
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   homeButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     width: '100%',

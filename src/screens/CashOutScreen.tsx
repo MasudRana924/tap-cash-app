@@ -82,7 +82,7 @@ const CashOutScreen = () => {
             {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="arrow-back" size={24} color="#000" />
+                <Icon name="chevron-back-circle-outline" size={24} color="#000" />
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Cash Out</Text>
               <View style={styles.placeholder} />
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   countryCode: {
     fontSize: 16,
     fontWeight: '400',
-    color: '#333',
+    color: '#11182e',
   },
   phoneInput: {
     flex: 1,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F5F5F5',
     fontSize: 16,
-    color: '#333',
+    color: '#11182e',
   },
   agentsSection: {
     marginTop: 10,
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 15,
   },
   agentItem: {
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   agentName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 4,
   },
   agentLocation: {
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   continueButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

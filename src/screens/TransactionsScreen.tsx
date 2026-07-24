@@ -25,7 +25,7 @@ const transactions: Transaction[] = [
     date: 'Today',
     amount: '-৳1,500',
     icon: 'arrow-up',
-    iconColor: '#6b7280',
+    iconColor: '#11182e',
     iconBg: '#f3f4f6',
     isPositive: false,
     filter: ['all', 'sent'],
@@ -105,7 +105,7 @@ const transactions: Transaction[] = [
     date: 'Jun 30',
     amount: '-৳800',
     icon: 'arrow-up',
-    iconColor: '#6b7280',
+    iconColor: '#11182e',
     iconBg: '#f3f4f6',
     isPositive: false,
     filter: ['all', 'sent'],
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   filterLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6b7280',
+    color: '#11182e',
   },
   filterLabelActive: {
     color: '#ffffff',

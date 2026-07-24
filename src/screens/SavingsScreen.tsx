@@ -36,7 +36,7 @@ const SavingsScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="chevron-back" size={24} color="#333" />
+          <Icon name="chevron-back-circle-outline" size={24} color="#11182e" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Savings</Text>
         <View style={styles.placeholder} />
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#11182e',
     marginBottom: 16,
   },
   planCard: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   rateText: {
-    color: '#6b7280',
+    color: '#11182e',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   planProgressBarFill: {
     height: '100%',
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 4,
   },
   buttonContainer: {
@@ -250,12 +250,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   createButtonText: {
-    color: '#6b7280',
+    color: '#11182e',
     fontSize: 16,
     fontWeight: '600',
   },
   addButton: {
-    backgroundColor: '#6b7280',
+    backgroundColor: '#11182e',
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
