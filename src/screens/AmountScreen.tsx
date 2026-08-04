@@ -57,9 +57,9 @@ const AmountScreen = () => {
   };
 
   const sendMoneyMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (pin: string) => {
       if (!token) throw new Error('No token found');
-      return apiService.sendMoney(token, phone, enteredPIN, amount);
+      return apiService.sendMoney(token, phone, pin, amount);
     },
     onSuccess: (data) => {
       setShowPINModal(false);
@@ -76,9 +76,8 @@ const AmountScreen = () => {
   });
 
   const handlePINSuccess = (pin: string) => {
-    setEnteredPIN(pin);
     setErrorMessage('');
-    sendMoneyMutation.mutate();
+    sendMoneyMutation.mutate(pin);
   };
 
   const handlePINCancel = () => {
@@ -207,7 +206,7 @@ const AmountScreen = () => {
         onSuccess={handlePINSuccess}
         errorMessage={errorMessage}
       />
-      <Spinner visible={sendMoneyMutation.isPending} textContent="Processing..." textStyle={styles.spinnerText} />
+      <Spinner visible={sendMoneyMutation.isPending} textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };
