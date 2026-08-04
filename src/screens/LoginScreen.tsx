@@ -22,81 +22,40 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const { login } = useAuth();
 
-  const [phone, setPhone]             = useState('');
-  const [pin, setPin]                 = useState('');
-  const [language, setLanguage]       = useState<'EN' | 'BN'>('EN');
-  const [savedPhone, setSavedPhone]   = useState<string | null>(null);
-  const [isLoading, setIsLoading]     = useState(true);
+  const [phone, setPhone] = useState('');
+  const [pin, setPin] = useState('');
+  const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const [activePinIndex, setActivePinIndex] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const phoneInputRef   = useRef<TextInput>(null);
-  const pinInputRef     = useRef<TextInput>(null);
-  const pinBoxInputRef  = useRef<TextInput>(null);
-console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoading);
-  // Read AsyncStorage on mount AND every time screen is focused
-  useEffect(() => {
-    const loadPhone = () => {
-      setIsLoading(true);
-      setPin('');
-      AsyncStorage.getItem('user_phone')
-        .then((stored) => setSavedPhone(stored))
-        .catch(() => setSavedPhone(null))
-        .finally(() => setIsLoading(false));
-    };
-
-    // Run immediately on mount
-    loadPhone();
-
-    // Also re-run whenever this screen comes back into focus
-    const unsubscribe = navigation.addListener('focus', loadPhone);
-    return unsubscribe;
-  }, [navigation]);
-
-  // Auto-focus PIN box when in PIN-only mode
-  useEffect(() => {
-    if (!isLoading && savedPhone) {
-      const t = setTimeout(() => pinBoxInputRef.current?.focus(), 300);
-      return () => clearTimeout(t);
-    }
-  }, [isLoading, savedPhone]);
+  const phoneInputRef = useRef<TextInput>(null);
+  const pinInputRef = useRef<TextInput>(null);
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      const phoneNumber = savedPhone || '+880' + phone;
+      const phoneNumber = '+880' + phone;
       return apiService.login(phoneNumber, pin);
     },
     onSuccess: async (data) => {
+      console.log('Login API Response:', data);
+      console.log('Token:', data.token);
+      console.log('User:', data.user);
+      console.log('Wallet:', data.wallet);
       await login(data.token, data.user, data.wallet);
-      if (!savedPhone) {
-        try {
-          await AsyncStorage.setItem('user_phone', '+880' + phone);
-        } catch (_) {}
-      }
       navigation.navigate('MainHome' as never);
     },
     onError: (error: any) => {
+      console.error('Login Error:', error);
       setErrorMessage(error.errorMessage || error.error || 'Login failed. Please try again.');
     },
   });
 
   const handleLogin = async () => {
     setErrorMessage('');
-    if (savedPhone) {
-      loginMutation.mutate();
-    } else {
-      loginMutation.mutate();
-    }
+    loginMutation.mutate();
   };
 
   const handleSignup = () => navigation.navigate('Signup' as never);
-
-  const handleSwitchAccount = async () => {
-    await AsyncStorage.removeItem('user_phone');
-    setSavedPhone(null);
-    setPin('');
-    setTimeout(() => phoneInputRef.current?.focus(), 200);
-  };
 
   // ── Loading ────────────────────────────────────────────
   // if (isLoading) {
@@ -138,158 +97,73 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
             Let's get started!
           </Text>
 
-          {/* ── PIN-ONLY MODE (phone already saved) ── */}
-          {savedPhone ? (
-            <>
-              {/* Saved phone display — NO input field */}
-              <View style={styles.savedPhoneCard}>
-                <View style={styles.savedPhoneAvatar}>
-                  <Icon name="person" size={22} color="#fff" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.savedPhoneLabel}>Logged in as</Text>
-                  <Text style={styles.savedPhoneNumber}>{savedPhone}</Text>
-                </View>
-                <TouchableOpacity onPress={handleSwitchAccount} style={styles.switchBtn}>
-                  <Text style={styles.switchBtnText}>Switch</Text>
-                </TouchableOpacity>
-              </View>
+          {/* ── FULL MODE ── */}
+          <Text style={styles.welcomeTitle}>
+            Welcome back! Enter your details to login.
+          </Text>
 
-              {/* 4-box PIN */}
-              <Text style={styles.inputLabel}>Enter your PIN</Text>
-              <View style={styles.pinBoxSection}>
-                <TextInput
-                  ref={pinBoxInputRef}
-                  style={styles.hiddenInput}
-                  value={pin}
-                  onChangeText={(text) => {
-                    if (text.length <= 4) {
-                      setPin(text);
-                      setActivePinIndex(text.length);
-                    }
-                  }}
-                  onFocus={() => setActivePinIndex(pin.length)}
-                  onBlur={() => setActivePinIndex(-1)}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  secureTextEntry
-                />
-                <TouchableOpacity
-                  style={styles.pinContainer}
-                  activeOpacity={1}
-                  onPress={() => pinBoxInputRef.current?.focus()}
-                >
-                  {[0, 1, 2, 3].map((index) => (
-                    <View
-                      key={index}
-                      style={[
-                        styles.pinBox,
-                        activePinIndex === index && styles.pinBoxActive,
-                      ]}
-                    >
-                      <Text style={styles.pinBoxText}>
-                        {pin.length > index ? '•' : ''}
-                      </Text>
-                    </View>
-                  ))}
-                </TouchableOpacity>
-              </View>
+          {/* Phone input */}
+          <Text style={styles.inputLabel}>Phone Number</Text>
+          <View style={styles.phoneContainer}>
+            <View style={styles.countryCodeContainer}>
+              <Text style={styles.flag}>🇧🇩</Text>
+              <Text style={styles.countryCode}>+880</Text>
+            </View>
+            <TextInput
+              ref={phoneInputRef}
+              style={styles.phoneInput}
+              placeholder="1XXX-XXXXXX"
+              placeholderTextColor="#999"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              maxLength={10}
+            />
+          </View>
 
-              <View style={styles.loginRow}>
-                <TouchableOpacity
-                  style={[styles.loginButton, (pin.length < 4 || loginMutation.isPending) && styles.loginButtonDisabled]}
-                  onPress={handleLogin}
-                  disabled={pin.length < 4 || loginMutation.isPending}
-                >
-                  <Text style={styles.loginButtonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.biometricButton}>
-                  <Icon name="finger-print" size={24} color="#11182e" />
-                </TouchableOpacity>
-              </View>
+          {/* Single PIN text input */}
+          <Text style={styles.inputLabel}>PIN</Text>
+          <View style={styles.pinFieldWrapper}>
+            <Icon name="lock-closed-outline" size={20} color="#9ea3ad" style={styles.pinFieldIcon} />
+            <TextInput
+              ref={pinInputRef}
+              style={styles.pinFieldInput}
+              placeholder="Enter your 4-digit PIN"
+              placeholderTextColor="#bbb"
+              value={pin}
+              onChangeText={(text) => { if (text.length <= 4) setPin(text); }}
+              keyboardType="number-pad"
+              maxLength={4}
+              secureTextEntry
+            />
+          </View>
 
-              {errorMessage ? (
-                <Text style={styles.errorText}>{errorMessage}</Text>
-              ) : null}
+          <View style={styles.loginRow}>
+            <TouchableOpacity
+              style={[styles.loginButton, loginMutation.isPending && styles.loginButtonDisabled]}
+              onPress={handleLogin}
+              disabled={loginMutation.isPending}
+            >
+              <Text style={styles.loginButtonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.biometricButton}>
+              <Icon name="finger-print" size={24} color="#F8623F" />
+            </TouchableOpacity>
+          </View>
 
-              <TouchableOpacity onPress={handleSwitchAccount} style={styles.bottomLink}>
-                <Text style={styles.bottomLinkText}>
-                  Not you?{' '}
-                  <Text style={styles.bottomLinkBold}>Use a different account</Text>
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              {/* ── FULL MODE (first time / switched account) ── */}
-              <Text style={styles.welcomeTitle}>
-                Welcome back! Enter your details to login.
-              </Text>
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
 
-              {/* Phone input */}
-              <Text style={styles.inputLabel}>Phone Number</Text>
-              <View style={styles.phoneContainer}>
-                <View style={styles.countryCodeContainer}>
-                  <Text style={styles.flag}>🇧🇩</Text>
-                  <Text style={styles.countryCode}>+880</Text>
-                </View>
-                <TextInput
-                  ref={phoneInputRef}
-                  style={styles.phoneInput}
-                  placeholder="1XXX-XXXXXX"
-                  placeholderTextColor="#999"
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                />
-              </View>
-
-              {/* Single PIN text input */}
-              <Text style={styles.inputLabel}>PIN</Text>
-              <View style={styles.pinFieldWrapper}>
-                <Icon name="lock-closed-outline" size={20} color="#9ea3ad" style={styles.pinFieldIcon} />
-                <TextInput
-                  ref={pinInputRef}
-                  style={styles.pinFieldInput}
-                  placeholder="Enter your 4-digit PIN"
-                  placeholderTextColor="#bbb"
-                  value={pin}
-                  onChangeText={(text) => { if (text.length <= 4) setPin(text); }}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  secureTextEntry
-                />
-              </View>
-
-              <View style={styles.loginRow}>
-                <TouchableOpacity 
-                  style={[styles.loginButton, loginMutation.isPending && styles.loginButtonDisabled]} 
-                  onPress={handleLogin}
-                  disabled={loginMutation.isPending}
-                >
-                  <Text style={styles.loginButtonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.biometricButton}>
-                  <Icon name="finger-print" size={24} color="#F8623F" />
-                </TouchableOpacity>
-              </View>
-
-              {errorMessage ? (
-                <Text style={styles.errorText}>{errorMessage}</Text>
-              ) : null}
-
-              <TouchableOpacity onPress={handleSignup} style={styles.bottomLink}>
-                <Text style={styles.bottomLinkText}>
-                  Don't have an account?{' '}
-                  <Text style={styles.bottomLinkBold}>Sign Up</Text>
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
+          <TouchableOpacity onPress={handleSignup} style={styles.bottomLink}>
+            <Text style={styles.bottomLinkText}>
+              Don't have an account?{' '}
+              <Text style={styles.bottomLinkBold}>Sign Up</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
-      <Spinner visible={loginMutation.isPending}  textStyle={styles.spinnerText} />
+      <Spinner visible={loginMutation.isPending} textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };

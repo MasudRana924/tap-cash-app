@@ -11,6 +11,7 @@ import {
   FlatList,
   PermissionsAndroid,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -35,6 +36,7 @@ const SendMoneyScreen = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [hasPermission, setHasPermission] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [receiverInfo, setReceiverInfo] = useState<any>(null);
 
   useEffect(() => {
     requestContactPermission();
@@ -101,13 +103,15 @@ const SendMoneyScreen = () => {
     },
     onSuccess: (data) => {
       setErrorMessage('');
-      (navigation as any).navigate('Amount', { 
-        receiver: data.receiver, 
-        phone: '+880' + phoneNumber 
+      setReceiverInfo(data.receiver);
+      (navigation as any).navigate('Amount', {
+        receiver: data.receiver,
+        phone: '+880' + phoneNumber,
       });
     },
     onError: (error: any) => {
       setErrorMessage(error.error || error.errorMessage || 'Receiver not found');
+      setReceiverInfo(null);
     },
   });
 
@@ -177,6 +181,36 @@ const SendMoneyScreen = () => {
               <Text style={styles.errorText}>{errorMessage}</Text>
             ) : null}
 
+            {/* Receiver Info */}
+            {/* {receiverInfo && (
+              <View style={styles.receiverInfo}>
+                {receiverInfo.profile_image ? (
+                  <Image source={{ uri: receiverInfo.profile_image }} style={styles.receiverAvatar} />
+                ) : (
+                  <View style={[styles.receiverAvatar, styles.receiverAvatarPlaceholder]}>
+                    <Text style={styles.receiverAvatarText}>
+                      {receiverInfo.name ? receiverInfo.name[0].toUpperCase() : 'U'}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.receiverDetails}>
+                  <Text style={styles.receiverName}>{receiverInfo.name || 'Unknown'}</Text>
+                  <Text style={styles.receiverPhone}>{receiverInfo.phone}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.proceedButton}
+                  onPress={() => {
+                    (navigation as any).navigate('Amount', {
+                      receiver: receiverInfo,
+                      phone: '+880' + phoneNumber,
+                    });
+                  }}
+                >
+                  <Icon name="chevron-forward" size={24} color="#11182e" />
+                </TouchableOpacity>
+              </View>
+            )} */}
+
             {/* Quick Send */}
             {quickSendContacts.length > 0 && (
               <View style={styles.quickSendSection}>
@@ -238,7 +272,7 @@ const SendMoneyScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <Spinner visible={checkReceiverMutation.isPending} textContent="Loading..." textStyle={styles.spinnerText} />
+        <Spinner visible={checkReceiverMutation.isPending}  textStyle={styles.spinnerText} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -428,6 +462,51 @@ const styles = StyleSheet.create({
   },
   spinnerText: {
     color: '#FFF',
+  },
+  receiverInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 16,
+  },
+  receiverAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 16,
+  },
+  receiverAvatarPlaceholder: {
+    backgroundColor: '#797c83',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  receiverAvatarText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  receiverDetails: {
+    flex: 1,
+  },
+  receiverName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#11182e',
+    marginBottom: 4,
+  },
+  receiverPhone: {
+    fontSize: 14,
+    color: '#999',
+  },
+  proceedButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

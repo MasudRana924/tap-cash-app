@@ -161,10 +161,13 @@ class APIService {
       'Authorization': `Bearer ${token}`,
     };
 
+    const body = { phone };
+    console.log('Check Receiver API Body:', body);
+
     const response = await fetch(`${this.baseURL}/transaction/check-receiver`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ phone }),
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();
@@ -182,10 +185,13 @@ class APIService {
       'Authorization': `Bearer ${token}`,
     };
 
+    const body = { receiverPhone, pin, amount };
+    console.log('Send Money API Body:', body);
+
     const response = await fetch(`${this.baseURL}/transaction/send-money`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ receiverPhone, pin, amount }),
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();

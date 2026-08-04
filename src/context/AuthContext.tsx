@@ -19,7 +19,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<LoginResponse['user'] | null>(null);
   const [wallet, setWallet] = useState<LoginResponse['wallet'] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadAuthData();
@@ -31,10 +31,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const storedUser = await AsyncStorage.getItem('auth_user');
       const storedWallet = await AsyncStorage.getItem('auth_wallet');
       
+      console.log('Loading auth data:', { storedToken, storedUser, storedWallet });
+      
       if (storedToken && storedUser && storedWallet) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
         setWallet(JSON.parse(storedWallet));
+        console.log('Auth data loaded successfully');
       }
     } catch (error) {
       console.error('Failed to load auth data:', error);
@@ -45,12 +48,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (authToken: string, authUser: LoginResponse['user'], authWallet: LoginResponse['wallet']) => {
     try {
+      console.log('Saving auth data:', { authToken, authUser, authWallet });
       await AsyncStorage.setItem('auth_token', authToken);
       await AsyncStorage.setItem('auth_user', JSON.stringify(authUser));
       await AsyncStorage.setItem('auth_wallet', JSON.stringify(authWallet));
       setToken(authToken);
       setUser(authUser);
       setWallet(authWallet);
+      console.log('Auth data saved successfully');
     } catch (error) {
       console.error('Failed to save auth data:', error);
       throw error;

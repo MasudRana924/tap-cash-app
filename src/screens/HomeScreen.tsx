@@ -17,7 +17,7 @@ import { useAuth } from '../context/AuthContext';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
-  const { token } = useAuth();
+  const { token, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [showBalance, setShowBalance] = useState(false);
   const [balance, setBalance] = useState<string | null>(null);
@@ -42,6 +42,8 @@ const HomeScreen = () => {
     },
     onError: (error) => {
       console.error('Failed to fetch balance:', error);
+      setBalance(null);
+      setShowBalance(false);
     },
     onSettled: () => {
       setBalanceLoading(false);
@@ -49,12 +51,12 @@ const HomeScreen = () => {
   });
 
   const handleBalanceTap = () => {
-    if (!showBalance && !balanceLoading) {
-      setBalanceLoading(true);
-      balanceMutation.mutate();
-    } else {
-      setShowBalance(!showBalance);
+    if (!token || authLoading) {
+      console.error('Cannot fetch balance: No token or auth still loading');
+      return;
     }
+    setBalanceLoading(true);
+    balanceMutation.mutate();
   };
 
   const gridServices: Array<{
