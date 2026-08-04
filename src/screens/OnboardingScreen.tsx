@@ -10,6 +10,7 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Svg, {
   Rect,
@@ -557,8 +558,9 @@ const OnboardingScreen = ({ navigation }: any) => {
 
             {/* Next Button */}
             <Pressable
-              onPress={() => {
+              onPress={async () => {
                 if (active === slides.length - 1) {
+                  await AsyncStorage.setItem('has_seen_onboarding', 'true');
                   navigation.replace('Login');
                 } else {
                   nextSlide();

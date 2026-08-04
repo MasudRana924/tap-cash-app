@@ -8,20 +8,30 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
-import { useNavigation,  } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
 import TransferSummaryModal from '../components/TransferSummaryModal';
+import { useMutation } from '@tanstack/react-query';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { RootStackParamList } from '../navigation/RootNavigator';
 
 const AmountScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<RootStackParamList, 'Amount'>>();
+  const { token, wallet } = useAuth();
+  const { receiver, phone } = route.params;
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [showPINModal, setShowPINModal] = useState(false);
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [enteredPIN, setEnteredPIN] = useState('');
   const amountInputRef = useRef<TextInput>(null);
-  const availableBalance = '৳52,340.00';
 
   useEffect(() => {
     setTimeout(() => {
@@ -46,9 +56,29 @@ const AmountScreen = () => {
     setShowSummaryModal(false);
   };
 
-  const handlePINSuccess = () => {
-    setShowPINModal(false);
-    navigation.navigate('Success' as never);
+  const sendMoneyMutation = useMutation({
+    mutationFn: async () => {
+      if (!token) throw new Error('No token found');
+      return apiService.sendMoney(token, phone, enteredPIN, amount);
+    },
+    onSuccess: (data) => {
+      setShowPINModal(false);
+      setErrorMessage('');
+      (navigation as any).navigate('Success', {
+        amount: data.amount,
+        receiverPhone: data.receiverPhone,
+        receiverName: data.receiverName,
+      });
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.error || error.errorMessage || 'Transaction failed');
+    },
+  });
+
+  const handlePINSuccess = (pin: string) => {
+    setEnteredPIN(pin);
+    setErrorMessage('');
+    sendMoneyMutation.mutate();
   };
 
   const handlePINCancel = () => {
@@ -73,15 +103,19 @@ const AmountScreen = () => {
         </View>
 
         {/* Recipient Info */}
-        {/* <View style={styles.recipientContainer}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>NI</Text>
+        <View style={styles.recipientContainer}>
+          <View style={[styles.avatar, { backgroundColor: receiver.profile_image ? 'transparent' : '#797c83' }]}>
+            {receiver.profile_image ? (
+              <Image source={{ uri: receiver.profile_image }} style={styles.avatarImage} />
+            ) : (
+              <Text style={styles.avatarText}>{receiver.name ? receiver.name[0].toUpperCase() : 'U'}</Text>
+            )}
           </View>
           <View style={styles.recipientDetails}>
-            <Text style={styles.recipientName}>Nadia</Text>
-            <Text style={styles.recipientPhone}>+8801700000002</Text>
+            <Text style={styles.recipientName}>{receiver.name || 'Unknown'}</Text>
+            <Text style={styles.recipientPhone}>{phone}</Text>
           </View>
-        </View> */}
+        </View>
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
@@ -99,7 +133,7 @@ const AmountScreen = () => {
               selectionColor="#11182e"
             />
           </View>
-          <Text style={styles.balanceAmount}>Balance: {availableBalance}</Text>
+          <Text style={styles.balanceAmount}>Balance: ৳{wallet?.balance || '0.00'}</Text>
         </View>
 
         {/* Quick Amounts */}
@@ -159,11 +193,11 @@ const AmountScreen = () => {
         visible={showSummaryModal}
         onClose={handleSummaryClose}
         onConfirm={handleSummaryConfirm}
-        recipientName="Nadia"
-        recipientPhone="+8801700000002"
-        recipientInitials="NI"
+        recipientName={receiver.name || 'Unknown'}
+        recipientPhone={phone}
+        recipientInitials={receiver.name ? receiver.name[0].toUpperCase() : 'U'}
         amount={amount}
-        balance="৳52,340.00"
+        balance={`৳${wallet?.balance || '0.00'}`}
       />
 
       {/* PIN Modal */}
@@ -171,7 +205,9 @@ const AmountScreen = () => {
         visible={showPINModal}
         onClose={handlePINCancel}
         onSuccess={handlePINSuccess}
+        errorMessage={errorMessage}
       />
+      <Spinner visible={sendMoneyMutation.isPending} textContent="Processing..." textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };
@@ -364,6 +400,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#11182e',
     fontWeight: 'bold',
+  },
+  avatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  spinnerText: {
+    color: '#FFF',
   },
 });
 

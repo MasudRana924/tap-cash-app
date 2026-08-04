@@ -5,12 +5,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { RootStackParamList } from '../navigation/RootNavigator';
 
 const SuccessScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<RootStackParamList, 'Success'>>();
+  const { amount, receiverPhone, receiverName } = route.params;
 
   const handleDone = () => {
     navigation.navigate('MainHome' as never);
@@ -40,12 +44,20 @@ const SuccessScreen = () => {
           {/* Transaction Details */}
           <View style={styles.transactionDetails}>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Reference</Text>
-              <Text style={styles.detailValueMono}>SWP2407210099</Text>
+              <Text style={styles.detailLabel}>Amount Sent</Text>
+              <Text style={styles.detailValue}>৳{amount}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Sent To</Text>
+              <Text style={styles.detailValue}>{receiverName || 'Unknown'}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Phone Number</Text>
+              <Text style={styles.detailValue}>{receiverPhone}</Text>
             </View>
             <View style={[styles.detailRow, { marginBottom: 0 }]}>
               <Text style={styles.detailLabel}>Date & Time</Text>
-              <Text style={styles.detailValue}>Jul 21, 2026 • Now</Text>
+              <Text style={styles.detailValue}>{new Date().toLocaleDateString()} • Now</Text>
             </View>
           </View>
         </View>

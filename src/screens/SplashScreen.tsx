@@ -1,17 +1,28 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('Onboarding' as never);
+    const timer = setTimeout(async () => {
+      const hasSeenOnboarding = await AsyncStorage.getItem('has_seen_onboarding');
+      
+      if (isAuthenticated) {
+        navigation.navigate('MainHome' as never);
+      } else if (hasSeenOnboarding === 'true') {
+        navigation.navigate('Login' as never);
+      } else {
+        navigation.navigate('Onboarding' as never);
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, isAuthenticated]);
 
   return (
     <View style={styles.container}>

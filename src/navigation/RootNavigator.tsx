@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from '../screens/SplashScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -41,8 +42,8 @@ export type RootStackParamList = {
   SendMoney: undefined;
   Transactions: undefined;
   Notifications: undefined;
-  Amount: undefined;
-  Success: undefined;
+  Amount: { receiver: { id: number; phone: string; name: string | null; profile_image: string | null; user_type: string }; phone: string };
+  Success: { amount: string; receiverPhone: string; receiverName: string | null };
   CashOut: undefined;
   CashOutAmount: undefined;
   AddMoney: undefined;
@@ -65,12 +66,10 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const { isAuthenticated } = useAuth();
-
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isAuthenticated ? 'MainHome' : 'Splash'}
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
         }}

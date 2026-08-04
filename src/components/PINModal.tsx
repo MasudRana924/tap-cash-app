@@ -11,13 +11,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 interface PINModalProps {
   visible: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (pin: string) => void;
+  errorMessage?: string;
 }
 
 const PINModal: React.FC<PINModalProps> = ({
   visible,
   onClose,
   onSuccess,
+  errorMessage,
 }) => {
   const [pin, setPin] = useState('');
 
@@ -34,7 +36,7 @@ const PINModal: React.FC<PINModalProps> = ({
       setPin(prev => prev + key);
       if (pin.length === 3) {
         setTimeout(() => {
-          onSuccess();
+          onSuccess(pin + key);
         }, 300);
       }
     }
@@ -79,6 +81,9 @@ const PINModal: React.FC<PINModalProps> = ({
                 </View>
               ))}
             </View>
+            {errorMessage && (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            )}
           </View>
 
           {/* Custom Keyboard */}
@@ -218,6 +223,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '600',
     color: '#1C1C1E',
+  },
+  errorMessage: {
+    color: '#EF4444',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 12,
   },
 });
 

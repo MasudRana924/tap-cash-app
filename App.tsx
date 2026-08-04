@@ -19,12 +19,12 @@ function App() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="#ffffff"
+          translucent={false}
+        />
         <AuthProvider>
-          <StatusBar
-            barStyle="dark-content"
-            backgroundColor="#ffffff"
-            translucent={false}
-          />
           <RootNavigator />
         </AuthProvider>
       </QueryClientProvider>

@@ -59,6 +59,24 @@ export interface BalanceResponse {
   status: string;
 }
 
+export interface CheckReceiverResponse {
+  message: string;
+  receiver: {
+    id: number;
+    phone: string;
+    name: string | null;
+    profile_image: string | null;
+    user_type: string;
+  };
+}
+
+export interface SendMoneyResponse {
+  message: string;
+  amount: string;
+  receiverPhone: string;
+  receiverName: string | null;
+}
+
 export interface ErrorResponse {
   errorMessage?: string;
   error?: string;
@@ -135,6 +153,48 @@ class APIService {
     }
 
     return data as BalanceResponse;
+  }
+
+  async checkReceiver(token: string, phone: string): Promise<CheckReceiverResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/transaction/check-receiver`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ phone }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as CheckReceiverResponse;
+  }
+
+  async sendMoney(token: string, receiverPhone: string, pin: string, amount: string): Promise<SendMoneyResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/transaction/send-money`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ receiverPhone, pin, amount }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as SendMoneyResponse;
   }
 }
 

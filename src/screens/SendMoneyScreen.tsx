@@ -13,9 +13,14 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Contacts from 'react-native-contacts';
+import { useMutation } from '@tanstack/react-query';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { RootStackParamList } from '../navigation/RootNavigator';
 
 interface Contact {
   id: string;
@@ -24,10 +29,12 @@ interface Contact {
 }
 
 const SendMoneyScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { token } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [hasPermission, setHasPermission] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     requestContactPermission();
@@ -87,9 +94,27 @@ const SendMoneyScreen = () => {
 
   const quickSendContacts = contacts.slice(0, 5);
 
+  const checkReceiverMutation = useMutation({
+    mutationFn: async () => {
+      if (!token) throw new Error('No token found');
+      return apiService.checkReceiver(token, '+880' + phoneNumber);
+    },
+    onSuccess: (data) => {
+      setErrorMessage('');
+      (navigation as any).navigate('Amount', { 
+        receiver: data.receiver, 
+        phone: '+880' + phoneNumber 
+      });
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.error || error.errorMessage || 'Receiver not found');
+    },
+  });
+
   const handlePhoneSubmit = () => {
+    setErrorMessage('');
     if (phoneNumber.length > 0) {
-      navigation.navigate('Amount' as never);
+      checkReceiverMutation.mutate();
     }
   };
 
@@ -144,8 +169,13 @@ const SendMoneyScreen = () => {
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 keyboardType="phone-pad"
+                maxLength={10}
               />
             </View>
+
+            {errorMessage ? (
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            ) : null}
 
             {/* Quick Send */}
             {quickSendContacts.length > 0 && (
@@ -199,7 +229,7 @@ const SendMoneyScreen = () => {
                 phoneNumber.length === 0 && styles.nextButtonDisabled
               ]}
               onPress={handlePhoneSubmit}
-              disabled={phoneNumber.length === 0}
+              disabled={phoneNumber.length === 0 || checkReceiverMutation.isPending}
             >
               <Text style={[
                 styles.nextButtonText,
@@ -208,6 +238,7 @@ const SendMoneyScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <Spinner visible={checkReceiverMutation.isPending} textContent="Loading..." textStyle={styles.spinnerText} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -388,6 +419,15 @@ const styles = StyleSheet.create({
   },
   nextButtonTextDisabled: {
     color: '#9ea7b4',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  spinnerText: {
+    color: '#FFF',
   },
 });
 
