@@ -11,11 +11,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { useMutation } from '@tanstack/react-query';
+import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
+  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [showBalance, setShowBalance] = useState(true);
+  const [showBalance, setShowBalance] = useState(false);
+  const [balance, setBalance] = useState<string | null>(null);
+  const [balanceLoading, setBalanceLoading] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -24,6 +30,32 @@ const HomeScreen = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const balanceMutation = useMutation({
+    mutationFn: async () => {
+      if (!token) throw new Error('No token found');
+      return apiService.getBalance(token);
+    },
+    onSuccess: (data) => {
+      setBalance(data.balance);
+      setShowBalance(true);
+    },
+    onError: (error) => {
+      console.error('Failed to fetch balance:', error);
+    },
+    onSettled: () => {
+      setBalanceLoading(false);
+    },
+  });
+
+  const handleBalanceTap = () => {
+    if (!showBalance && !balanceLoading) {
+      setBalanceLoading(true);
+      balanceMutation.mutate();
+    } else {
+      setShowBalance(!showBalance);
+    }
+  };
 
   const gridServices: Array<{
     id: string;
@@ -209,21 +241,20 @@ const HomeScreen = () => {
 
               {/* Amount Display */}
               <TouchableOpacity
-                onPress={() => setShowBalance(!showBalance)}
+                onPress={handleBalanceTap}
                 activeOpacity={0.9}
                 style={styles.amountContainer}
               >
-                {showBalance ? (
+                {balanceLoading ? (
+                  <View style={styles.skeletonBalance} />
+                ) : showBalance && balance ? (
                   <View style={styles.amountRow}>
                     <Text style={styles.takaSymbol}>৳</Text>
-                    <Text style={styles.balanceInteger}>24,500</Text>
-                    <Text style={styles.balanceDecimal}>.50</Text>
+                    <Text style={styles.balanceInteger}>{balance.split('.')[0]}</Text>
+                    <Text style={styles.balanceDecimal}>.{balance.split('.')[1] || '00'}</Text>
                   </View>
                 ) : (
-                  <View style={styles.amountRow}>
-                    <Text style={styles.takaSymbol}>৳</Text>
-                    <Text style={styles.balanceHidden}>••••••••</Text>
-                  </View>
+                  <Text style={styles.tapToShowText}>Tap to Show</Text>
                 )}
               </TouchableOpacity>
 
@@ -426,6 +457,17 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0F172A',
     letterSpacing: 2,
+  },
+  tapToShowText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  skeletonBalance: {
+    width: 180,
+    height: 48,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 6,
   },
   cardActionsRow: {
     flexDirection: 'row',

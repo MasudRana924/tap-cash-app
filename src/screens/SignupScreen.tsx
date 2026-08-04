@@ -11,19 +11,41 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useMutation } from '@tanstack/react-query';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { apiService } from '../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
+  const [pin, setPin] = useState('');
   const [referralCode, setReferralCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const phoneInputRef = useRef<TextInput>(null);
   const referralInputRef = useRef<TextInput>(null);
-  const passwordInputRef = useRef<TextInput>(null);
+  const pinInputRef = useRef<TextInput>(null);
+
+  const signupMutation = useMutation({
+    mutationFn: async () => {
+      return apiService.signup(name, '+880' + phone, pin);
+    },
+    onSuccess: async (data) => {
+      if (data.successMessage) {
+        await AsyncStorage.setItem('user_phone', '+880' + phone);
+        navigation.navigate('OTP' as never);
+      }
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.errorMessage || error.error || 'Signup failed. Please try again.');
+    },
+  });
 
   const handleSignup = () => {
-    navigation.navigate('OTP' as never);
+    setErrorMessage('');
+    signupMutation.mutate();
   };
 
   const handleBackToLogin = () => {
@@ -43,6 +65,16 @@ const SignupScreen = () => {
             Let's set up your money transfer account. Enter your details below.
           </Text>
 
+          {/* Name Input */}
+          <Text style={styles.inputLabel}>Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your name"
+            placeholderTextColor="#999"
+            value={name}
+            onChangeText={setName}
+          />
+
           {/* Phone Input with Bangladesh Flag */}
           <Text style={styles.inputLabel}>Phone Number</Text>
           <View style={styles.phoneContainer}>
@@ -58,7 +90,7 @@ const SignupScreen = () => {
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
-              autoFocus={true}
+              maxLength={10}
             />
           </View>
 
@@ -67,13 +99,13 @@ const SignupScreen = () => {
           <View style={styles.pinFieldWrapper}>
             <Icon name="lock-closed-outline" size={20} color="#9ea3ad" style={styles.pinFieldIcon} />
             <TextInput
-              ref={passwordInputRef}
+              ref={pinInputRef}
               style={styles.pinFieldInput}
               placeholder="Create a 4-digit PIN"
               placeholderTextColor="#bbb"
-              value={password}
+              value={pin}
               onChangeText={(text) => {
-                if (text.length <= 4) setPassword(text);
+                if (text.length <= 4) setPin(text);
               }}
               keyboardType="number-pad"
               maxLength={4}
@@ -90,16 +122,20 @@ const SignupScreen = () => {
             value={referralCode}
             onChangeText={setReferralCode}
             autoCapitalize="none"
-            onFocus={() => setActiveField('referral')}
           />
 
           {/* Continue Button */}
           <TouchableOpacity
-            style={styles.continueButton}
+            style={[styles.continueButton, signupMutation.isPending && styles.continueButtonDisabled]}
             onPress={handleSignup}
+            disabled={signupMutation.isPending}
           >
             <Text style={styles.continueButtonText}>Sign Up</Text>
           </TouchableOpacity>
+
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
 
           {/* Back to Login */}
           <TouchableOpacity onPress={handleBackToLogin}>
@@ -107,6 +143,7 @@ const SignupScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Spinner visible={signupMutation.isPending} textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };
@@ -274,6 +311,18 @@ const styles = StyleSheet.create({
   loginLink: {
     color: '#11182e',
     fontWeight: '600',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  continueButtonDisabled: {
+    backgroundColor: '#c5c9d1',
+  },
+  spinnerText: {
+    color: '#11182e',
   },
 });
 

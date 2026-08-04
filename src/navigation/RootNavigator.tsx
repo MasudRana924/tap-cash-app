@@ -29,6 +29,7 @@ import LoanScreen from '../screens/LoanScreen';
 import LoanAmountScreen from '../screens/LoanAmountScreen';
 import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
 import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
+import { useAuth } from '../context/AuthContext';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -64,10 +65,12 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName={isAuthenticated ? 'MainHome' : 'Splash'}
         screenOptions={{
           headerShown: false,
         }}

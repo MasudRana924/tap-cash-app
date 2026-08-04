@@ -13,9 +13,14 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useMutation } from '@tanstack/react-query';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const { login } = useAuth();
 
   const [phone, setPhone]             = useState('');
   const [pin, setPin]                 = useState('');
@@ -23,6 +28,7 @@ const LoginScreen = () => {
   const [savedPhone, setSavedPhone]   = useState<string | null>(null);
   const [isLoading, setIsLoading]     = useState(true);
   const [activePinIndex, setActivePinIndex] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const phoneInputRef   = useRef<TextInput>(null);
   const pinInputRef     = useRef<TextInput>(null);
@@ -55,15 +61,31 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
     }
   }, [isLoading, savedPhone]);
 
-  // ── Handlers ──────────────────────────────────────────
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const phoneNumber = savedPhone || '+880' + phone;
+      return apiService.login(phoneNumber, pin);
+    },
+    onSuccess: async (data) => {
+      await login(data.token, data.user, data.wallet);
+      if (!savedPhone) {
+        try {
+          await AsyncStorage.setItem('user_phone', '+880' + phone);
+        } catch (_) {}
+      }
+      navigation.navigate('MainHome' as never);
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.errorMessage || error.error || 'Login failed. Please try again.');
+    },
+  });
+
   const handleLogin = async () => {
+    setErrorMessage('');
     if (savedPhone) {
-      navigation.navigate('MainHome' as never);
+      loginMutation.mutate();
     } else {
-      try {
-        await AsyncStorage.setItem('user_phone', '+880' + phone);
-      } catch (_) {}
-      navigation.navigate('MainHome' as never);
+      loginMutation.mutate();
     }
   };
 
@@ -77,13 +99,13 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
   };
 
   // ── Loading ────────────────────────────────────────────
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#11182e" />
-      </View>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color="#11182e" />
+  //     </View>
+  //   );
+  // }
 
   // ── UI ────────────────────────────────────────────────
   return (
@@ -175,9 +197,9 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
 
               <View style={styles.loginRow}>
                 <TouchableOpacity
-                  style={[styles.loginButton, pin.length < 4 && styles.loginButtonDisabled]}
+                  style={[styles.loginButton, (pin.length < 4 || loginMutation.isPending) && styles.loginButtonDisabled]}
                   onPress={handleLogin}
-                  disabled={pin.length < 4}
+                  disabled={pin.length < 4 || loginMutation.isPending}
                 >
                   <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
@@ -185,6 +207,10 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
                   <Icon name="finger-print" size={24} color="#11182e" />
                 </TouchableOpacity>
               </View>
+
+              {errorMessage ? (
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              ) : null}
 
               <TouchableOpacity onPress={handleSwitchAccount} style={styles.bottomLink}>
                 <Text style={styles.bottomLinkText}>
@@ -215,7 +241,7 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
                   value={phone}
                   onChangeText={setPhone}
                   keyboardType="phone-pad"
-                  autoFocus
+                  maxLength={10}
                 />
               </View>
 
@@ -237,13 +263,21 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
               </View>
 
               <View style={styles.loginRow}>
-                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <TouchableOpacity 
+                  style={[styles.loginButton, loginMutation.isPending && styles.loginButtonDisabled]} 
+                  onPress={handleLogin}
+                  disabled={loginMutation.isPending}
+                >
                   <Text style={styles.loginButtonText}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.biometricButton}>
                   <Icon name="finger-print" size={24} color="#F8623F" />
                 </TouchableOpacity>
               </View>
+
+              {errorMessage ? (
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              ) : null}
 
               <TouchableOpacity onPress={handleSignup} style={styles.bottomLink}>
                 <Text style={styles.bottomLinkText}>
@@ -255,6 +289,7 @@ console.log('LoginScreen rendered. savedPhone:', savedPhone, 'isLoading:', isLoa
           )}
         </View>
       </ScrollView>
+      <Spinner visible={loginMutation.isPending}  textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };
@@ -494,6 +529,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#11182e',
     fontWeight: '600',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  spinnerText: {
+    color: '#11182e',
   },
 });
 

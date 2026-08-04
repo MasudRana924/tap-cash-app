@@ -7,19 +7,34 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  
   TextInput,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useMutation } from '@tanstack/react-query';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { apiService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTPScreen = () => {
   const navigation = useNavigation();
+  const { login } = useAuth();
   const [otp, setOtp] = useState('');
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    const loadPhone = async () => {
+      const storedPhone = await AsyncStorage.getItem('user_phone');
+      setPhoneNumber(storedPhone);
+    };
+    loadPhone();
+  }, []);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
     if (timer > 0) {
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
@@ -37,9 +52,47 @@ const OTPScreen = () => {
   };
 
   const otpInputRef = React.useRef<TextInput>(null);
+  const [otpValues, setOtpValues] = useState(['', '', '', '']);
+  const inputRefs = [React.useRef<TextInput>(null), React.useRef<TextInput>(null), React.useRef<TextInput>(null), React.useRef<TextInput>(null)];
+
+  const handleOtpChange = (value: string, index: number) => {
+    const newOtpValues = [...otpValues];
+    newOtpValues[index] = value;
+    setOtpValues(newOtpValues);
+    
+    // Auto-focus next input
+    if (value && index < 3) {
+      inputRefs[index + 1].current?.focus();
+    }
+    
+    // Update full OTP string
+    const fullOtp = newOtpValues.join('');
+    setOtp(fullOtp);
+  };
+
+  const handleOtpKeyPress = (e: any, index: number) => {
+    if (e.nativeEvent.key === 'Backspace' && !otpValues[index] && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    }
+  };
+
+  const verifyOTPMutation = useMutation({
+    mutationFn: async () => {
+      if (!phoneNumber) throw new Error('Phone number not found');
+      return apiService.verifyOTP(phoneNumber, otp);
+    },
+    onSuccess: async (data) => {
+      await login(data.token, data.user, data.wallet);
+      navigation.navigate('MainHome' as never);
+    },
+    onError: (error: any) => {
+      setErrorMessage(error.errorMessage || error.error || 'OTP verification failed. Please try again.');
+    },
+  });
 
   const handleVerify = () => {
-    navigation.navigate('MainHome' as never);
+    setErrorMessage('');
+    verifyOTPMutation.mutate();
   };
 
   const handleResend = () => {
@@ -68,51 +121,46 @@ const OTPScreen = () => {
 
           {/* Instruction Text */}
           <Text style={styles.instructionText}>
-            A verification code will be sent to your email
+            We sent a 4-digit OTP to your phone
           </Text>
-          <Text style={styles.emailText}>mi***@gmail.com</Text>
+          <Text style={styles.emailText}>{phoneNumber || '+880XXXXXXXXX'}</Text>
 
           {/* Code Label */}
-          <Text style={styles.codeLabel}>Code</Text>
+          <Text style={styles.codeLabel}>Enter OTP</Text>
 
           {/* OTP Inputs */}
-          <View>
-            <TextInput
-              ref={otpInputRef}
-              style={styles.hiddenInput}
-              value={otp}
-              onChangeText={(text) => {
-                if (text.length <= 6) setOtp(text);
-              }}
-              keyboardType="number-pad"
-              maxLength={6}
-              autoFocus={true}
-            />
-            <TouchableOpacity 
-              style={styles.otpContainer}
-              activeOpacity={1}
-              onPress={() => otpInputRef.current?.focus()}
-            >
-              {[0, 1, 2, 3,4,5].map((index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.otpInput,
-                    otp.length === index && styles.otpInputActive,
-                  ]}
-                >
-                  <Text style={styles.otpInputText}>
-                    {otp[index] || ''}
-                  </Text>
-                </View>
-              ))}
-            </TouchableOpacity>
+          <View style={styles.otpContainer}>
+            {[0, 1, 2, 3].map((index) => (
+              <TextInput
+                key={index}
+                ref={inputRefs[index]}
+                style={[
+                  styles.otpInput,
+                  otpValues[index] && styles.otpInputActive,
+                ]}
+                value={otpValues[index]}
+                onChangeText={(value) => handleOtpChange(value, index)}
+                onKeyPress={(e) => handleOtpKeyPress(e, index)}
+                keyboardType="number-pad"
+                maxLength={1}
+                secureTextEntry
+                autoFocus={index === 0}
+              />
+            ))}
           </View>
 
           {/* Verify Button */}
-          <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
+          <TouchableOpacity 
+            style={[styles.verifyButton, verifyOTPMutation.isPending && styles.verifyButtonDisabled]} 
+            onPress={handleVerify}
+            disabled={verifyOTPMutation.isPending}
+          >
             <Text style={styles.verifyButtonText}>Verify</Text>
           </TouchableOpacity>
+
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
 
           {/* Resend Code / Timer */}
           <View style={styles.resendContainer}>
@@ -126,6 +174,7 @@ const OTPScreen = () => {
           </View>
         </View>
       </ScrollView>
+      <Spinner visible={verifyOTPMutation.isPending}  textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
   );
 };
@@ -179,20 +228,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   otpInput: {
-    width: 48,
-    height: 48,
-    borderRadius: 25,
+    width: 50,
+    height: 50,
+    borderRadius: 12,
     backgroundColor: '#f6f6f6',
     borderWidth: 1,
     borderColor: '#f6f6f6',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  hiddenInput: {
-    position: 'absolute',
-    width: 1,
-    height: 1,
-    opacity: 0,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#11182e',
+    textAlign: 'center',
   },
   otpInputActive: {
     borderColor: '#11182e',
@@ -228,6 +275,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  verifyButtonDisabled: {
+    backgroundColor: '#c5c9d1',
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  spinnerText: {
+    color: '#11182e',
   },
 });
 

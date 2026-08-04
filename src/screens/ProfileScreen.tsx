@@ -2,13 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    // Phone stays in AsyncStorage — Login screen will read & show it
-    // Only "Switch Account" clears the saved phone
+  const handleLogout = async () => {
+    await logout();
     navigation.reset({
       index: 0,
       routes: [{ name: 'Login' as never }],
