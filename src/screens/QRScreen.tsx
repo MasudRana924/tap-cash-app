@@ -1,62 +1,102 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import QRCode from 'react-native-qrcode-svg';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 const QRScreen = () => {
+  const navigation = useNavigation<any>();
+
+  // User's unique identifier for QR code - in real app this would come from user context
+  const userQRData = JSON.stringify({
+    userId: '123456789',
+    phone: '+8801700000000',
+    name: 'Sarah',
+    type: 'payment'
+  });
+
+  const handleScanQR = () => {
+    // Navigate to scan screen
+    navigation.navigate('ScanQR');
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.qrContainer}>
-        <View style={styles.qrPlaceholder}>
-          <Text style={styles.qrText}>QR Code</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>QR Code</Text>
+          <View style={styles.placeholder} />
         </View>
+
+        {/* QR Code */}
+        <View style={styles.qrContainer}>
+          <QRCode
+            value={userQRData}
+            size={250}
+            color="#F8623F"
+            backgroundColor="#FFFFFF"
+            logoSize={60}
+            logoBackgroundColor="#F8623F"
+            logoBorderRadius={12}
+            quietZone={10}
+          />
+        </View>
+
+        {/* Scan Button */}
+        <TouchableOpacity style={styles.scanButton} onPress={handleScanQR}>
+          <Text style={styles.scanButtonText}>Scan QR Code</Text>
+        </TouchableOpacity>
       </View>
-      <Text style={styles.subtitle}>Scan to pay or receive</Text>
-      <TouchableOpacity style={styles.scanButton}>
-        <Text style={styles.scanButtonText}>Scan QR</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
     padding: 20,
   },
-  qrContainer: {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 30,
   },
-  qrPlaceholder: {
-    width: 200,
-    height: 200,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#007AFF',
-    borderStyle: 'dashed',
+  backButton: {
+    padding: 5,
   },
-  qrText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-  subtitle: {
+  headerTitle: {
     fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
+    fontWeight: 'bold',
+    color: '#11182e',
+    flex: 1,
+    textAlign: 'center',
+  },
+  placeholder: {
+    width: 34,
+  },
+  qrContainer: {
+    marginBottom: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scanButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    padding: 15,
-    paddingHorizontal: 40,
+    alignSelf: 'center',
+    paddingHorizontal: 48,
+    paddingVertical: 16,
   },
   scanButtonText: {
-    color: '#fff',
+    color: '#F8623F',
     fontSize: 16,
     fontWeight: '600',
   },

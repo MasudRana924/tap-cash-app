@@ -10,6 +10,7 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
@@ -87,19 +88,20 @@ const AmountScreen = () => {
   const quickAmounts = ['500', '1,000', '2,000', '5,000'];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Enter Amount</Text>
-          <View style={styles.placeholder} />
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Enter Amount</Text>
+            <View style={styles.placeholder} />
+          </View>
 
         {/* Recipient Info */}
         <View style={styles.recipientContainer}>
@@ -208,10 +210,15 @@ const AmountScreen = () => {
       />
       <Spinner visible={sendMoneyMutation.isPending} textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -225,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   backButton: {
      padding: 5,

@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
@@ -43,19 +44,20 @@ const CashOutAmountScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Cash Out</Text>
-          <View style={styles.placeholder} />
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Cash Out</Text>
+            <View style={styles.placeholder} />
+          </View>
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
@@ -103,10 +105,15 @@ const CashOutAmountScreen = () => {
         onSuccess={handlePINSuccess}
       />
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#11182e',
     flex: 1,

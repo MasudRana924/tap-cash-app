@@ -18,6 +18,10 @@ import CashOutAmountScreen from '../screens/CashOutAmountScreen';
 import AddMoneyScreen from '../screens/AddMoneyScreen';
 import AddMoneyCardScreen from '../screens/AddMoneyCardScreen';
 import AddMoneyAmountScreen from '../screens/AddMoneyAmountScreen';
+import BankSelectionScreen from '../screens/BankSelectionScreen';
+import CardSelectionScreen from '../screens/CardSelectionScreen';
+import CardInfoScreen from '../screens/CardInfoScreen';
+import BankAccountEntryScreen from '../screens/BankAccountEntryScreen';
 import SavingsScreen from '../screens/SavingsScreen';
 import SavingsAmountScreen from '../screens/SavingsAmountScreen';
 import MobileRechargeScreen from '../screens/MobileRechargeScreen';
@@ -30,6 +34,7 @@ import LoanScreen from '../screens/LoanScreen';
 import LoanAmountScreen from '../screens/LoanAmountScreen';
 import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
 import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
+import ScanQRScreen from '../screens/ScanQRScreen';
 import { useAuth } from '../context/AuthContext';
 
 export type RootStackParamList = {
@@ -48,7 +53,11 @@ export type RootStackParamList = {
   CashOutAmount: undefined;
   AddMoney: undefined;
   AddMoneyCard: undefined;
-  AddMoneyAmount: undefined;
+  AddMoneyAmount: { method: string; bank?: string; cardType?: string };
+  BankSelection: undefined;
+  CardSelection: undefined;
+  CardInfo: { amount: string; cardType: string };
+  BankAccountEntry: { amount: string; bank: string };
   Savings: undefined;
   SavingsAmount: undefined;
   MobileRecharge: undefined;
@@ -61,6 +70,7 @@ export type RootStackParamList = {
   LoanAmount: undefined;
   CreateSavingsPlan: undefined;
   TransactionDetails: TransactionDetailParams;
+  ScanQR: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -90,6 +100,10 @@ const RootNavigator = () => {
         <Stack.Screen name="AddMoney" component={AddMoneyScreen} />
         <Stack.Screen name="AddMoneyCard" component={AddMoneyCardScreen} />
         <Stack.Screen name="AddMoneyAmount" component={AddMoneyAmountScreen} />
+        <Stack.Screen name="BankSelection" component={BankSelectionScreen} />
+        <Stack.Screen name="CardSelection" component={CardSelectionScreen} />
+        <Stack.Screen name="CardInfo" component={CardInfoScreen} />
+        <Stack.Screen name="BankAccountEntry" component={BankAccountEntryScreen} />
         <Stack.Screen name="Savings" component={SavingsScreen} />
         <Stack.Screen name="SavingsAmount" component={SavingsAmountScreen} />
         <Stack.Screen name="MobileRecharge" component={MobileRechargeScreen} />
@@ -102,6 +116,7 @@ const RootNavigator = () => {
         <Stack.Screen name="LoanAmount" component={LoanAmountScreen} />
         <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlanScreen} />
         <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
+        <Stack.Screen name="ScanQR" component={ScanQRScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

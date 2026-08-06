@@ -39,7 +39,7 @@ const CreateSavingsPlanScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back-circle-outline" size={22} color="#111827" />
+            <Icon name="chevron-back-circle-outline" size={24} color="#111827" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Create Savings Plan</Text>
           <View style={styles.placeholder} />
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#111827',
     flex: 1,
     textAlign: 'center',

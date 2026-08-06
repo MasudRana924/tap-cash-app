@@ -134,6 +134,9 @@ const TransactionsScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="chevron-back-circle-outline" size={24} color="#000" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Transactions</Text>
         <TouchableOpacity style={styles.filterIconBtn} activeOpacity={0.7}>
           <Icon name="options-outline" size={22} color="#374151" />
@@ -227,10 +230,15 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: '800',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#111827',
     letterSpacing: -0.3,
+    flex: 1,
+    textAlign: 'center',
+  },
+  backButton: {
+    padding: 5,
   },
   filterIconBtn: {
     width: 38,

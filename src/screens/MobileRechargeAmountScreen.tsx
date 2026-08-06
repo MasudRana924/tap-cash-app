@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
@@ -42,50 +43,62 @@ const MobileRechargeAmountScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Mobile Recharge</Text>
-          <View style={styles.placeholder} />
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Enter Amount</Text>
+            <View style={styles.placeholder} />
+          </View>
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
+          <Text style={styles.amountLabel}>Amount (BDT)</Text>
           <View style={styles.amountInputContainer}>
+            <Text style={styles.currencySymbol}>৳</Text>
             <TextInput
               ref={amountInputRef}
               style={styles.amountInput}
-              placeholder="৳0.00"
+              placeholder="0"
               placeholderTextColor="#999"
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
-              textAlign="center"
-              textAlignVertical="center"
               selectionColor="#11182e"
             />
           </View>
+          <Text style={styles.balanceAmount}>Balance: {availableBalance}</Text>
         </View>
 
-        {/* Available Balance */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceAmount}>{availableBalance}</Text>
+        {/* Quick Amounts */}
+        <View style={styles.quickAmountContainer}>
+          {['50', '100', '200', '500'].map((amt) => (
+            <TouchableOpacity 
+              key={amt} 
+              style={styles.quickAmountButton}
+              onPress={() => setAmount(amt)}
+            >
+              <Text style={styles.quickAmountText}>৳{amt}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        {/* Confirm Button */}
+        <View style={styles.flexSpacer} />
+
+        {/* Continue Button */}
         <TouchableOpacity
           style={[styles.confirmButton, amount.length === 0 && styles.confirmButtonDisabled]}
           onPress={handleConfirm}
           disabled={amount.length === 0}
         >
-          <Text style={styles.confirmButtonText}>Confirm</Text>
+          <Text style={[styles.confirmButtonText, amount.length === 0 && styles.confirmButtonTextDisabled]}>Continue</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -96,10 +109,15 @@ const MobileRechargeAmountScreen = () => {
         onSuccess={handlePINSuccess}
       />
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -107,64 +125,98 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
+    paddingBottom: 30,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   backButton: {
     padding: 5,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#11182e',
     flex: 1,
     textAlign: 'center',
   },
   placeholder: {
-    width: 34,
+    width: 40,
   },
   amountSection: {
-    marginBottom: 30,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  amountLabel: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 10,
   },
   amountInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    marginBottom: 10,
+  },
+  currencySymbol: {
+    fontSize: 48,
+    fontWeight: '500',
+    color: '#8e96a3',
+    marginRight: 10,
   },
   amountInput: {
-    fontSize: 32,
+    fontSize: 48,
     fontWeight: 'bold',
     color: '#11182e',
-  },
-  balanceCard: {
-    borderRadius: 12,
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
+    minWidth: 40,
+    paddingVertical: 0,
   },
   balanceAmount: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: '#666',
+    fontSize: 13,
+    color: '#999',
+  },
+  quickAmountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  quickAmountButton: {
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    borderRadius: 20,
+    flex: 1,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  quickAmountText: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
+  },
+  flexSpacer: {
+    flex: 1,
   },
   confirmButton: {
     backgroundColor: '#11182e',
     borderRadius: 12,
-    padding: 18,
+    padding: 16,
     alignItems: 'center',
+    marginTop: 20,
   },
   confirmButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#d6d9df',
   },
   confirmButtonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
+  },
+  confirmButtonTextDisabled: {
+    color: '#9ea7b4',
   },
 });
 

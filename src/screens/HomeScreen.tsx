@@ -218,27 +218,7 @@ const HomeScreen = () => {
             {/* Available Balance Card */}
             <View style={styles.balanceCard}>
               <View style={styles.balanceHeader}>
-                <TouchableOpacity
-                  style={styles.balanceTitleRow}
-                  onPress={() => setShowBalance(!showBalance)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.balanceTitle}>Available Balance</Text>
-                  <Icon
-                    name={showBalance ? 'eye-outline' : 'eye-off-outline'}
-                    size={18}
-                    color="#94A3B8"
-                    style={{ marginLeft: 6 }}
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.plusButton}
-                  onPress={() => navigation.navigate('AddMoney')}
-                  activeOpacity={0.8}
-                >
-                  <Icon name="add-outline" size={22} color="#334155" />
-                </TouchableOpacity>
+                <Text style={styles.balanceTitle}>Available Balance</Text>
               </View>
 
               {/* Amount Display */}
@@ -273,11 +253,11 @@ const HomeScreen = () => {
 
                 <TouchableOpacity
                   style={styles.historyBtn}
-                  onPress={() => navigation.navigate('Transactions')}
+                  onPress={() => navigation.navigate('AddMoney')}
                   activeOpacity={0.85}
                 >
-                  <Icon name="receipt-outline" size={18} color="#0F172A" style={{ marginRight: 8 }} />
-                  <Text style={styles.historyBtnText}>History</Text>
+                  <Icon name="add-circle-outline" size={18} color="#0F172A" style={{ marginRight: 8 }} />
+                  <Text style={styles.historyBtnText}>Add Money</Text>
                 </TouchableOpacity>
               </View>
             </View>

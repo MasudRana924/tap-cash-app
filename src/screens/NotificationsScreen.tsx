@@ -86,7 +86,7 @@ const NotificationsScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Icon name="chevron-back-circle-outline" size={22} color="#111827" />
+          <Icon name="chevron-back-circle-outline" size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
         <TouchableOpacity onPress={markAllRead} activeOpacity={0.7}>
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#111827',
   },
   markAllText: {
