@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,11 @@ import {
   Platform,
   ScrollView,
   FlatList,
-  PermissionsAndroid,
-  Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ScreenHeader from '../components/ScreenHeader';
 
 interface Agent {
   id: string;
@@ -79,14 +78,7 @@ const CashOutScreen = () => {
       >
         <View style={styles.content}>
           <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            {/* Header */}
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>Cash Out</Text>
-              <View style={styles.placeholder} />
-            </View>
+            <ScreenHeader title="Cash Out" />
 
             {/* Agent Code Input */}
             <View style={styles.inputSection}>

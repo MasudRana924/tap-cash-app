@@ -10,12 +10,15 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
+import { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 
 const MobileRechargeAmountScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<RootStackParamList>>();
   const [amount, setAmount] = useState('');
   const [showPINModal, setShowPINModal] = useState(false);
   const amountInputRef = useRef<TextInput>(null);
@@ -49,14 +52,7 @@ const MobileRechargeAmountScreen = () => {
         style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Enter Amount</Text>
-            <View style={styles.placeholder} />
-          </View>
+          <ScreenHeader title="Enter Amount" />
 
         {/* Amount Section */}
         <View style={styles.amountSection}>

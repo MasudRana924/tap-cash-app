@@ -14,6 +14,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 
 const AddMoneyAmountScreen = () => {
   const navigation = useNavigation();
@@ -66,14 +67,7 @@ const AddMoneyAmountScreen = () => {
         style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Enter Amount</Text>
-            <View style={styles.placeholder} />
-          </View>
+          <ScreenHeader title="Enter Amount" onBackPress={handleBack} />
 
         {/* Amount Section */}
         <View style={styles.amountSection}>

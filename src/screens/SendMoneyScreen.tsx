@@ -8,20 +8,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  FlatList,
-  PermissionsAndroid,
   Alert,
-  Image,
+  PermissionsAndroid,
+  FlatList,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Contacts from 'react-native-contacts';
 import { useMutation } from '@tanstack/react-query';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 
 interface Contact {
   id: string;
@@ -151,14 +151,7 @@ const SendMoneyScreen = () => {
       >
         <View style={styles.content}>
           <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            {/* Header */}
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>Send Money</Text>
-              <View style={styles.placeholder} />
-            </View>
+            <ScreenHeader title="Send Money" />
 
             {/* Phone Input with Bangladesh Flag */}
             <View style={styles.phoneContainer}>

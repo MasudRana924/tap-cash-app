@@ -3,12 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ScreenHeader from '../components/ScreenHeader';
 import { TransactionDetailParams } from './TransactionDetailsScreen';
 
 type FilterId = 'all' | 'sent' | 'received' | 'bill' | 'recharge';
@@ -132,16 +133,14 @@ const TransactionsScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Transactions</Text>
-        <TouchableOpacity style={styles.filterIconBtn} activeOpacity={0.7}>
-          <Icon name="options-outline" size={22} color="#374151" />
-        </TouchableOpacity>
-      </View>
+      <ScreenHeader 
+        title="Transactions" 
+        rightElement={
+          <TouchableOpacity style={styles.filterIconBtn} activeOpacity={0.7}>
+            <Icon name="options-outline" size={22} color="#374151" />
+          </TouchableOpacity>
+        }
+      />
 
       {/* Filter Chips */}
       <ScrollView

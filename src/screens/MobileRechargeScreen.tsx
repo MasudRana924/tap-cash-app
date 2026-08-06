@@ -5,11 +5,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ScreenHeader from '../components/ScreenHeader';
 
 interface Operator {
   id: string;
@@ -45,14 +48,7 @@ const MobileRechargeScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Mobile Recharge</Text>
-            <View style={styles.placeholder} />
-          </View>
+          <ScreenHeader title="Mobile Recharge" />
 
           {/* Phone Input */}
           <View style={styles.inputSection}>

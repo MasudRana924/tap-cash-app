@@ -20,6 +20,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import ScreenHeader from '../components/ScreenHeader';
 
 const AmountScreen = () => {
   const navigation = useNavigation();
@@ -94,14 +95,7 @@ const AmountScreen = () => {
         style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Enter Amount</Text>
-            <View style={styles.placeholder} />
-          </View>
+          <ScreenHeader title="Enter Amount" />
 
         {/* Recipient Info */}
         <View style={styles.recipientContainer}>

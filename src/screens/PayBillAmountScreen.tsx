@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
+import ScreenHeader from '../components/ScreenHeader';
 
 const PayBillAmountScreen = () => {
   const navigation = useNavigation();
@@ -49,14 +50,7 @@ const PayBillAmountScreen = () => {
         style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="chevron-back-circle-outline" size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Pay Bill</Text>
-          <View style={styles.placeholder} />
-        </View>
+          <ScreenHeader title="Pay Bill" />
 
         {/* Amount Section */}
         <View style={styles.amountSection}>
