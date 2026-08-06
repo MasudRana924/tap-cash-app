@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "811997839498",
+    "project_id": "reactnativenotification-a5cba",
+    "storage_bucket": "reactnativenotification-a5cba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811997839498:android:492b99d69c08b05516ad73",
+        "android_client_info": {
+          "package_name": "com.tapcash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPhZmR_8AhsHrSAmHs68ngnWJfOJEjaaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

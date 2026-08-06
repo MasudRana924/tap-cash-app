@@ -1,4 +1,5 @@
-const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
+// const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
+const BASE_URL = 'http://172.31.224.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -202,6 +203,41 @@ class APIService {
 
     return data as SendMoneyResponse;
   }
+
+  async saveFcmToken(token: string, fcmToken: string): Promise<{ successMessage: string }> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const body = { fcmToken };
+    console.log('Save FCM Token API URL:', `${this.baseURL}/auth/save-fcm-token`);
+    console.log('Save FCM Token API Body:', body);
+
+    const response = await fetch(`${this.baseURL}/auth/save-fcm-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    const responseText = await response.text();
+    console.log('Save FCM Token API Status:', response.status);
+    console.log('Save FCM Token API Response:', responseText);
+
+    let data: any;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      data = { successMessage: responseText, errorMessage: responseText };
+    }
+
+    if (!response.ok) {
+      throw (typeof data === 'object' ? data : { errorMessage: responseText }) as ErrorResponse;
+    }
+
+    return data as { successMessage: string };
+  }
 }
+
 
 export const apiService = new APIService(BASE_URL);

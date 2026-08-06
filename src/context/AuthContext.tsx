@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginResponse, VerifyOTPResponse } from '../services/api';
+import { apiService } from '../services/api';
 
 interface AuthContextType {
   token: string | null;
@@ -11,6 +13,7 @@ interface AuthContextType {
   login: (token: string, user: LoginResponse['user'], wallet: LoginResponse['wallet']) => Promise<void>;
   logout: () => Promise<void>;
   setAuthData: (token: string, user: LoginResponse['user'], wallet: LoginResponse['wallet']) => void;
+  saveFcmToken: (fcmToken: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,6 +26,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     loadAuthData();
+  }, []);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'background' || nextAppState === 'inactive') {
+        logout();
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   const loadAuthData = async () => {
@@ -82,6 +99,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setWallet(authWallet);
   };
 
+  const saveFcmToken = async (fcmToken: string) => {
+    if (!token) {
+      console.log('No auth token available, cannot save FCM token');
+      return;
+    }
+
+    try {
+      console.log('Saving FCM token to backend:', fcmToken);
+      const res = await apiService.saveFcmToken(token, fcmToken);
+      console.log('FCM token saved successfully:', res);
+    } catch (error) {
+      console.error('Failed to save FCM token:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -93,6 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login,
         logout,
         setAuthData,
+        saveFcmToken,
       }}
     >
       {children}

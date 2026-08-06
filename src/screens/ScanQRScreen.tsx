@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
-import { RNCamera } from 'react-native-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,7 +7,7 @@ const ScanQRScreen = () => {
   const navigation = useNavigation();
   const [scanned, setScanned] = useState(false);
 
-  const handleBarCodeRead = ({ data }: any) => {
+  const handleBarCodeRead = (data: string) => {
     if (scanned) return;
     setScanned(true);
 
@@ -26,7 +25,6 @@ const ScanQRScreen = () => {
           {
             text: 'Send Money',
             onPress: () => {
-              // Navigate to send money screen with scanned user data
               // @ts-ignore - navigation typing
               navigation.navigate('SendMoney', { scannedUser: qrData });
             },
@@ -53,30 +51,23 @@ const ScanQRScreen = () => {
           <View style={{ width: 40 }} />
         </View>
 
-        <RNCamera
-          style={styles.camera}
-          type={RNCamera.Constants.Type.back}
-          captureAudio={false}
-          onBarCodeRead={handleBarCodeRead}
-          androidCameraPermissionOptions={{
-            title: 'Camera Permission',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'OK',
-            buttonNegative: 'Cancel',
-          }}
-        >
-          <View style={styles.overlay}>
-            <View style={styles.scanArea}>
-              <View style={styles.scanCorner} />
-              <View style={[styles.scanCorner, styles.scanCornerRight]} />
-              <View style={[styles.scanCorner, styles.scanCornerBottom]} />
-              <View style={[styles.scanCorner, styles.scanCornerBottomRight]} />
-            </View>
-            <Text style={styles.scanText}>
-              {scanned ? 'QR Code Scanned!' : 'Align QR code within the frame'}
-            </Text>
+        <View style={styles.cameraPlaceholder}>
+          <Icon name="camera" size={80} color="#666" />
+          <Text style={styles.placeholderText}>Camera temporarily disabled</Text>
+          <Text style={styles.placeholderSubtext}>QR scanning will be re-enabled soon</Text>
+        </View>
+
+        <View style={styles.overlay}>
+          <View style={styles.scanArea}>
+            <View style={styles.scanCorner} />
+            <View style={[styles.scanCorner, styles.scanCornerRight]} />
+            <View style={[styles.scanCorner, styles.scanCornerBottom]} />
+            <View style={[styles.scanCorner, styles.scanCornerBottomRight]} />
           </View>
-        </RNCamera>
+          <Text style={styles.scanText}>
+            {scanned ? 'QR Code Scanned!' : 'Align QR code within the frame'}
+          </Text>
+        </View>
 
         {!scanned && (
           <TouchableOpacity
@@ -186,6 +177,28 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  errorText: {
+    color: '#fff',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  cameraPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1A1A2E',
+  },
+  placeholderText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 16,
+  },
+  placeholderSubtext: {
+    color: '#999',
+    fontSize: 14,
+    marginTop: 8,
   },
 });
 

@@ -14,14 +14,34 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { useMutation } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useMessaging } from '../hooks/useMessaging';
 
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
-  const { token, isLoading: authLoading } = useAuth();
+  const { token, saveFcmToken, isLoading: authLoading } = useAuth();
+  const { fcmToken, getTokens } = useMessaging();
   const [isLoading, setIsLoading] = useState(true);
   const [showBalance, setShowBalance] = useState(false);
   const [balance, setBalance] = useState<string | null>(null);
   const [balanceLoading, setBalanceLoading] = useState(false);
+
+  useEffect(() => {
+    const handleSaveFcmToken = async () => {
+      if (!token) return;
+
+      let activeToken = fcmToken;
+      if (!activeToken) {
+        activeToken = await getTokens();
+      }
+
+      if (activeToken) {
+        console.log('HomeScreen: Syncing FCM token to backend =>', activeToken);
+        saveFcmToken(activeToken);
+      }
+    };
+
+    handleSaveFcmToken();
+  }, [token, fcmToken, getTokens, saveFcmToken]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,6 +50,7 @@ const HomeScreen = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
 
   const balanceMutation = useMutation({
     mutationFn: async () => {
