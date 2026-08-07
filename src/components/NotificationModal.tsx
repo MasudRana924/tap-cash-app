@@ -9,6 +9,8 @@ import {
   Animated,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { NavigationContainerRef } from '@react-navigation/native';
+import type { RootStackParamList } from '../navigation/RootNavigator';
 
 interface NotificationModalProps {
   visible: boolean;
@@ -16,14 +18,15 @@ interface NotificationModalProps {
   body: string;
   imageUrl?: string;
   onClose: () => void;
+  navigationRef?: React.RefObject<NavigationContainerRef<RootStackParamList> | null>;
 }
 
 const NotificationModal: React.FC<NotificationModalProps> = ({
   visible,
   title,
-  body,
   imageUrl,
   onClose,
+  navigationRef,
 }) => {
   const slideAnim = React.useRef(new Animated.Value(-100)).current;
 
@@ -34,6 +37,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
         duration: 300,
         useNativeDriver: true,
       }).start();
+
+      // Auto-hide after 1 second
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 30000);
+
+      return () => clearTimeout(timer);
     } else {
       Animated.timing(slideAnim, {
         toValue: -100,
@@ -53,6 +63,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     });
   };
 
+  const handlePress = () => {
+    handleClose();
+    // Navigate to NotificationsScreen using navigation ref
+    if (navigationRef?.current) {
+      navigationRef.current.navigate('Notifications' as never);
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -69,8 +87,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             },
           ]}
         >
-
-          <View style={styles.content}>
+          <TouchableOpacity
+            style={styles.content}
+            onPress={handlePress}
+            activeOpacity={0.8}
+          >
             {imageUrl ? (
               <Image source={{ uri: imageUrl }} style={styles.image} />
             ) : (
@@ -87,7 +108,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                 {body}
               </Text> */}
             </View>
-          </View>
+          </TouchableOpacity>
         </Animated.View>
       </View>
     </Modal>
@@ -103,8 +124,10 @@ const styles = StyleSheet.create({
   },
   container: {
     marginHorizontal: 16,
-    backgroundColor: '#d8d5d5',
-    borderRadius: 16,
+    backgroundColor: '#F8623F',
+    borderRadius: 12,
+     borderWidth: 1,
+    borderColor: '#F8623F',
     padding: 16,
   },
   closeButton: {
@@ -134,16 +157,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 4,
-  },
-  body: {
     fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
+    fontWeight: '500',
+    color: '#fff',
   },
+
 });
 
 export default NotificationModal;

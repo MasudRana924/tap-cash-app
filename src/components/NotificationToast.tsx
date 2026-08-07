@@ -70,8 +70,11 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   toast: {
-    // backgroundColor: '#f6f6f6',
+    backgroundColor: '#F8623F',
     borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#F8623F',
+   
     padding: 6,
     flexDirection: 'row',
     alignItems: 'center',
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#000000',
+    color: '#11182e',
     marginBottom: 4,
   },
   body: {

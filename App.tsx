@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import RootNavigator from './src/navigation/RootNavigator';
+import RootNavigator, { navigationRef } from './src/navigation/RootNavigator';
 import { AuthProvider } from './src/context/AuthContext';
 import { NotificationProvider } from './src/context/NotificationContext';
 import { NotificationToast } from './src/components/NotificationToast';
@@ -74,6 +74,7 @@ function AppContent() {
         body={notificationModal.body}
         imageUrl={notificationModal.imageUrl}
         onClose={handleCloseNotificationModal}
+        navigationRef={navigationRef}
       />
     </>
   );
