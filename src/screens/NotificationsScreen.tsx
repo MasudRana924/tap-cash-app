@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useMutation } from '@tanstack/react-query';
+import { apiService } from '../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface Notification {
+interface NotificationItem {
   id: string;
   title: string;
   message: string;
@@ -21,61 +25,47 @@ interface Notification {
   isUnread: boolean;
 }
 
+const SkeletonCard = () => (
+  <View style={styles.card}>
+    <View style={[styles.iconWrap, styles.skeleton]} />
+    <View style={styles.cardContent}>
+      <View style={styles.cardTopRow}>
+        <View style={[styles.skeletonTitle, styles.skeleton]} />
+        <View style={[styles.skeletonTime, styles.skeleton]} />
+      </View>
+      <View style={[styles.skeletonMessage, styles.skeleton]} />
+    </View>
+  </View>
+);
+
 const NotificationsScreen = () => {
   const navigation = useNavigation();
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      title: 'Money Received',
-      message: 'Nadia Islam sent you ৳5,000',
-      time: '2 min ago',
-      icon: 'arrow-down',
-      iconColor: '#10b981',
-      iconBg: '#ecfdf5',
-      isUnread: true,
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+
+  const notificationsMutation = useMutation({
+    mutationFn: async () => {
+      const token = await AsyncStorage.getItem('token');
+      return apiService.getPublicNotifications(token || undefined);
     },
-    {
-      id: '2',
-      title: 'Bill Paid',
-      message: 'DESCO ৳2,340 paid successfully',
-      time: '1 hr ago',
-      icon: 'flash',
-      iconColor: '#f59e0b',
-      iconBg: '#fffbeb',
-      isUnread: true,
+    onSuccess: (data) => {
+      const mappedNotifications: NotificationItem[] = data.notifications.map((notif) => ({
+        id: notif.id.toString(),
+        title: notif.title,
+        message: notif.description,
+        time: new Date(notif.created_at).toLocaleString(),
+        icon: 'notifications',
+        iconColor: '#6366f1',
+        iconBg: '#ede9fe',
+        isUnread: false,
+      }));
+      setNotifications(mappedNotifications);
     },
-    {
-      id: '3',
-      title: 'Special Offer!',
-      message: 'Get 10% cashback on mobile recharge',
-      time: '3 hr ago',
-      icon: 'gift-outline',
-      iconColor: '#8b5cf6',
-      iconBg: '#ede9fe',
-      isUnread: false,
-    },
-    {
-      id: '4',
-      title: 'Login Alert',
-      message: 'New login from Dhaka, Bangladesh',
-      time: 'Yesterday',
-      icon: 'shield-outline',
-      iconColor: '#6366f1',
-      iconBg: '#ede9fe',
-      isUnread: false,
-    },
-    {
-      id: '5',
-      title: 'Transfer Done',
-      message: 'You sent ৳800 to Karim Hossain',
-      time: '2 days ago',
-      icon: 'arrow-up',
-      iconColor: '#11182e',
-      iconBg: '#f3f4f6',
-      isUnread: false,
-    },
-  ]);
+  });
+
+  useEffect(() => {
+    notificationsMutation.mutate();
+  }, []);
 
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, isUnread: false })));
@@ -95,43 +85,70 @@ const NotificationsScreen = () => {
       </View>
 
       {/* List */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-      >
-        {notifications.map((item, index) => (
+      {notificationsMutation.isPending ? (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        >
+          {[1, 2, 3, 4, 5].map((item) => (
+            <SkeletonCard key={item} />
+          ))}
+        </ScrollView>
+      ) : notificationsMutation.isError ? (
+        <View style={styles.errorContainer}>
+          <Icon name="alert-circle" size={48} color="#ef4444" />
+          <Text style={styles.errorText}>Failed to load notifications</Text>
           <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.card,
-              index === notifications.length - 1 && { marginBottom: 0 },
-            ]}
-            activeOpacity={0.75}
-            onPress={() =>
-              setNotifications(prev =>
-                prev.map(n => (n.id === item.id ? { ...n, isUnread: false } : n)),
-              )
-            }
+            style={styles.retryButton}
+            onPress={() => notificationsMutation.mutate()}
           >
-            {/* Icon */}
-            <View style={[styles.iconWrap, { backgroundColor: item.iconBg }]}>
-              <Icon name={item.icon as any} size={18} color={item.iconColor} />
-            </View>
-
-            {/* Content */}
-            <View style={styles.cardContent}>
-              <View style={styles.cardTopRow}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                <View style={styles.cardMeta}>
-                  <Text style={styles.cardTime}>{item.time}</Text>
-                  {item.isUnread && <View style={styles.unreadDot} />}
-                </View>
-              </View>
-              <Text style={styles.cardMessage}>{item.message}</Text>
-            </View>
+            <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
-        ))}
-      </ScrollView>
+        </View>
+      ) : notifications.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Icon name="notifications-off" size={64} color="#d1d5db" />
+          <Text style={styles.emptyText}>No notifications</Text>
+        </View>
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        >
+          {notifications.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.card,
+                index === notifications.length - 1 && { marginBottom: 0 },
+              ]}
+              activeOpacity={0.75}
+              onPress={() =>
+                setNotifications(prev =>
+                  prev.map(n => (n.id === item.id ? { ...n, isUnread: false } : n)),
+                )
+              }
+            >
+              {/* Icon */}
+              <View style={[styles.iconWrap, { backgroundColor: item.iconBg }]}>
+                <Icon name={item.icon as any} size={18} color={item.iconColor} />
+              </View>
+
+              {/* Content */}
+              <View style={styles.cardContent}>
+                <View style={styles.cardTopRow}>
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                  <View style={styles.cardMeta}>
+                    <Text style={styles.cardTime}>{item.time}</Text>
+                    {item.isUnread && <View style={styles.unreadDot} />}
+                  </View>
+                </View>
+                <Text style={styles.cardMessage}>{item.message}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -166,6 +183,64 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     color: '#9ca3af',
+  },
+
+  // Loading, Error, Empty states
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  skeleton: {
+    backgroundColor: '#e5e7eb',
+  },
+  skeletonTitle: {
+    height: 16,
+    width: '60%',
+    borderRadius: 4,
+  },
+  skeletonTime: {
+    height: 12,
+    width: 50,
+    borderRadius: 4,
+  },
+  skeletonMessage: {
+    height: 14,
+    width: '80%',
+    borderRadius: 4,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#6b7280',
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: '#6366f1',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#9ca3af',
+    marginTop: 12,
   },
 
   // List

@@ -6,20 +6,36 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  ActivityIndicator,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useMutation } from '@tanstack/react-query';
 import { apiService, Notification } from '../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const SkeletonCard = () => (
+  <View style={styles.notificationCard}>
+    <View style={[styles.notificationImage, styles.skeleton]} />
+    <View style={styles.notificationContent}>
+      <View style={[styles.skeletonTitle, styles.skeleton]} />
+      <View style={[styles.skeletonDescription, styles.skeleton]} />
+      <View style={[styles.skeletonDate, styles.skeleton]} />
+    </View>
+  </View>
+);
 
 const NotificationScreen = () => {
   const navigation = useNavigation();
 
   const notificationsMutation = useMutation({
     mutationFn: async () => {
-      return apiService.getPublicNotifications();
+      const token = await AsyncStorage.getItem('token');
+      return apiService.getPublicNotifications(token || undefined);
+    },
+    onError: (error: any) => {
+      console.error('Notifications API error:', JSON.stringify(error, null, 2));
     },
   });
 
@@ -60,9 +76,11 @@ const NotificationScreen = () => {
       {/* Content */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {notificationsMutation.isPending ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#007AFF" />
-          </View>
+          <>
+            {[1, 2, 3, 4, 5].map((item) => (
+              <SkeletonCard key={item} />
+            ))}
+          </>
         ) : notificationsMutation.isError ? (
           <View style={styles.errorContainer}>
             <Icon name="alert-circle" size={48} color="#FF3B30" />
@@ -212,6 +230,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#999',
     marginTop: 12,
+  },
+  skeleton: {
+    backgroundColor: '#e5e7eb',
+  },
+  skeletonTitle: {
+    height: 20,
+    width: '60%',
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  skeletonDescription: {
+    height: 16,
+    width: '80%',
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  skeletonDate: {
+    height: 14,
+    width: 40,
+    borderRadius: 4,
   },
 });
 

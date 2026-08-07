@@ -238,10 +238,27 @@ class APIService {
     return data as { successMessage: string };
   }
 
-  async getPublicNotifications(): Promise<PublicNotificationsResponse> {
-    return this.request<PublicNotificationsResponse>('/public/get-public/notifications', {
+  async getPublicNotifications(token?: string): Promise<PublicNotificationsResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${this.baseURL}/public/notifications`, {
       method: 'GET',
+      headers,
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as PublicNotificationsResponse;
   }
 }
 
