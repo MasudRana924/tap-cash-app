@@ -70,19 +70,13 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   toast: {
-    backgroundColor: '#FFFFFF',
+    // backgroundColor: '#f6f6f6',
     borderRadius: 18,
     padding: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    justifyContent: 'center',
+  
   },
   iconContainer: {
     width: 40,
@@ -97,11 +91,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   contentContainer: {
-    flex: 1,
+    // flex: 1,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
     color: '#000000',
     marginBottom: 4,
   },
