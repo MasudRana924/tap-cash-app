@@ -1,4 +1,3 @@
-import { Alert } from 'react-native';
 import {
   getMessaging,
   setBackgroundMessageHandler,
@@ -6,6 +5,13 @@ import {
   onNotificationOpenedApp,
   getInitialNotification,
 } from '@react-native-firebase/messaging';
+
+// Global callback for foreground notifications
+let foregroundNotificationCallback: ((title: string, body: string, imageUrl?: string) => void) | null = null;
+
+export const setForegroundNotificationCallback = (callback: (title: string, body: string, imageUrl?: string) => void) => {
+  foregroundNotificationCallback = callback;
+};
 
 export const notificationListeners = () => {
   const messagingInstance = getMessaging();
@@ -19,11 +25,12 @@ export const notificationListeners = () => {
   const unsubscribeOnMessage = onMessage(messagingInstance, async (data: any) => {
     console.debug('Received foreground app notification', data);
     const { title, body } = data?.notification as any;
-    Alert.alert(
-      'Foreground Notification',
-      `${title}\n${body}\n${JSON.stringify(data?.data, null, 2)}`
-    );
-    // Handle foreground related things from here
+    const imageUrl = data?.data?.image_url || data?.notification?.image;
+
+    // Call the callback to show custom modal
+    if (foregroundNotificationCallback) {
+      foregroundNotificationCallback(title || 'Notification', body || '', imageUrl);
+    }
   });
 
   // Background Notification - when user taps notification while app is in background
