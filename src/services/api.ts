@@ -1,5 +1,5 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-const BASE_URL = 'http://172.31.224.1:8080/api/v1';
+const BASE_URL = 'http://192.168.10.78:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -227,7 +227,7 @@ class APIService {
     let data: any;
     try {
       data = JSON.parse(responseText);
-    } catch (e) {
+    } catch (e ) {
       data = { successMessage: responseText, errorMessage: responseText };
     }
 

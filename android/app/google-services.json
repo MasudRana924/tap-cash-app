@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "811997839498",
-    "project_id": "reactnativenotification-a5cba",
-    "storage_bucket": "reactnativenotification-a5cba.firebasestorage.app"
+    "project_number": "481272807136",
+    "project_id": "paylo-560c4",
+    "storage_bucket": "paylo-560c4.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:811997839498:android:492b99d69c08b05516ad73",
+        "mobilesdk_app_id": "1:481272807136:android:96ace1420d644c0eb61a85",
         "android_client_info": {
           "package_name": "com.tapcash"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAPhZmR_8AhsHrSAmHs68ngnWJfOJEjaaM"
+          "current_key": "AIzaSyDeobmG7VSOlqjHXYPiEws5ySDfUFUKnhg"
         }
       ],
       "services": {
