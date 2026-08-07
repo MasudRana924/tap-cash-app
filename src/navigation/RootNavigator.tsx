@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import MainTabs from './MainTabs';
 import SendMoneyScreen from '../screens/SendMoneyScreen';
 import TransactionsScreen from '../screens/TransactionsScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 import AmountScreen from '../screens/AmountScreen';
 import SuccessScreen from '../screens/SuccessScreen';
 import CashOutScreen from '../screens/CashOutScreen';
@@ -36,6 +37,8 @@ import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
 import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
 import ScanQRScreen from '../screens/ScanQRScreen';
 import { useAuth } from '../context/AuthContext';
+import { NavigationContainerRef } from '@react-navigation/native';
+import { getMessaging, onNotificationOpenedApp, getInitialNotification } from '@react-native-firebase/messaging';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -47,6 +50,7 @@ export type RootStackParamList = {
   SendMoney: undefined;
   Transactions: undefined;
   Notifications: undefined;
+  Notification: undefined;
   Amount: { receiver: { id: number; phone: string; name: string | null; profile_image: string | null; user_type: string }; phone: string };
   Success: { amount: string; receiverPhone: string; receiverName: string | null };
   CashOut: undefined;
@@ -73,11 +77,67 @@ export type RootStackParamList = {
   ScanQR: undefined;
 };
 
+// Global navigation ref
+export const navigationRef = React.createRef<NavigationContainerRef<RootStackParamList>>();
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
+  const [isMessagingReady, setIsMessagingReady] = React.useState(false);
+
+  useEffect(() => {
+    // Delay notification setup to ensure messaging is ready
+    const timer = setTimeout(() => {
+      setIsMessagingReady(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isMessagingReady) return;
+
+    // Handle notification taps when app is opened from background
+    let unsubscribeOpened: any = null;
+
+    try {
+      console.debug('Setting up notification listeners...');
+
+      const messagingInstance = getMessaging();
+
+      if (messagingInstance) {
+        unsubscribeOpened = onNotificationOpenedApp(messagingInstance, (data: any) => {
+          console.debug('Notification opened from background:', data);
+          navigationRef.current?.navigate('Notification' as never);
+        });
+
+        // Handle notification taps when app is opened from quit state
+        getInitialNotification(messagingInstance)
+          .then((data: any) => {
+            if (data) {
+              console.debug('Notification opened from quit state:', data);
+              navigationRef.current?.navigate('Notification' as never);
+            }
+          })
+          .catch((error: any) => {
+            console.debug('Error getting initial notification:', error);
+          });
+      } else {
+        console.debug('Messaging not available');
+      }
+    } catch (error) {
+      console.debug('Error setting up notification listeners:', error);
+    }
+
+    return () => {
+      if (unsubscribeOpened && typeof unsubscribeOpened === 'function') {
+        unsubscribeOpened();
+      }
+    };
+  }, [isMessagingReady]);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
         initialRouteName="Splash"
         screenOptions={{
@@ -93,6 +153,7 @@ const RootNavigator = () => {
         <Stack.Screen name="SendMoney" component={SendMoneyScreen} />
         <Stack.Screen name="Transactions" component={TransactionsScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
+        <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="Amount" component={AmountScreen} />
         <Stack.Screen name="Success" component={SuccessScreen} />
         <Stack.Screen name="CashOut" component={CashOutScreen} />

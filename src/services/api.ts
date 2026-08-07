@@ -19,15 +19,11 @@ export interface LoginResponse {
   wallet: {
     id: number;
     user_id: number;
-    balance: string;
-    created_at: string;
-    status: string;
   };
 }
 
 export interface SignupResponse {
   successMessage: string;
-  errorMessage?: string;
 }
 
 export interface VerifyOTPResponse {
@@ -35,23 +31,27 @@ export interface VerifyOTPResponse {
   token: string;
   user: {
     id: number;
-    otp: string;
-    isverified: boolean;
-    name: string | null;
-    profile_image: string | null;
-    user_type: string;
     phone: string;
-    pin: string;
-    last_otp_sent_at: string;
-    fcm_token: string | null;
+    name: string;
+    profile_image?: string;
   };
   wallet: {
     id: number;
-    user_id: number;
-    balance: string;
-    created_at: string;
-    status: string;
+    balance: number;
   };
+}
+
+export interface Notification {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string | null;
+  created_at: string;
+}
+
+export interface PublicNotificationsResponse {
+  successMessage: string;
+  notifications: Notification[];
 }
 
 export interface BalanceResponse {
@@ -236,6 +236,12 @@ class APIService {
     }
 
     return data as { successMessage: string };
+  }
+
+  async getPublicNotifications(): Promise<PublicNotificationsResponse> {
+    return this.request<PublicNotificationsResponse>('/public/get-public/notifications', {
+      method: 'GET',
+    });
   }
 }
 

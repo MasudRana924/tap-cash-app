@@ -14,7 +14,7 @@ import { AuthProvider } from './src/context/AuthContext';
 import { NotificationProvider } from './src/context/NotificationContext';
 import { NotificationToast } from './src/components/NotificationToast';
 import { useMessaging } from './src/hooks/useMessaging';
-import { notificationListeners } from './src/hooks/notificationListener';
+import { notificationListeners } from './src/utils/notificationListeners';
 import { useAuth } from './src/context/AuthContext';
 
 const queryClient = new QueryClient();
