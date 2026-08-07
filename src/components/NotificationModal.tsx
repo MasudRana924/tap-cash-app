@@ -69,9 +69,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             },
           ]}
         >
-          <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-            <Icon name="close" size={20} color="#666" />
-          </TouchableOpacity>
 
           <View style={styles.content}>
             {imageUrl ? (
@@ -86,9 +83,9 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
               <Text style={styles.title} numberOfLines={2}>
                 {title}
               </Text>
-              <Text style={styles.body} numberOfLines={3}>
+              {/* <Text style={styles.body} numberOfLines={3}>
                 {body}
-              </Text>
+              </Text> */}
             </View>
           </View>
         </Animated.View>
@@ -102,18 +99,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'flex-start',
-    paddingTop: 50,
+    paddingTop: 40,
   },
   container: {
     marginHorizontal: 16,
-    backgroundColor: '#fff',
+    backgroundColor: '#d8d5d5',
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
   },
   closeButton: {
     alignSelf: 'flex-end',
@@ -130,8 +122,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   imagePlaceholder: {
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
     borderRadius: 8,
     marginRight: 12,
     backgroundColor: '#f0f0f0',

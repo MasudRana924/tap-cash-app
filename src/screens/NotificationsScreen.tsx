@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +24,7 @@ interface NotificationItem {
   iconColor: string;
   iconBg: string;
   isUnread: boolean;
+  imageUrl?: string;
 }
 
 const SkeletonCard = () => (
@@ -58,6 +60,7 @@ const NotificationsScreen = () => {
         iconColor: '#6366f1',
         iconBg: '#ede9fe',
         isUnread: false,
+        imageUrl: notif.image_url || undefined,
       }));
       setNotifications(mappedNotifications);
     },
@@ -129,10 +132,14 @@ const NotificationsScreen = () => {
                 )
               }
             >
-              {/* Icon */}
-              <View style={[styles.iconWrap, { backgroundColor: item.iconBg }]}>
-                <Icon name={item.icon as any} size={18} color={item.iconColor} />
-              </View>
+              {/* Icon or Image */}
+              {item.imageUrl ? (
+                <Image source={{ uri: item.imageUrl }} style={styles.notificationImage} />
+              ) : (
+                <View style={[styles.iconWrap, { backgroundColor: item.iconBg }]}>
+                  <Icon name={item.icon as any} size={18} color={item.iconColor} />
+                </View>
+              )}
 
               {/* Content */}
               <View style={styles.cardContent}>
@@ -265,6 +272,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 1,
+  },
+  notificationImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 14,
+    flexShrink: 0,
   },
   iconWrap: {
     width: 44,

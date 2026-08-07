@@ -44,22 +44,28 @@ const NotificationScreen = () => {
   }, []);
 
   const renderNotification = ({ item }: { item: Notification }) => (
-    <View style={styles.notificationCard}>
+    <TouchableOpacity
+      style={styles.notificationCard}
+      activeOpacity={0.8}
+      onPress={() => console.log('Notification pressed:', item.id)}
+    >
       {item.image_url ? (
         <Image source={{ uri: item.image_url }} style={styles.notificationImage} />
       ) : (
         <View style={styles.notificationImagePlaceholder}>
-          <Icon name="notifications" size={40} color="#666" />
+          <Icon name="notifications" size={24} color="#666" />
         </View>
       )}
       <View style={styles.notificationContent}>
         <Text style={styles.notificationTitle}>{item.title}</Text>
-        <Text style={styles.notificationDescription}>{item.description}</Text>
+        <Text style={styles.notificationDescription} numberOfLines={2}>
+          {item.description}
+        </Text>
         <Text style={styles.notificationDate}>
-          {new Date(item.created_at).toLocaleString()}
+          {new Date(item.created_at).toLocaleDateString()}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

@@ -25,7 +25,7 @@ export const notificationListeners = () => {
   const unsubscribeOnMessage = onMessage(messagingInstance, async (data: any) => {
     console.debug('Received foreground app notification', data);
     const { title, body } = data?.notification as any;
-    const imageUrl = data?.data?.image_url || data?.notification?.image;
+    const imageUrl = data?.data?.image_url || data?.notification?.image_url || data?.notification?.android?.imageUrl || data?.notification?.ios?.imageUrl;
 
     // Call the callback to show custom modal
     if (foregroundNotificationCallback) {
