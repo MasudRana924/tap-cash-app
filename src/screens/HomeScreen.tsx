@@ -15,7 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useMessaging } from '../hooks/useMessaging';
-
+import { RootStackParamList } from '../navigation/RootNavigator';
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const { token, saveFcmToken, isLoading: authLoading } = useAuth();
@@ -79,7 +79,20 @@ const HomeScreen = () => {
     setBalanceLoading(true);
     balanceMutation.mutate();
   };
-
+  const gridServices: Array<{
+    id: string;
+    name: string;
+    icon: string;
+    route: keyof RootStackParamList;
+  }> = [
+  
+    { id: '3', name: 'Cash Out', icon: 'wallet-outline', route: 'CashOut' },
+    { id: '4', name: 'Payment', icon: 'qr-code-outline', route: 'Payment' },
+    { id: '5', name: 'Bill', icon: 'flash-outline', route: 'PayBill' },
+    { id: '6', name: 'Recharge', icon: 'phone-portrait-outline', route: 'MobileRecharge' },
+    { id: '7', name: 'Savings', icon: 'save-outline', route: 'Savings' },
+    { id: '8', name: 'Loan', icon: 'cash-outline', route: 'Loan' },
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -203,6 +216,23 @@ const HomeScreen = () => {
                 </View>
               </View>
             </LinearGradient>
+
+            {/* Quick Services Grid */}
+            <View style={styles.gridContainer}>
+              {gridServices.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.gridItem}
+                  onPress={() => navigation.navigate(item.route as any)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.gridIconBox}>
+                    <Icon name={item.icon} size={24} color="#F8623F" />
+                  </View>
+                  <Text style={styles.gridItemText}>{item.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
       </ScrollView>
@@ -373,6 +403,37 @@ const styles = StyleSheet.create({
   },
   skeleton: {
     backgroundColor: '#94A3B8',
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    gap: 14,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    marginTop:20
+  },
+  gridItem: {
+    width: '30%',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  gridIconBox: {
+    width: 60,
+    height: 60,
+    borderRadius: 20,
+    backgroundColor: '#f6f6f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#f6f6f6',
+  },
+  gridItemText: {
+    fontSize: 12,
+    color: '#11182e',
+    fontWeight: '500',
+    textAlign: 'center',
+    lineHeight: 16,
   },
 });
 
