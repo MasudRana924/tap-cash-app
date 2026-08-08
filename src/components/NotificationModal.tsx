@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Image,
   Animated,
+  Platform,
 } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationContainerRef } from '@react-navigation/native';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -23,7 +25,6 @@ interface NotificationModalProps {
 
 const NotificationModal: React.FC<NotificationModalProps> = ({
   visible,
-  title,
   imageUrl,
   onClose,
   navigationRef,
@@ -87,6 +88,14 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             },
           ]}
         >
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="dark"
+              blurAmount={20}
+              reducedTransparencyFallbackColor="rgba(26, 26, 46, 0.85)"
+            />
+          ) : null}
           <TouchableOpacity
             style={styles.content}
             onPress={handlePress}
@@ -102,11 +111,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
 
             <View style={styles.textContainer}>
               <Text style={styles.title} numberOfLines={2}>
-                {title}
+                Paylo
               </Text>
-              {/* <Text style={styles.body} numberOfLines={3}>
-                {body}
-              </Text> */}
+              <Text style={styles.body} numberOfLines={3}>
+                Notification
+              </Text>
             </View>
           </TouchableOpacity>
         </Animated.View>
@@ -120,36 +129,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
     justifyContent: 'flex-start',
-    paddingTop: 40,
+    paddingTop: 30,
   },
   container: {
     marginHorizontal: 16,
-    backgroundColor: '#F8623F',
+    backgroundColor: 'rgba(26, 26, 46, 0.85)',
     borderRadius: 12,
-     borderWidth: 1,
-    borderColor: '#F8623F',
+    borderWidth: 1,
+    borderColor: 'rgba(26, 26, 46, 0.85)',
     padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    overflow: 'hidden',
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginBottom: 8,
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     marginRight: 12,
   },
   imagePlaceholder: {
     width: 40,
     height: 40,
-    borderRadius: 8,
+    borderRadius: 20,
     marginRight: 12,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -160,6 +174,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#fff',
+  },
+  body: {
+    fontSize: 12,
+    color: '#fff',
+    lineHeight: 16,
   },
 
 });

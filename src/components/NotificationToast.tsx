@@ -5,7 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  Platform,
 } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNotification } from '../context/NotificationContext';
 
@@ -35,8 +37,6 @@ export const NotificationToast: React.FC = () => {
     return null;
   }
 
-  const { title, body } = notification;
-
   return (
     <Animated.View
       style={[
@@ -50,12 +50,20 @@ export const NotificationToast: React.FC = () => {
         style={styles.toast}
         activeOpacity={0.9}
         onPress={hideNotification}>
+        {Platform.OS === 'ios' ? (
+          <BlurView
+            style={StyleSheet.absoluteFill}
+            blurType="dark"
+            blurAmount={20}
+            reducedTransparencyFallbackColor="rgba(26, 26, 46, 0.85)"
+          />
+        ) : null}
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>🔔</Text>
         </View>
         <View style={styles.contentContainer}>
-          {title && <Text style={styles.title}>{title}</Text>}
-          {body && <Text style={styles.body}>{body}</Text>}
+          <Text style={styles.title}>Paylo</Text>
+          <Text style={styles.body}>Notification</Text>
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -70,22 +78,26 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   toast: {
-    backgroundColor: '#F8623F',
-    borderRadius: 18,
+    backgroundColor: 'rgba(26, 26, 46, 0.85)',
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#F8623F',
-   
+    borderColor: 'rgba(26, 26, 46, 0.85)',
     padding: 6,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    overflow: 'hidden',
   },
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -94,17 +106,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   contentContainer: {
-    // flex: 1,
+    flex: 1,
   },
   title: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#11182e',
+    color: '#fff',
     marginBottom: 4,
   },
   body: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
+    fontSize: 12,
+    color: '#fff',
+    lineHeight: 16,
   },
 });
