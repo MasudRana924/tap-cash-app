@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet, Platform } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import InsightsScreen from '../screens/InsightsScreen';
@@ -19,7 +20,7 @@ const MainTabs = () => {
           height: 70,
           paddingBottom: 10,
           paddingTop: 10,
-          backgroundColor: '#1A1A2E',
+          backgroundColor: 'rgba(26, 26, 46, 0.85)',
           borderRadius: 35,
           marginHorizontal: 10,
           marginBottom: 10,
@@ -28,8 +29,24 @@ const MainTabs = () => {
           left: 0,
           right: 0,
           borderTopWidth: 0,
-
+          borderWidth: 1,
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 12,
+          elevation: 8,
         },
+        tabBarBackground: () => (
+          Platform.OS === 'ios' ? (
+            <BlurView
+              style={StyleSheet.absoluteFill}
+              blurType="dark"
+              blurAmount={20}
+              reducedTransparencyFallbackColor="rgba(26, 26, 46, 0.85)"
+            />
+          ) : null
+        ),
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '600',
