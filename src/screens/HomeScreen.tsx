@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '45deg' }],
   },
   skeleton: {
-    backgroundColor: '#94A3B8',
+    backgroundColor: '#f6f6f6',
   },
   gridContainer: {
     flexDirection: 'row',

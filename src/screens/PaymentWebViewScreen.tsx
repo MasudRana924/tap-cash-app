@@ -69,10 +69,40 @@ const PaymentWebViewScreen = ({ route, navigation }: any) => {
           originWhitelist={['*']}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
+          onShouldStartLoadWithRequest={(request) => {
+            const url = request.url;
+            console.log('onShouldStartLoadWithRequest URL:', url);
+
+            if (
+              url.startsWith('tapcash://') ||
+              url.startsWith('app.tapcash://') ||
+              url.includes('payment-success') ||
+              url.includes('sslcommerz/success')
+            ) {
+              navigation.replace('Success', {
+                amount: 'Payment Successful',
+                receiverPhone: '',
+                receiverName: 'Add Money',
+              });
+              return false;
+            }
+
+            if (url.includes('cancel') || url.includes('fail')) {
+              navigation.goBack();
+              return false;
+            }
+
+            return true;
+          }}
           onNavigationStateChange={(navState: any) => {
             const url = navState.url;
             console.log('WebView URL Change:', url);
-            if (url.includes('tapcash://payment-success') || url.includes('payment-success')) {
+            if (
+              url.startsWith('tapcash://') ||
+              url.startsWith('app.tapcash://') ||
+              url.includes('payment-success') ||
+              url.includes('sslcommerz/success')
+            ) {
               navigation.replace('Success', {
                 amount: 'Payment Successful',
                 receiverPhone: '',
