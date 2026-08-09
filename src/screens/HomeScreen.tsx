@@ -16,7 +16,7 @@ import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useMessaging } from '../hooks/useMessaging';
 import { RootStackParamList } from '../navigation/RootNavigator';
-import {WebView} from 'react-native-webview';
+import TransactionList from '../components/TransactionList';
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const { token, saveFcmToken, isLoading: authLoading } = useAuth();
@@ -98,127 +98,128 @@ const HomeScreen = () => {
   'https://sandbox.sslcommerz.com/EasyCheckOut/testcde648c8b9af9062e4b3a192e148f7c2c96';
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {isLoading ? (
-          /* Skeleton Loader */
+      {isLoading ? (
+        /* Skeleton Loader */
+        <LinearGradient
+          colors={['#0F172A', '#F8623F']}
+          start={{ x: 0.47, y: 0.00 }}
+          end={{ x: 0.53, y: 1.00 }}
+          style={styles.gradientSection}
+        >
+          {/* Header Skeleton */}
+          <View style={styles.header}>
+            <View style={styles.profileSection}>
+              <View style={[styles.profileImage, styles.skeleton]} />
+              <View style={styles.greetingSection}>
+                <View style={[styles.skeleton, { width: 90, height: 14, marginBottom: 6, borderRadius: 4 }]} />
+                <View style={[styles.skeleton, { width: 70, height: 22, borderRadius: 4 }]} />
+              </View>
+            </View>
+            <View style={[styles.notificationButton, styles.skeleton]} />
+          </View>
+
+          {/* Balance Card Skeleton */}
+          <View style={[styles.balanceCard, { height: 190 }]}>
+            <View style={styles.balanceHeader}>
+              <View style={[styles.skeleton, { width: 120, height: 16, borderRadius: 4 }]} />
+              <View style={[styles.skeleton, { width: 36, height: 36, borderRadius: 18 }]} />
+            </View>
+            <View style={[styles.skeleton, { width: 180, height: 40, marginVertical: 12, borderRadius: 6 }]} />
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <View style={[styles.skeleton, { flex: 1, height: 48, borderRadius: 16 }]} />
+              <View style={[styles.skeleton, { flex: 1, height: 48, borderRadius: 16 }]} />
+            </View>
+          </View>
+        </LinearGradient>
+      ) : (
+        <>
+          {/* Gradient Section with Header and Balance Card - Sticky */}
           <LinearGradient
             colors={['#0F172A', '#F8623F']}
             start={{ x: 0.47, y: 0.00 }}
             end={{ x: 0.53, y: 1.00 }}
             style={styles.gradientSection}
           >
-            {/* Header Skeleton */}
+            {/* Top Header */}
             <View style={styles.header}>
-              <View style={styles.profileSection}>
-                <View style={[styles.profileImage, styles.skeleton]} />
+              <TouchableOpacity
+                style={styles.profileSection}
+                onPress={() => navigation.navigate('Profile')}
+                activeOpacity={0.8}
+              >
+                <Image
+                  source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+                  style={styles.profileImage}
+                />
                 <View style={styles.greetingSection}>
-                  <View style={[styles.skeleton, { width: 90, height: 14, marginBottom: 6, borderRadius: 4 }]} />
-                  <View style={[styles.skeleton, { width: 70, height: 22, borderRadius: 4 }]} />
+                  <Text style={styles.greeting}>Good morning,</Text>
+                  <Text style={styles.userName}>Sarah</Text>
                 </View>
-              </View>
-              <View style={[styles.notificationButton, styles.skeleton]} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.notificationButton}
+                onPress={() => navigation.navigate('Notifications')}
+                activeOpacity={0.8}
+              >
+                <Icon name="notifications-outline" size={20} color="#F8623F" />
+              </TouchableOpacity>
             </View>
 
-            {/* Balance Card Skeleton */}
-            <View style={[styles.balanceCard, { height: 190 }]}>
+            {/* Available Balance Card */}
+            <View style={styles.balanceCard}>
               <View style={styles.balanceHeader}>
-                <View style={[styles.skeleton, { width: 120, height: 16, borderRadius: 4 }]} />
-                <View style={[styles.skeleton, { width: 36, height: 36, borderRadius: 18 }]} />
+                <Text style={styles.balanceTitle}>Available Balance</Text>
               </View>
-              <View style={[styles.skeleton, { width: 180, height: 40, marginVertical: 12, borderRadius: 6 }]} />
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                <View style={[styles.skeleton, { flex: 1, height: 48, borderRadius: 16 }]} />
-                <View style={[styles.skeleton, { flex: 1, height: 48, borderRadius: 16 }]} />
+
+              {/* Amount Display */}
+              <TouchableOpacity
+                onPress={handleBalanceTap}
+                activeOpacity={0.9}
+                style={styles.amountContainer}
+              >
+                {balanceLoading ? (
+                  <View style={styles.skeletonBalance} />
+                ) : showBalance && balance ? (
+                  <View style={styles.amountRow}>
+                    <Text style={styles.takaSymbol}>৳</Text>
+                    <Text style={styles.balanceInteger}>{balance.split('.')[0]}</Text>
+                    <Text style={styles.balanceDecimal}>.{balance.split('.')[1] || '00'}</Text>
+                  </View>
+                ) : (
+                  <Text style={styles.tapToShowText}>Tap to Show</Text>
+                )}
+              </TouchableOpacity>
+
+              {/* Action Buttons: Send Money & Add Money */}
+              <View style={styles.cardActionsRow}>
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  onPress={() => navigation.navigate('SendMoney')}
+                  activeOpacity={0.85}
+                >
+                  <Icon name="arrow-up-outline" size={18} color="#FFFFFF" style={styles.btnIconTilted} />
+                  <Text style={styles.actionBtnText}>Send Money</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.actionBtn}
+                  onPress={() => navigation.navigate('AddMoney')}
+                  activeOpacity={0.85}
+                >
+                  <Icon name="add-circle-outline" size={18} color="#fff" style={{ marginRight: 8 }} />
+                  <Text style={styles.actionBtnText}>Add Money</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </LinearGradient>
-        ) : (
-          <View>
-            {/* Gradient Section with Header and Balance Card */}
-            <LinearGradient
-              colors={['#0F172A', '#F8623F']}
-              start={{ x: 0.47, y: 0.00 }}
-              end={{ x: 0.53, y: 1.00 }}
-              style={styles.gradientSection}
-            >
-              {/* Top Header */}
-              <View style={styles.header}>
-                <TouchableOpacity
-                  style={styles.profileSection}
-                  onPress={() => navigation.navigate('Profile')}
-                  activeOpacity={0.8}
-                >
-                  <Image
-                    source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
-                    style={styles.profileImage}
-                  />
-                  <View style={styles.greetingSection}>
-                    <Text style={styles.greeting}>Good morning,</Text>
-                    <Text style={styles.userName}>Sarah</Text>
-                  </View>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.notificationButton}
-                  onPress={() => navigation.navigate('Notifications')}
-                  activeOpacity={0.8}
-                >
-                  <Icon name="notifications-outline" size={20} color="#F8623F" />
-                </TouchableOpacity>
-              </View>
-
-              {/* Available Balance Card */}
-              <View style={styles.balanceCard}>
-                <View style={styles.balanceHeader}>
-                  <Text style={styles.balanceTitle}>Available Balance</Text>
-                </View>
-
-                {/* Amount Display */}
-                <TouchableOpacity
-                  onPress={handleBalanceTap}
-                  activeOpacity={0.9}
-                  style={styles.amountContainer}
-                >
-                  {balanceLoading ? (
-                    <View style={styles.skeletonBalance} />
-                  ) : showBalance && balance ? (
-                    <View style={styles.amountRow}>
-                      <Text style={styles.takaSymbol}>৳</Text>
-                      <Text style={styles.balanceInteger}>{balance.split('.')[0]}</Text>
-                      <Text style={styles.balanceDecimal}>.{balance.split('.')[1] || '00'}</Text>
-                    </View>
-                  ) : (
-                    <Text style={styles.tapToShowText}>Tap to Show</Text>
-                  )}
-                </TouchableOpacity>
-
-                {/* Action Buttons: Send Money & Add Money */}
-                <View style={styles.cardActionsRow}>
-                  <TouchableOpacity
-                    style={styles.actionBtn}
-                    onPress={() => navigation.navigate('SendMoney')}
-                    activeOpacity={0.85}
-                  >
-                    <Icon name="arrow-up-outline" size={18} color="#FFFFFF" style={styles.btnIconTilted} />
-                    <Text style={styles.actionBtnText}>Send Money</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.actionBtn}
-                    onPress={() => navigation.navigate('AddMoney')}
-                    activeOpacity={0.85}
-                  >
-                    <Icon name="add-circle-outline" size={18} color="#0F172A" style={{ marginRight: 8 }} />
-                    <Text style={styles.actionBtnText}>Add Money</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </LinearGradient>
-
+          {/* Scrollable Content */}
+          <ScrollView
+            style={styles.scrollableContent}
+            contentContainerStyle={styles.scrollableContentContainer}
+            showsVerticalScrollIndicator={false}
+          >
             {/* Quick Services Grid */}
             <View style={styles.gridContainer}>
               {gridServices.map((item) => (
@@ -236,13 +237,11 @@ const HomeScreen = () => {
               ))}
             </View>
 
-            <WebView
-  source={{uri: 'https://www.google.com'}}
-  style={{flex: 1}}
-/>
-          </View>
-        )}
-      </ScrollView>
+            {/* Transaction List */}
+            <TransactionList limit={5} />
+          </ScrollView>
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -258,6 +257,14 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 0,
     paddingTop: 0,
+    paddingBottom: 100,
+  },
+  scrollableContent: {
+    flex: 1,
+  },
+  scrollableContentContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 100,
   },
 
@@ -332,8 +339,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balanceTitle: {
-    fontSize: 14,
-    color: '#64748B',
+    fontSize: 10,
+    color: '#fff',
     fontWeight: '500',
   },
   plusButton: {
@@ -394,7 +401,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#F8623F',
+    backgroundColor: '#0F172A',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

@@ -54,7 +54,7 @@ export type RootStackParamList = {
   Notifications: undefined;
   Notification: undefined;
   Amount: { receiver: { id: number; phone: string; name: string | null; profile_image: string | null; user_type: string }; phone: string };
-  Success: { amount: string; receiverPhone: string; receiverName: string | null };
+  Success: { amount: string; receiverPhone: string; receiverName: string | null; transactionType?: string };
   CashOut: undefined;
   CashOutAmount: undefined;
   AddMoney: undefined;
@@ -106,6 +106,7 @@ const RootNavigator = () => {
           amount: 'Payment Successful',
           receiverPhone: '',
           receiverName: 'Add Money',
+          transactionType: 'ADD_MONEY',
         } as any);
       }
     };

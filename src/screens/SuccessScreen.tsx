@@ -14,7 +14,9 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 const SuccessScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'Success'>>();
-  const { amount, receiverPhone, receiverName } = route.params;
+  const { amount, receiverPhone, receiverName, transactionType } = route.params;
+
+  const isAddMoney = transactionType === 'ADD_MONEY';
 
   const handleDone = () => {
     navigation.navigate('MainHome' as never);
@@ -30,36 +32,55 @@ const SuccessScreen = () => {
         <View style={styles.content}>
           {/* Success Icon */}
           <View style={styles.successIconContainer}>
-            <View style={styles.successIconBg}>
-              <Icon name="checkmark-circle" size={48} color="#0ab39c" />
+            <View style={[styles.successIconBg, isAddMoney ? styles.successIconBgGreen : styles.successIconBgRed]}>
+              <Icon 
+                name={isAddMoney ? 'add-circle' : 'arrow-up-circle'} 
+                size={48} 
+                color={isAddMoney ? '#0ab39c' : '#F8623F'} 
+              />
             </View>
           </View>
 
           {/* Success Message */}
-          <Text style={styles.successTitle}>Transaction Successful!</Text>
+          <Text style={[styles.successTitle, isAddMoney && styles.successTitleGreen]}>
+            {isAddMoney ? 'Add Money Successful!' : 'Transaction Successful!'}
+          </Text>
           <Text style={styles.successMessage}>
             Your transaction has been processed securely
           </Text>
 
           {/* Transaction Details */}
-          <View style={styles.transactionDetails}>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Amount Sent</Text>
-              <Text style={styles.detailValue}>৳{amount}</Text>
+          {receiverPhone ? (
+            <View style={styles.transactionDetails}>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Amount Sent</Text>
+                <Text style={styles.detailValue}>৳{amount}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Sent To</Text>
+                <Text style={styles.detailValue}>{receiverName || 'Unknown'}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Phone Number</Text>
+                <Text style={styles.detailValue}>{receiverPhone}</Text>
+              </View>
+              <View style={[styles.detailRow, { marginBottom: 0 }]}>
+                <Text style={styles.detailLabel}>Date & Time</Text>
+                <Text style={styles.detailValue}>{new Date().toLocaleDateString()} • Now</Text>
+              </View>
             </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Sent To</Text>
-              <Text style={styles.detailValue}>{receiverName || 'Unknown'}</Text>
+          ) : (
+            <View style={styles.transactionDetails}>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Amount</Text>
+                <Text style={[styles.detailValue, isAddMoney && styles.detailValueGreen]}>৳{amount}</Text>
+              </View>
+              <View style={[styles.detailRow, { marginBottom: 0 }]}>
+                <Text style={styles.detailLabel}>Date & Time</Text>
+                <Text style={styles.detailValue}>{new Date().toLocaleDateString()} • Now</Text>
+              </View>
             </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Phone Number</Text>
-              <Text style={styles.detailValue}>{receiverPhone}</Text>
-            </View>
-            <View style={[styles.detailRow, { marginBottom: 0 }]}>
-              <Text style={styles.detailLabel}>Date & Time</Text>
-              <Text style={styles.detailValue}>{new Date().toLocaleDateString()} • Now</Text>
-            </View>
-          </View>
+          )}
         </View>
 
         <View style={styles.buttonContainer}>
@@ -104,12 +125,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  successIconBgGreen: {
+    backgroundColor: '#d4f8e8',
+  },
+  successIconBgRed: {
+    backgroundColor: '#ffe8e0',
+  },
   successTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#111827',
     marginBottom: 10,
     textAlign: 'center',
+  },
+  successTitleGreen: {
+    color: '#0ab39c',
   },
   successMessage: {
     fontSize: 15,
@@ -145,6 +175,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#111827',
     fontWeight: '500',
+  },
+  detailValueGreen: {
+    color: '#0ab39c',
   },
   detailValueMono: {
     fontSize: 14,

@@ -61,6 +61,7 @@ const PaymentWebViewScreen = ({ route, navigation }: any) => {
                 amount: 'Payment Successful',
                 receiverPhone: '',
                 receiverName: 'Add Money',
+                transactionType: 'ADD_MONEY',
               });
               return false;
             }

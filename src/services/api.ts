@@ -87,6 +87,28 @@ export interface AddMoneyResponse {
   message: string;
 }
 
+export interface Transaction {
+  id: number;
+  sender_id: number;
+  receiver_id: number;
+  amount: string;
+  transaction_type: string;
+  status: string;
+  created_at: string;
+  sslcommerz_transaction_id: string | null;
+  bank_transaction_id: string | null;
+  receiver_name: string | null;
+  receiver_phone: string | null;
+  sender_name: string | null;
+  sender_phone: string | null;
+  type: 'sent' | 'received';
+}
+
+export interface TransactionHistoryResponse {
+  message: string;
+  transactions: Transaction[];
+}
+
 export interface ErrorResponse {
   errorMessage?: string;
   error?: string;
@@ -295,6 +317,26 @@ class APIService {
     }
 
     return data as AddMoneyResponse;
+  }
+
+  async getTransactionHistory(token: string): Promise<TransactionHistoryResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/transaction/history`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as TransactionHistoryResponse;
   }
 }
 
