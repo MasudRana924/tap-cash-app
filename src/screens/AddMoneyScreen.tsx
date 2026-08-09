@@ -37,7 +37,7 @@ const AddMoneyScreen = () => {
 
           <TouchableOpacity 
             style={styles.optionCard}
-            onPress={() => navigation.navigate('CardSelection' as never)}
+            onPress={() => (navigation as any).navigate('AddMoneyAmount', { method: 'card' })}
           >
             <View style={styles.optionIconContainer}>
               <Icon name="card-outline" size={32} color="#11182e" />

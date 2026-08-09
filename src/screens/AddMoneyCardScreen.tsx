@@ -23,7 +23,7 @@ const AddMoneyCardScreen = () => {
   const handleContinue = () => {
     const cleanedCardNumber = cardNumber.replace(/\s/g, '');
     if (cardType && cleanedCardNumber.length === 16 && expiryDate.length === 5 && cvc.length === 3) {
-      navigation.navigate('AddMoneyAmount' as never);
+      (navigation as any).navigate('AddMoneyAmount', { method: 'card', cardType });
     }
   };
 

@@ -36,6 +36,7 @@ import LoanAmountScreen from '../screens/LoanAmountScreen';
 import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
 import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
 import ScanQRScreen from '../screens/ScanQRScreen';
+import PaymentWebViewScreen from '../screens/PaymentWebViewScreen';
 import { useAuth } from '../context/AuthContext';
 import { NavigationContainerRef } from '@react-navigation/native';
 import { getMessaging, onNotificationOpenedApp, getInitialNotification } from '@react-native-firebase/messaging';
@@ -58,6 +59,7 @@ export type RootStackParamList = {
   AddMoney: undefined;
   AddMoneyCard: undefined;
   AddMoneyAmount: { method: string; bank?: string; cardType?: string };
+  PaymentWebView: { paymentUrl: string; title?: string };
   BankSelection: undefined;
   CardSelection: undefined;
   CardInfo: { amount: string; cardType: string };
@@ -178,6 +180,7 @@ const RootNavigator = () => {
         <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlanScreen} />
         <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
+        <Stack.Screen name="PaymentWebView" component={PaymentWebViewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

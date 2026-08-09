@@ -1,6 +1,6 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
-// const BASE_URL = 'http://192.168.10.78:8080/api/v1';
+// const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
+const BASE_URL = 'http://172.31.224.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -77,6 +77,14 @@ export interface SendMoneyResponse {
   amount: string;
   receiverPhone: string;
   receiverName: string | null;
+}
+
+export interface AddMoneyResponse {
+  success: boolean;
+  transactionId: number;
+  sslcommerzTransactionId: string;
+  paymentUrl: string;
+  message: string;
 }
 
 export interface ErrorResponse {
@@ -260,6 +268,33 @@ class APIService {
     }
 
     return data as PublicNotificationsResponse;
+  }
+
+  async addMoney(token: string, amount: number | string): Promise<AddMoneyResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const parsedAmount = typeof amount === 'string' ? parseFloat(amount.replace(/,/g, '')) : amount;
+    const body = { amount: parsedAmount };
+
+    console.log('Add Money API URL:', `${this.baseURL}/wallet/add-money`);
+    console.log('Add Money API Body:', body);
+
+    const response = await fetch(`${this.baseURL}/wallet/add-money`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as AddMoneyResponse;
   }
 }
 

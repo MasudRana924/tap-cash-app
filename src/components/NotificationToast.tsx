@@ -7,7 +7,6 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import { BlurView } from '@react-native-community/blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNotification } from '../context/NotificationContext';
 
@@ -50,14 +49,6 @@ export const NotificationToast: React.FC = () => {
         style={styles.toast}
         activeOpacity={0.9}
         onPress={hideNotification}>
-        {Platform.OS === 'ios' ? (
-          <BlurView
-            style={StyleSheet.absoluteFill}
-            blurType="dark"
-            blurAmount={20}
-            reducedTransparencyFallbackColor="rgba(26, 26, 46, 0.85)"
-          />
-        ) : null}
         <View style={styles.iconContainer}>
           <Text style={styles.icon}>🔔</Text>
         </View>

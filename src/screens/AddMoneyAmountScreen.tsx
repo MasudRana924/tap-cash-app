@@ -8,6 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -15,13 +17,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import PINModal from '../components/PINModal';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import ScreenHeader from '../components/ScreenHeader';
+import { useAuth } from '../context/AuthContext';
+import { apiService } from '../services/api';
 
 const AddMoneyAmountScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'AddMoneyAmount'>>();
   const { method, bank, cardType } = route.params as any;
+  const { token } = useAuth();
   const [amount, setAmount] = useState('');
   const [showPINModal, setShowPINModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const amountInputRef = useRef<TextInput>(null);
   const availableBalance = '৳ 25,450.00';
 
@@ -31,12 +37,39 @@ const AddMoneyAmountScreen = () => {
     }, 100);
   }, []);
 
-  const handleConfirm = () => {
-    if (amount.length > 0) {
-      if (method === 'bank') {
-        (navigation as any).navigate('BankAccountEntry', { amount, bank });
-      } else if (method === 'card') {
-        (navigation as any).navigate('CardInfo', { amount, cardType });
+  const handleConfirm = async () => {
+    console.log('handleConfirm called - amount:', amount, 'token:', token ? 'exists' : 'null');
+    
+    if (amount.length > 0 && token) {
+      try {
+        setIsLoading(true);
+        console.log('Calling API with amount:', amount);
+        const response = await apiService.addMoney(token, amount);
+        
+        console.log('Add money response:', response);
+        console.log('Response success:', response.success);
+        console.log('Response paymentUrl:', response.paymentUrl);
+        
+        if (response.success && response.paymentUrl) {
+          console.log('Navigating to PaymentWebView with URL:', response.paymentUrl);
+          (navigation as any).navigate('PaymentWebView', { 
+            paymentUrl: response.paymentUrl,
+            title: 'Add Money'
+          });
+        } else {
+          console.log('Invalid response - success:', response.success, 'paymentUrl:', response.paymentUrl);
+          Alert.alert('Error', 'Failed to process payment. Please try again.');
+        }
+      } catch (error: any) {
+        console.error('Add money error:', error);
+        Alert.alert('Error', error.errorMessage || 'Failed to add money. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      console.log('Cannot proceed - amount:', amount.length, 'token:', token ? 'exists' : 'null');
+      if (!token) {
+        Alert.alert('Error', 'Please login first');
       }
     }
   };
@@ -51,13 +84,7 @@ const AddMoneyAmountScreen = () => {
   };
 
   const handleBack = () => {
-    if (method === 'bank') {
-      (navigation as any).navigate('BankSelection');
-    } else if (method === 'card') {
-      (navigation as any).navigate('CardSelection');
-    } else {
-      navigation.goBack();
-    }
+    navigation.goBack();
   };
 
   return (
@@ -105,11 +132,15 @@ const AddMoneyAmountScreen = () => {
 
         {/* Continue Button */}
         <TouchableOpacity
-          style={[styles.confirmButton, amount.length === 0 && styles.confirmButtonDisabled]}
+          style={[styles.confirmButton, (amount.length === 0 || isLoading) && styles.confirmButtonDisabled]}
           onPress={handleConfirm}
-          disabled={amount.length === 0}
+          disabled={amount.length === 0 || isLoading}
         >
-          <Text style={[styles.confirmButtonText, amount.length === 0 && styles.confirmButtonTextDisabled]}>Continue</Text>
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={[styles.confirmButtonText, amount.length === 0 && styles.confirmButtonTextDisabled]}>Continue</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
 

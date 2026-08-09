@@ -9,7 +9,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import { BlurView } from '@react-native-community/blur';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationContainerRef } from '@react-navigation/native';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -88,14 +88,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             },
           ]}
         >
-          {Platform.OS === 'ios' ? (
-            <BlurView
-              style={StyleSheet.absoluteFill}
-              blurType="dark"
-              blurAmount={20}
-              reducedTransparencyFallbackColor="rgba(26, 26, 46, 0.85)"
-            />
-          ) : null}
+
           <TouchableOpacity
             style={styles.content}
             onPress={handlePress}

@@ -16,6 +16,7 @@ import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useMessaging } from '../hooks/useMessaging';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import {WebView} from 'react-native-webview';
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const { token, saveFcmToken, isLoading: authLoading } = useAuth();
@@ -93,7 +94,8 @@ const HomeScreen = () => {
     { id: '7', name: 'Savings', icon: 'save-outline', route: 'Savings' },
     { id: '8', name: 'Loan', icon: 'cash-outline', route: 'Loan' },
   ];
-
+  const PAYMENT_URL =
+  'https://sandbox.sslcommerz.com/EasyCheckOut/testcde648c8b9af9062e4b3a192e148f7c2c96';
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -233,6 +235,34 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
+
+
+<WebView
+        source={{uri: PAYMENT_URL}}
+        style={styles.webview}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={true}
+ renderLoading={() => (
+          <View style={styles.loading}>
+            <Text style={styles.loadingText}>
+              Loading Payment...
+            </Text>
+          </View>
+        )}
+        onError={event => {
+          console.log('WebView Error:', event.nativeEvent);
+        }}
+        onHttpError={event => {
+          console.log('HTTP Error:', event.nativeEvent);
+        }}
+      />
+
+
+
+
+
+
           </View>
         )}
       </ScrollView>
@@ -434,6 +464,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     lineHeight: 16,
+  },
+   webview: {
+    flex: 1,
+    height: 500,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#F8623F',
+  },
+    loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
   },
 });
 
