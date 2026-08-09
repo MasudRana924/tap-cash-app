@@ -1,6 +1,6 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-// const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
-const BASE_URL = 'http://172.31.224.1:8080/api/v1';
+const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
+// const BASE_URL = 'http://172.31.224.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;

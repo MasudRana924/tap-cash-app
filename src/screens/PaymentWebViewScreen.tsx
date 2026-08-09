@@ -3,19 +3,16 @@ import React, { useRef, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import {
   View,
-  ActivityIndicator,
   StyleSheet,
   BackHandler,
-  SafeAreaView,
-  TouchableOpacity,
+  ActivityIndicator,
   Text,
-  Linking,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PaymentWebViewScreen = ({ route, navigation }: any) => {
-  const { paymentUrl, title = 'Payment' } = route.params || {};
+  const { paymentUrl} = route.params || {};
   const webViewRef = useRef<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,29 +31,10 @@ const PaymentWebViewScreen = ({ route, navigation }: any) => {
     }, [])
   );
 
-  const handleOpenBrowser = () => {
-    if (paymentUrl) {
-      Linking.openURL(paymentUrl).catch((err) =>
-        console.error('Error opening URL in browser:', err)
-      );
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header Bar */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={24} color="#11182e" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>
-          {title}
-        </Text>
-        <TouchableOpacity style={styles.browserButton} onPress={handleOpenBrowser}>
-          <Icon name="open-outline" size={20} color="#11182e" />
-          <Text style={styles.browserButtonText}>Browser</Text>
-        </TouchableOpacity>
-      </View>
+
 
       {/* WebView Container */}
       <View style={styles.webViewContainer}>
@@ -115,8 +93,8 @@ const PaymentWebViewScreen = ({ route, navigation }: any) => {
         />
         {loading && (
           <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color="#11182e" />
-            <Text style={styles.loadingText}>Loading Payment Gateway...</Text>
+            <ActivityIndicator size="large" color="#F8623F" />
+            <Text style={styles.loadingText}>Loading...</Text>
           </View>
         )}
       </View>
@@ -168,7 +146,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
