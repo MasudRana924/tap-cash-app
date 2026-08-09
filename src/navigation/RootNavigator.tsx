@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { Linking } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -94,6 +95,34 @@ const RootNavigator = () => {
     }, 1000);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleDeepLink = (event: { url: string }) => {
+      const url = event.url;
+      console.log('Incoming deep link URL:', url);
+      if (url && (url.includes('payment-success') || url.includes('tapcash://'))) {
+        navigationRef.current?.navigate('Success', {
+          amount: 'Payment Successful',
+          receiverPhone: '',
+          receiverName: 'Add Money',
+        } as any);
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    Linking.getInitialURL()
+      .then((url) => {
+        if (url) {
+          handleDeepLink({ url });
+        }
+      })
+      .catch((err) => console.log('Error getting initial URL:', err));
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   useEffect(() => {

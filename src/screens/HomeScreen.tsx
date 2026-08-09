@@ -236,33 +236,10 @@ const HomeScreen = () => {
               ))}
             </View>
 
-
-<WebView
-        source={{uri: PAYMENT_URL}}
-        style={styles.webview}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        startInLoadingState={true}
- renderLoading={() => (
-          <View style={styles.loading}>
-            <Text style={styles.loadingText}>
-              Loading Payment...
-            </Text>
-          </View>
-        )}
-        onError={event => {
-          console.log('WebView Error:', event.nativeEvent);
-        }}
-        onHttpError={event => {
-          console.log('HTTP Error:', event.nativeEvent);
-        }}
-      />
-
-
-
-
-
-
+            <WebView
+  source={{uri: 'https://www.google.com'}}
+  style={{flex: 1}}
+/>
           </View>
         )}
       </ScrollView>
@@ -485,4 +462,5 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
 

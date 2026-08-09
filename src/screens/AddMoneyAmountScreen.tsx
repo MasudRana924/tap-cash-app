@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -51,10 +52,13 @@ const AddMoneyAmountScreen = () => {
         console.log('Response paymentUrl:', response.paymentUrl);
         
         if (response.success && response.paymentUrl) {
-          console.log('Navigating to PaymentWebView with URL:', response.paymentUrl);
-          (navigation as any).navigate('PaymentWebView', { 
-            paymentUrl: response.paymentUrl,
-            title: 'Add Money'
+          console.log('Opening payment URL in external browser:', response.paymentUrl);
+          Linking.openURL(response.paymentUrl).catch((err) => {
+            console.error('Failed to open URL in browser, fallback to WebView:', err);
+            (navigation as any).navigate('PaymentWebView', { 
+              paymentUrl: response.paymentUrl,
+              title: 'Add Money'
+            });
           });
         } else {
           console.log('Invalid response - success:', response.success, 'paymentUrl:', response.paymentUrl);
