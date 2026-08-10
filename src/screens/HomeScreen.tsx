@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { useMessaging } from '../hooks/useMessaging';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import TransactionList from '../components/TransactionList';
+import authBg from '../assets/auth-bg.png';
 const HomeScreen = () => {
   const navigation = useNavigation<any>();
   const { token, saveFcmToken, isLoading: authLoading } = useAuth();
@@ -98,6 +100,7 @@ const HomeScreen = () => {
   'https://sandbox.sslcommerz.com/EasyCheckOut/testcde648c8b9af9062e4b3a192e148f7c2c96';
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground source={authBg} style={styles.backgroundImage} resizeMode="cover">
       {isLoading ? (
         /* Skeleton Loader */
         <LinearGradient
@@ -238,10 +241,11 @@ const HomeScreen = () => {
             </View>
 
             {/* Transaction List */}
-            <TransactionList limit={5} />
+            <TransactionList />
           </ScrollView>
         </>
       )}
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -250,6 +254,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   container: {
     flex: 1,

@@ -182,7 +182,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ limit }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 24,
-    width: '95%',
+    width: '99%',
     alignSelf: 'center',
   },
   sectionTitle: {
@@ -194,12 +194,12 @@ const styles = StyleSheet.create({
   transactionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
+    // backgroundColor: '#fff',
+    padding: 1,
     marginBottom: 12,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#f3f4f6',
+    // borderWidth: 1,
+    // borderColor: '#f3f4f6',
   },
   iconContainer: {
     width: 48,

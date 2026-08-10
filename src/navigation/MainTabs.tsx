@@ -19,17 +19,15 @@ const MainTabs = () => {
           height: 70,
           paddingBottom: 10,
           paddingTop: 10,
-          backgroundColor: 'rgba(26, 26, 46, 0.85)',
-          borderRadius: 35,
-          marginHorizontal: 10,
-          marginBottom: 10,
+          backgroundColor: 'rgba(240, 240, 247, 0.85)85)',
+          //  backgroundColor: 'rgba(26, 26, 46, 0.85)',
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
           borderTopWidth: 0,
           borderWidth: 1,
-          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'rgba(240, 240, 247, 0.85)85)',
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.3,
@@ -41,8 +39,8 @@ const MainTabs = () => {
           fontWeight: '600',
           marginTop: 2,
         },
-        tabBarActiveTintColor: '#fff',
-        tabBarInactiveTintColor: 'rgba(255,255,255,0.5)',
+        tabBarActiveTintColor: '#F8623F',
+        tabBarInactiveTintColor: '#11182e',
       }}
     >
       <Tab.Screen
@@ -53,7 +51,7 @@ const MainTabs = () => {
             <Icon
               name={focused ? 'home' : 'home-outline'}
               size={24}
-              color={focused ? '#fff' : 'rgba(255,255,255,0.5)'}
+              color={focused ? '#F8623F' : '#11182e'}
             />
           ),
         }}
@@ -80,7 +78,7 @@ const MainTabs = () => {
             <Icon
               name={focused ? 'person' : 'person-outline'}
               size={24}
-              color={focused ? '#11182e' : 'rgba(255,255,255,0.5)'}
+              color={focused ? '#F8623F' : '#11182e'}
             />
           ),
         }}

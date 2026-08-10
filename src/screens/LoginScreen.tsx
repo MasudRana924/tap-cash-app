@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +19,7 @@ import { useMutation } from '@tanstack/react-query';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import authBg from '../assets/auth-bg.png';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -70,6 +72,7 @@ const LoginScreen = () => {
   // ── UI ────────────────────────────────────────────────
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground source={authBg} style={styles.backgroundImage} resizeMode="cover">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -167,6 +170,7 @@ const LoginScreen = () => {
       </ScrollView>
       <Spinner visible={loginMutation.isPending} textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
+    </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -176,6 +180,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -184,7 +193,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     flexGrow: 1,

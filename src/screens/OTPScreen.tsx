@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   TextInput,
+  ImageBackground,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -17,6 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import authBg from '../assets/auth-bg.png';
 
 const OTPScreen = () => {
   const navigation = useNavigation();
@@ -107,6 +109,7 @@ const OTPScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground source={authBg} style={styles.backgroundImage} resizeMode="cover">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -178,6 +181,7 @@ const OTPScreen = () => {
       </ScrollView>
       <Spinner visible={verifyOTPMutation.isPending}  textStyle={styles.spinnerText} />
     </KeyboardAvoidingView>
+    </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -187,9 +191,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     flexGrow: 1,
