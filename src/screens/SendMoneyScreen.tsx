@@ -22,6 +22,7 @@ import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import ScreenHeader from '../components/ScreenHeader';
+import ErrorModal from '../components/ErrorModal';
 
 interface Contact {
   id: string;
@@ -35,6 +36,7 @@ const SendMoneyScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [hasPermission, setHasPermission] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [receiverInfo, setReceiverInfo] = useState<any>(null);
 
@@ -112,11 +114,12 @@ const SendMoneyScreen = () => {
     onError: (error: any) => {
       setErrorMessage(error.error || error.errorMessage || 'Receiver not found');
       setReceiverInfo(null);
+      setErrorModalVisible(true);
     },
   });
 
   const handlePhoneSubmit = () => {
-    setErrorMessage('');
+    setErrorModalVisible(false);
     if (phoneNumber.length > 0) {
       checkReceiverMutation.mutate();
     }
@@ -170,9 +173,12 @@ const SendMoneyScreen = () => {
               />
             </View>
 
-            {errorMessage ? (
-              <Text style={styles.errorText}>{errorMessage}</Text>
-            ) : null}
+            {/* Error Modal */}
+            <ErrorModal
+              visible={errorModalVisible}
+              errorMessage={errorMessage}
+              onClose={() => setErrorModalVisible(false)}
+            />
 
             {/* Receiver Info */}
             {/* {receiverInfo && (

@@ -20,6 +20,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import authBg from '../assets/auth-bg.png';
+import ErrorModal from '../components/ErrorModal';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -29,6 +30,7 @@ const LoginScreen = () => {
   const [pin, setPin] = useState('');
   const [language, setLanguage] = useState<'EN' | 'BN'>('EN');
   const [activePinIndex, setActivePinIndex] = useState(0);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const phoneInputRef = useRef<TextInput>(null);
@@ -50,11 +52,12 @@ const LoginScreen = () => {
     onError: (error: any) => {
       console.error('Login Error:', error);
       setErrorMessage(error.errorMessage || error.error || 'Login failed. Please try again.');
+      setErrorModalVisible(true);
     },
   });
 
   const handleLogin = async () => {
-    setErrorMessage('');
+    setErrorModalVisible(false);
     loginMutation.mutate();
   };
 
@@ -156,9 +159,12 @@ const LoginScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {errorMessage ? (
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          ) : null}
+          {/* Error Modal */}
+          <ErrorModal
+            visible={errorModalVisible}
+            errorMessage={errorMessage}
+            onClose={() => setErrorModalVisible(false)}
+          />
 
           <TouchableOpacity onPress={handleSignup} style={styles.bottomLink}>
             <Text style={styles.bottomLinkText}>

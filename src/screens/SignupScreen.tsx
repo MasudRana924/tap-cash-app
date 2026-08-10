@@ -18,6 +18,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { apiService } from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import authBg from '../assets/auth-bg.png';
+import ErrorModal from '../components/ErrorModal';
 
 const SignupScreen = () => {
   const navigation = useNavigation();
@@ -25,6 +26,7 @@ const SignupScreen = () => {
   const [phone, setPhone] = useState('');
   const [pin, setPin] = useState('');
   const [referralCode, setReferralCode] = useState('');
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const phoneInputRef = useRef<TextInput>(null);
@@ -33,21 +35,22 @@ const SignupScreen = () => {
 
   const signupMutation = useMutation({
     mutationFn: async () => {
-      return apiService.signup(name, '+880' + phone, pin);
+      return apiService.signup(name, '+880' + phone, pin,'Personal');
     },
     onSuccess: async (data) => {
       if (data.successMessage) {
-        await AsyncStorage.setItem('user_phone', '+880' + phone);
+        await AsyncStorage.setItem('user_phone', '+880' + phone,);
         navigation.navigate('OTP' as never);
       }
     },
     onError: (error: any) => {
       setErrorMessage(error.errorMessage || error.error || 'Signup failed. Please try again.');
+      setErrorModalVisible(true);
     },
   });
 
   const handleSignup = () => {
-    setErrorMessage('');
+    setErrorModalVisible(false);
     signupMutation.mutate();
   };
 
@@ -138,9 +141,12 @@ const SignupScreen = () => {
             <Text style={styles.continueButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          {errorMessage ? (
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          ) : null}
+          {/* Error Modal */}
+          <ErrorModal
+            visible={errorModalVisible}
+            errorMessage={errorMessage}
+            onClose={() => setErrorModalVisible(false)}
+          />
 
           {/* Back to Login */}
           <TouchableOpacity onPress={handleBackToLogin}>

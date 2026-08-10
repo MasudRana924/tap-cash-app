@@ -1,6 +1,6 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
-// const BASE_URL = 'http://172.31.224.1:8080/api/v1';
+// const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
+const BASE_URL = 'http://172.31.224.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -153,10 +153,10 @@ class APIService {
     });
   }
 
-  async signup(name: string, phone: string, pin: string): Promise<SignupResponse> {
+  async signup(name: string, phone: string, pin: string, userType: string): Promise<SignupResponse> {
     return this.request<SignupResponse>('/auth/signup', {
       method: 'POST',
-      body: JSON.stringify({ name, phone, pin }),
+      body: JSON.stringify({ name, phone, pin, user_type: userType }),
     });
   }
 
