@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     borderColor: '#F5F5F5',
     width: 95,
     height: 58,
-    marginRight: 8,
+    marginRight: 0,
   },
   flag: { fontSize: 16, marginRight: 8 },
   countryCode: { fontSize: 16, fontWeight: '400', color: '#11182e' },

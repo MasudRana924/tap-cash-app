@@ -338,6 +338,48 @@ class APIService {
 
     return data as TransactionHistoryResponse;
   }
+
+  async acceptGroupSavingsInvitation(token: string, groupSavingsId: string): Promise<{ successMessage: string }> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings/accept`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ group_savings_id: groupSavingsId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as { successMessage: string };
+  }
+
+  async rejectGroupSavingsInvitation(token: string, groupSavingsId: string): Promise<{ successMessage: string }> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings/reject`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ group_savings_id: groupSavingsId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as { successMessage: string };
+  }
 }
 
 

@@ -78,6 +78,7 @@ export type RootStackParamList = {
   CreateSavingsPlan: undefined;
   TransactionDetails: TransactionDetailParams;
   ScanQR: undefined;
+  GroupSavingsDetails: { groupSavingsId: string };
 };
 
 // Global navigation ref
@@ -140,7 +141,7 @@ const RootNavigator = () => {
       if (messagingInstance) {
         unsubscribeOpened = onNotificationOpenedApp(messagingInstance, (data: any) => {
           console.debug('Notification opened from background:', data);
-          navigationRef.current?.navigate('Notification' as never);
+          handleNotificationNavigation(data);
         });
 
         // Handle notification taps when app is opened from quit state
@@ -148,7 +149,7 @@ const RootNavigator = () => {
           .then((data: any) => {
             if (data) {
               console.debug('Notification opened from quit state:', data);
-              navigationRef.current?.navigate('Notification' as never);
+              handleNotificationNavigation(data);
             }
           })
           .catch((error: any) => {
@@ -167,6 +168,21 @@ const RootNavigator = () => {
       }
     };
   }, [isMessagingReady]);
+
+  const handleNotificationNavigation = (data: any) => {
+    const notificationType = data?.data?.type;
+    
+    if (notificationType === 'group_savings_invitation') {
+      const groupSavingsId = data?.data?.group_savings_id;
+      if (groupSavingsId) {
+        navigationRef.current?.navigate('GroupSavingsDetails', { groupSavingsId } as never);
+      } else {
+        navigationRef.current?.navigate('Savings' as never);
+      }
+    } else {
+      navigationRef.current?.navigate('Notification' as never);
+    }
+  };
 
   return (
     <NavigationContainer ref={navigationRef}>
