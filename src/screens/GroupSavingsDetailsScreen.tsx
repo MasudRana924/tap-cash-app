@@ -323,8 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+ 
   },
   backButton: {
     padding: 5,
@@ -376,16 +375,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   infoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f5f7',
     borderRadius: 16,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#f3f4f6',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    borderColor: '#f4f5f7',
+
     marginBottom: 24,
   },
   infoHeader: {

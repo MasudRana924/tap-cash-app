@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: '#F8623F',
+    borderColor: '#FFF5F2',
   },
   invitationHeader: {
     flexDirection: 'row',
@@ -484,17 +484,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   savingsPlanCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f5f7',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#f3f4f6',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
-    elevation: 2,
+    borderColor: '#f4f5f7',
+   
   },
   planStatusBadge: {
     backgroundColor: '#e0f2fe',
