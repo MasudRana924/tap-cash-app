@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../components/ScreenHeader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { apiService } from '../services/api';
 
 const SavingsScreen = () => {
   const navigation = useNavigation();
+  const [pendingInvitation, setPendingInvitation] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const savingsPlans = [
     {
@@ -33,11 +38,117 @@ const SavingsScreen = () => {
     },
   ];
 
+  useEffect(() => {
+    loadPendingInvitation();
+  }, []);
+
+  const loadPendingInvitation = async () => {
+    try {
+      const invitationData = await AsyncStorage.getItem('pending_group_savings_invitation');
+      if (invitationData) {
+        setPendingInvitation(JSON.parse(invitationData));
+      }
+    } catch (error) {
+      console.error('Failed to load pending invitation:', error);
+    }
+  };
+
+  const handleAcceptInvitation = async () => {
+    if (!pendingInvitation?.groupSavingsId) return;
+    
+    setIsLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('auth_token');
+      if (!token) {
+        Alert.alert('Error', 'You need to be logged in');
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await apiService.acceptGroupSavingsInvitation(token, pendingInvitation.groupSavingsId);
+      
+      // Clear pending invitation
+      await AsyncStorage.removeItem('pending_group_savings_invitation');
+      setPendingInvitation(null);
+      
+      // Navigate to success screen
+      (navigation as any).navigate('Success', {
+        amount: '',
+        receiverPhone: '',
+        receiverName: 'Group Savings Accepted',
+        transactionType: 'GROUP_SAVINGS',
+      });
+    } catch (error: any) {
+      Alert.alert('Error', error.errorMessage || 'Failed to accept invitation');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRejectInvitation = async () => {
+    if (!pendingInvitation?.groupSavingsId) return;
+    
+    setIsLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('auth_token');
+      if (!token) {
+        Alert.alert('Error', 'You need to be logged in');
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await apiService.rejectGroupSavingsInvitation(token, pendingInvitation.groupSavingsId);
+      
+      // Clear pending invitation
+      await AsyncStorage.removeItem('pending_group_savings_invitation');
+      setPendingInvitation(null);
+      
+      // Navigate to success screen
+      (navigation as any).navigate('Success', {
+        amount: '',
+        receiverPhone: '',
+        receiverName: 'Group Savings Rejected',
+        transactionType: 'GROUP_SAVINGS',
+      });
+    } catch (error: any) {
+      Alert.alert('Error', error.errorMessage || 'Failed to reject invitation');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScreenHeader title="Savings" />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Pending Group Savings Invitation Card */}
+        {pendingInvitation && (
+          <View style={styles.invitationCard}>
+            <View style={styles.invitationHeader}>
+              <Icon name="people" size={24} color="#F8623F" />
+              <Text style={styles.invitationTitle}>Group Savings Invitation</Text>
+            </View>
+            <Text style={styles.invitationBody}>{pendingInvitation.body}</Text>
+            <View style={styles.invitationButtons}>
+              <TouchableOpacity
+                style={[styles.invitationButton, styles.rejectButton]}
+                onPress={handleRejectInvitation}
+                disabled={isLoading}
+              >
+                <Text style={styles.rejectButtonText}>Reject</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.invitationButton, styles.acceptButton]}
+                onPress={handleAcceptInvitation}
+                disabled={isLoading}
+              >
+                <Text style={styles.acceptButtonText}>{isLoading ? 'Processing...' : 'Accept'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
         {/* Total Savings Card */}
         <View style={styles.totalSavingsCard}>
           <Text style={styles.totalLabel}>Total Savings</Text>
@@ -262,6 +373,60 @@ const styles = StyleSheet.create({
   groupSavingsButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  invitationCard: {
+    backgroundColor: '#FFF5F2',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#F8623F',
+  },
+  invitationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  invitationTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginLeft: 12,
+  },
+  invitationBody: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  invitationButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  invitationButton: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rejectButton: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#F8623F',
+  },
+  rejectButtonText: {
+    color: '#F8623F',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  acceptButton: {
+    backgroundColor: '#F8623F',
+  },
+  acceptButtonText: {
+    color: '#fff',
+    fontSize: 14,
     fontWeight: '600',
   },
   addButton: {

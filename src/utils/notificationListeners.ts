@@ -5,9 +5,8 @@ import {
   onNotificationOpenedApp,
   getInitialNotification,
 } from '@react-native-firebase/messaging';
-import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { apiService } from '../services/api';
+import { getGlobalShowNotification } from '../context/NotificationContext';
 
 // Global callback for foreground notifications
 let foregroundNotificationCallback: ((title: string, body: string, imageUrl?: string) => void) | null = null;
@@ -34,23 +33,40 @@ export const notificationListeners = () => {
     // Handle group savings invitation notifications
     if (notificationType === 'group_savings_invitation') {
       const groupSavingsId = data?.data?.group_savings_id;
+      const globalShow = getGlobalShowNotification();
       
-      Alert.alert(
-        title || 'Group Savings Invitation',
-        body || 'You have been invited to join a group savings',
-        [
-          {
-            text: 'Reject',
-            onPress: () => handleRejectInvitation(groupSavingsId),
-            style: 'destructive'
-          },
-          {
-            text: 'Accept',
-            onPress: () => handleAcceptInvitation(groupSavingsId),
-            style: 'default'
-          }
-        ]
-      );
+      // Store invitation data for later use
+      await AsyncStorage.setItem('pending_group_savings_invitation', JSON.stringify({
+        groupSavingsId,
+        title: title || 'Group Savings Invitation',
+        body: body || 'You have been invited to join a group savings',
+      }));
+      
+      // Show toast notification
+      if (globalShow) {
+        globalShow({
+          title: title || 'Group Savings Invitation',
+          body: body || 'You have been invited to join a group savings',
+          data: { type: 'group_savings_invitation', groupSavingsId },
+        });
+      }
+      return;
+    }
+
+    // Handle group savings deduction notifications
+    if (notificationType === 'group_savings_deduction') {
+      const groupSavingsId = data?.data?.group_savings_id;
+      const amount = data?.data?.amount;
+      const globalShow = getGlobalShowNotification();
+      
+      // Show toast notification
+      if (globalShow) {
+        globalShow({
+          title: title || 'Group Savings Contribution',
+          body: body || `Amount deducted: ${amount}`,
+          data: { type: 'group_savings_deduction', groupSavingsId },
+        });
+      }
       return;
     }
 
@@ -76,36 +92,4 @@ export const notificationListeners = () => {
   return () => {
     unsubscribeOnMessage();
   };
-};
-
-// Handle accept invitation
-const handleAcceptInvitation = async (groupSavingsId: string) => {
-  try {
-    const token = await AsyncStorage.getItem('auth_token');
-    if (!token) {
-      Alert.alert('Error', 'You need to be logged in to accept invitations');
-      return;
-    }
-
-    const response = await apiService.acceptGroupSavingsInvitation(token, groupSavingsId);
-    Alert.alert('Success', response.successMessage);
-  } catch (error: any) {
-    Alert.alert('Error', error.errorMessage || 'Failed to accept invitation');
-  }
-};
-
-// Handle reject invitation
-const handleRejectInvitation = async (groupSavingsId: string) => {
-  try {
-    const token = await AsyncStorage.getItem('auth_token');
-    if (!token) {
-      Alert.alert('Error', 'You need to be logged in to reject invitations');
-      return;
-    }
-
-    const response = await apiService.rejectGroupSavingsInvitation(token, groupSavingsId);
-    Alert.alert('Success', response.successMessage);
-  } catch (error: any) {
-    Alert.alert('Error', error.errorMessage || 'Failed to reject invitation');
-  }
 };

@@ -181,6 +181,13 @@ const RootNavigator = () => {
       } else {
         navigationRef.current?.navigate('Savings' as never);
       }
+    } else if (notificationType === 'group_savings_deduction') {
+      const groupSavingsId = data?.data?.group_savings_id;
+      if (groupSavingsId) {
+        navigationRef.current?.navigate('GroupSavingsDetails', { groupSavingsId } as never);
+      } else {
+        navigationRef.current?.navigate('Savings' as never);
+      }
     } else {
       navigationRef.current?.navigate('Notification' as never);
     }
