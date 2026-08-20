@@ -17,6 +17,7 @@ const SuccessScreen = () => {
   const { amount, receiverPhone, receiverName, transactionType } = route.params;
 
   const isAddMoney = transactionType === 'ADD_MONEY';
+  const isGroupSavings = transactionType === 'GROUP_SAVINGS';
 
   const handleDone = () => {
     navigation.navigate('MainHome' as never);
@@ -32,18 +33,35 @@ const SuccessScreen = () => {
         <View style={styles.content}>
           {/* Success Icon */}
           <View style={styles.successIconContainer}>
-            <View style={[styles.successIconBg, isAddMoney ? styles.successIconBgGreen : styles.successIconBgRed]}>
-              <Icon 
-                name={isAddMoney ? 'add-circle' : 'arrow-up-circle'} 
-                size={48} 
-                color={isAddMoney ? '#0ab39c' : '#F8623F'} 
+            <View style={[
+              styles.successIconBg,
+              isAddMoney ? styles.successIconBgGreen :
+              isGroupSavings ? styles.successIconBgGreen :
+              styles.successIconBgRed
+            ]}>
+              <Icon
+                name={
+                  isAddMoney ? 'add-circle' :
+                  isGroupSavings ? 'people-circle' :
+                  'arrow-up-circle'
+                }
+                size={48}
+                color={
+                  isAddMoney ? '#0ab39c' :
+                  isGroupSavings ? '#0ab39c' :
+                  '#F8623F'
+                }
               />
             </View>
           </View>
 
           {/* Success Message */}
-          <Text style={[styles.successTitle, isAddMoney && styles.successTitleGreen]}>
-            {isAddMoney ? 'Add Money Successful!' : 'Transaction Successful!'}
+          <Text style={[styles.successTitle, (isAddMoney || isGroupSavings) && styles.successTitleGreen]}>
+            {
+              isAddMoney ? 'Add Money Successful!' :
+              isGroupSavings ? 'Group Savings Created!' :
+              'Transaction Successful!'
+            }
           </Text>
           <Text style={styles.successMessage}>
             Your transaction has been processed securely

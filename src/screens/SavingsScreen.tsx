@@ -86,6 +86,9 @@ const SavingsScreen = () => {
           <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('CreateSavingsPlan' as never)}>
             <Text style={styles.createButtonText}>+ Create New Savings Plan</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.groupSavingsButton} onPress={() => navigation.navigate('GroupSavingsCreate' as never)}>
+            <Text style={styles.groupSavingsButtonText}>+ Create Group Savings</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -246,6 +249,18 @@ const styles = StyleSheet.create({
   },
   createButtonText: {
     color: '#11182e',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  groupSavingsButton: {
+    backgroundColor: '#F8623F',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  groupSavingsButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },

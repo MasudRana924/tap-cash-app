@@ -38,6 +38,7 @@ import CreateSavingsPlanScreen from '../screens/CreateSavingsPlanScreen';
 import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/TransactionDetailsScreen';
 import ScanQRScreen from '../screens/ScanQRScreen';
 import PaymentWebViewScreen from '../screens/PaymentWebViewScreen';
+import GroupSavingsCreateScreen from '../screens/GroupSavingsCreateScreen';
 import { useAuth } from '../context/AuthContext';
 import { NavigationContainerRef } from '@react-navigation/native';
 import { getMessaging, onNotificationOpenedApp, getInitialNotification } from '@react-native-firebase/messaging';
@@ -54,7 +55,7 @@ export type RootStackParamList = {
   Notifications: undefined;
   Notification: undefined;
   Amount: { receiver: { id: number; phone: string; name: string | null; profile_image: string | null; user_type: string }; phone: string };
-  Success: { amount: string; receiverPhone: string; receiverName: string | null; transactionType?: string };
+  Success: { amount: string; receiverPhone: string; receiverName: string | null; transactionType?: 'ADD_MONEY' | 'send_money' | 'GROUP_SAVINGS' };
   CashOut: undefined;
   CashOutAmount: undefined;
   AddMoney: undefined;
@@ -76,6 +77,7 @@ export type RootStackParamList = {
   Loan: undefined;
   LoanAmount: undefined;
   CreateSavingsPlan: undefined;
+  GroupSavingsCreate: undefined;
   TransactionDetails: TransactionDetailParams;
   ScanQR: undefined;
   GroupSavingsDetails: { groupSavingsId: string };
@@ -224,6 +226,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Loan" component={LoanScreen} />
         <Stack.Screen name="LoanAmount" component={LoanAmountScreen} />
         <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlanScreen} />
+        <Stack.Screen name="GroupSavingsCreate" component={GroupSavingsCreateScreen} />
         <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="PaymentWebView" component={PaymentWebViewScreen} />

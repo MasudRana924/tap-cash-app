@@ -1,6 +1,6 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-// const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
-const BASE_URL = 'http://172.31.224.1:8080/api/v1';
+const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
+// const BASE_URL = 'http://172.31.224.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -109,6 +109,31 @@ export interface TransactionHistoryResponse {
   transactions: Transaction[];
 }
 
+export interface GroupSavingsMember {
+  phone: string;
+  contribution_amount: number;
+}
+
+export interface CreateGroupSavingsRequest {
+  name: string;
+  goal_amount: number;
+  duration: number;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  members: GroupSavingsMember[];
+}
+
+export interface CreateGroupSavingsResponse {
+  message: string;
+  group_savings: {
+    id: number;
+    name: string;
+    goal_amount: string;
+    duration: number;
+    frequency: string;
+    created_at: string;
+  };
+}
+
 export interface ErrorResponse {
   errorMessage?: string;
   error?: string;
@@ -126,11 +151,18 @@ class APIService {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string>),
     };
+
+    console.log('API Request:', {
+      url,
+      method: options.method,
+      headers,
+      body: options.body,
+    });
 
     const response = await fetch(url, {
       ...options,
@@ -138,6 +170,12 @@ class APIService {
     });
 
     const data = await response.json();
+
+    console.log('API Response:', {
+      status: response.status,
+      ok: response.ok,
+      data,
+    });
 
     if (!response.ok) {
       throw data as ErrorResponse;
@@ -337,6 +375,27 @@ class APIService {
     }
 
     return data as TransactionHistoryResponse;
+  }
+
+  async createGroupSavings(token: string, data: CreateGroupSavingsRequest): Promise<CreateGroupSavingsResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings/create`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw responseData as ErrorResponse;
+    }
+
+    return responseData as CreateGroupSavingsResponse;
   }
 
   async acceptGroupSavingsInvitation(token: string, groupSavingsId: string): Promise<{ successMessage: string }> {
