@@ -1,6 +1,7 @@
 // const BASE_URL = 'https://paylo-service.onrender.com/api/v1';
-const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
+// const BASE_URL = 'https://paylo-service-vqtc.onrender.com/api/v1';
 // const BASE_URL = 'http://172.31.224.1:8080/api/v1';
+const BASE_URL = 'http://172.25.240.1:8080/api/v1';
 
 export interface LoginResponse {
   successMessage: string;
@@ -132,6 +133,58 @@ export interface CreateGroupSavingsResponse {
     frequency: string;
     created_at: string;
   };
+}
+
+export interface GroupSavings {
+  id: number;
+  creator_id: number;
+  name: string;
+  goal_amount: number;
+  current_amount: number;
+  duration: number;
+  frequency: string;
+  status: string;
+  start_date: string;
+  percentage_paid: number;
+  remaining_installments: number;
+  total_installments: number;
+  next_payment_date: string;
+}
+
+export interface GroupSavingsListResponse {
+  successMessage: string;
+  groupSavings: GroupSavings[];
+}
+
+export interface GroupSavingsDetailResponse {
+  successMessage: string;
+  groupSavings: {
+    id: number;
+    name: string;
+    goal_amount: number;
+    current_amount: number;
+    percentage_paid: number;
+    remaining_installments: number;
+    total_installments: number;
+    next_payment_date: string;
+  };
+  members: any[];
+}
+
+export interface PaymentScheduleItem {
+  installment_number: number;
+  payment_date: string;
+  status: string;
+  amount: number;
+}
+
+export interface PaymentScheduleResponse {
+  successMessage: string;
+  group_savings_id: number;
+  frequency: string;
+  duration: number;
+  start_date: string;
+  payment_schedule: PaymentScheduleItem[];
 }
 
 export interface ErrorResponse {
@@ -396,6 +449,66 @@ class APIService {
     }
 
     return responseData as CreateGroupSavingsResponse;
+  }
+
+  async getGroupSavings(token: string): Promise<GroupSavingsListResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as GroupSavingsListResponse;
+  }
+
+  async getGroupSavingsDetails(token: string, id: number): Promise<GroupSavingsDetailResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings/${id}`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as GroupSavingsDetailResponse;
+  }
+
+  async getPaymentSchedule(token: string, id: number): Promise<PaymentScheduleResponse> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    const response = await fetch(`${this.baseURL}/group-savings/${id}/payment-schedule`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw data as ErrorResponse;
+    }
+
+    return data as PaymentScheduleResponse;
   }
 
   async acceptGroupSavingsInvitation(token: string, groupSavingsId: string): Promise<{ successMessage: string }> {

@@ -39,6 +39,7 @@ import TransactionDetailsScreen, { TransactionDetailParams } from '../screens/Tr
 import ScanQRScreen from '../screens/ScanQRScreen';
 import PaymentWebViewScreen from '../screens/PaymentWebViewScreen';
 import GroupSavingsCreateScreen from '../screens/GroupSavingsCreateScreen';
+import GroupSavingsDetailsScreen from '../screens/GroupSavingsDetailsScreen';
 import { useAuth } from '../context/AuthContext';
 import { NavigationContainerRef } from '@react-navigation/native';
 import { getMessaging, onNotificationOpenedApp, getInitialNotification } from '@react-native-firebase/messaging';
@@ -234,6 +235,7 @@ const RootNavigator = () => {
         <Stack.Screen name="LoanAmount" component={LoanAmountScreen} />
         <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlanScreen} />
         <Stack.Screen name="GroupSavingsCreate" component={GroupSavingsCreateScreen} />
+        <Stack.Screen name="GroupSavingsDetails" component={GroupSavingsDetailsScreen} />
         <Stack.Screen name="TransactionDetails" component={TransactionDetailsScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="PaymentWebView" component={PaymentWebViewScreen} />

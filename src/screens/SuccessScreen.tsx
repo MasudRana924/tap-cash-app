@@ -101,18 +101,21 @@ const SuccessScreen = () => {
           )}
         </View>
 
-        <View style={styles.buttonContainer}>
-          {/* Share Button */}
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Icon name="share-social-outline" size={20} color="#4a5568" style={styles.shareIcon} />
-            <Text style={styles.shareButtonText}>Share Receipt</Text>
-          </TouchableOpacity>
+        {/* Hide buttons for Group Savings */}
+        {!isGroupSavings && (
+          <View style={styles.buttonContainer}>
+            {/* Share Button */}
+            <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+              <Icon name="share-social-outline" size={20} color="#4a5568" style={styles.shareIcon} />
+              <Text style={styles.shareButtonText}>Share Receipt</Text>
+            </TouchableOpacity>
 
-          {/* Home Button */}
-          <TouchableOpacity style={styles.homeButton} onPress={handleDone}>
-            <Text style={styles.homeButtonText}>Back to Home</Text>
-          </TouchableOpacity>
-        </View>
+            {/* Home Button */}
+            <TouchableOpacity style={styles.homeButton} onPress={handleDone}>
+              <Text style={styles.homeButtonText}>Back to Home</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

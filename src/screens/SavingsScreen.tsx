@@ -18,6 +18,8 @@ const SavingsScreen = () => {
   const navigation = useNavigation();
   const [pendingInvitation, setPendingInvitation] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [groupSavings, setGroupSavings] = useState<any[]>([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   const savingsPlans = [
     {
@@ -40,6 +42,7 @@ const SavingsScreen = () => {
 
   useEffect(() => {
     loadPendingInvitation();
+    loadGroupSavings();
   }, []);
 
   const loadPendingInvitation = async () => {
@@ -50,6 +53,23 @@ const SavingsScreen = () => {
       }
     } catch (error) {
       console.error('Failed to load pending invitation:', error);
+    }
+  };
+
+  const loadGroupSavings = async () => {
+    try {
+      const token = await AsyncStorage.getItem('auth_token');
+      if (!token) {
+        setIsDataLoading(false);
+        return;
+      }
+
+      const response = await apiService.getGroupSavings(token);
+      setGroupSavings(response.groupSavings);
+    } catch (error) {
+      console.error('Failed to load group savings:', error);
+    } finally {
+      setIsDataLoading(false);
     }
   };
 
@@ -170,6 +190,47 @@ const SavingsScreen = () => {
             <View style={[styles.progressBarFill, { width: '80%' }]} />
           </View>
         </View>
+
+        {/* Group Savings Cards */}
+        {isDataLoading ? (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        ) : groupSavings.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No group savings yet</Text>
+          </View>
+        ) : (
+          groupSavings.map((savings) => (
+            <TouchableOpacity
+              key={savings.id}
+              style={styles.savingsPlanCard}
+              onPress={() => (navigation as any).navigate('GroupSavingsDetails', { groupSavingsId: savings.id.toString() })}
+            >
+              <View style={styles.planHeader}>
+                <Text style={styles.planName}>{savings.name}</Text>
+                <View style={styles.planStatusBadge}>
+                  <Text style={styles.planStatusText}>{savings.status}</Text>
+                </View>
+              </View>
+              <View style={styles.planInfoRow}>
+                <Text style={styles.planLabel}>Goal</Text>
+                <Text style={styles.planValue}>৳{savings.goal_amount.toLocaleString()}</Text>
+              </View>
+              <View style={styles.planInfoRow}>
+                <Text style={styles.planLabel}>Saved</Text>
+                <Text style={styles.planValue}>৳{savings.current_amount.toLocaleString()}</Text>
+              </View>
+              <View style={styles.planInfoRow}>
+                <Text style={styles.planLabel}>Progress</Text>
+                <Text style={styles.planValue}>{savings.percentage_paid}%</Text>
+              </View>
+              <View style={styles.planProgressBar}>
+                <View style={[styles.planProgressBarFill, { width: `${savings.percentage_paid}%` }]} />
+              </View>
+            </TouchableOpacity>
+          ))
+        )}
 
         {/* Savings Plans Section */}
         <Text style={styles.sectionTitle}>Savings Plans</Text>
@@ -428,6 +489,68 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+  },
+  savingsPlanCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#f3f4f6',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  planStatusBadge: {
+    backgroundColor: '#e0f2fe',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  planStatusText: {
+    color: '#0284c7',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  planInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  planLabel: {
+    fontSize: 13,
+    color: '#9ca3af',
+  },
+  planValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  planProgressBar: {
+    height: 8,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 4,
+    width: '100%',
+    marginTop: 8,
+  },
+  loadingContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#9ca3af',
+  },
+  emptyContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#9ca3af',
   },
   addButton: {
     backgroundColor: '#11182e',
