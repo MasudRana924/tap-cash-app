@@ -19,7 +19,7 @@ const MainTabs = () => {
           height: 70,
           paddingBottom: 10,
           paddingTop: 10,
-           backgroundColor: 'rgba(26, 26, 46, 0.85)',
+          backgroundColor: '#1a1a2e',
           position: 'absolute',
           bottom: 0,
           left: 0,

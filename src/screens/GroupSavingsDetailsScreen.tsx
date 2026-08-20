@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,6 +15,40 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiService, GroupSavingsDetailResponse, PaymentScheduleResponse } from '../services/api';
 import { RootStackParamList } from '../navigation/RootNavigator';
+
+const Skeleton = ({ width, height, style }: { width?: number | string; height?: number; style?: any }) => {
+  const [opacity] = useState(new Animated.Value(0.3));
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [opacity]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.skeleton,
+        { width: width || '100%', height: height || 20 },
+        style,
+        { opacity },
+      ]}
+    />
+  );
+};
 
 const GroupSavingsDetailsScreen = () => {
   const navigation = useNavigation();
@@ -82,10 +117,70 @@ const GroupSavingsDetailsScreen = () => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#F8623F" />
-          <Text style={styles.loadingText}>Loading...</Text>
+        {/* Header Skeleton */}
+        <View style={styles.header}>
+          <View style={styles.backButtonSkeleton} />
+          <Skeleton width={150} height={20} />
+          <View style={styles.placeholder} />
         </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Info Card Skeleton */}
+          <View style={styles.infoCard}>
+            <View style={styles.infoHeader}>
+              <Skeleton width={120} height={24} />
+              <Skeleton width={60} height={24} />
+            </View>
+            <View style={styles.infoRow}>
+              <Skeleton width={80} height={16} />
+              <Skeleton width={100} height={16} />
+            </View>
+            <View style={styles.infoRow}>
+              <Skeleton width={80} height={16} />
+              <Skeleton width={100} height={16} />
+            </View>
+            <View style={styles.infoRow}>
+              <Skeleton width={80} height={16} />
+              <Skeleton width={50} height={16} />
+            </View>
+            <Skeleton width="100%" height={8} style={{ marginBottom: 20 }} />
+            <View style={styles.installmentsRow}>
+              <Skeleton width={40} height={16} />
+              <Skeleton width={40} height={16} />
+              <Skeleton width={60} height={16} />
+            </View>
+          </View>
+
+          {/* Members Section Skeleton */}
+          <View style={styles.section}>
+            <Skeleton width={150} height={22} style={{ marginBottom: 16 }} />
+            {[1, 2, 3].map((i) => (
+              <View key={i} style={styles.memberItem}>
+                <Skeleton width={40} height={40} style={{ borderRadius: 20, marginRight: 12 }} />
+                <View style={styles.memberInfo}>
+                  <Skeleton width={100} height={16} style={{ marginBottom: 4 }} />
+                  <Skeleton width={80} height={12} />
+                </View>
+                <Skeleton width={60} height={14} />
+              </View>
+            ))}
+          </View>
+
+          {/* Payment Schedule Skeleton */}
+          <View style={styles.section}>
+            <Skeleton width={150} height={22} style={{ marginBottom: 16 }} />
+            {[1, 2, 3, 4].map((i) => (
+              <View key={i} style={styles.scheduleItem}>
+                <Skeleton width={32} height={32} style={{ borderRadius: 16, marginRight: 12 }} />
+                <View style={styles.scheduleInfo}>
+                  <Skeleton width={100} height={14} style={{ marginBottom: 2 }} />
+                  <Skeleton width={60} height={12} />
+                </View>
+                <Skeleton width={60} height={24} style={{ borderRadius: 12 }} />
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -248,15 +343,15 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  skeleton: {
+    backgroundColor: '#e5e7eb',
+    borderRadius: 4,
   },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#9ca3af',
+  backButtonSkeleton: {
+    width: 34,
+    height: 34,
+    backgroundColor: '#e5e7eb',
+    borderRadius: 4,
   },
   errorContainer: {
     flex: 1,

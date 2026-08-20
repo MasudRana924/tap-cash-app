@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,31 +15,46 @@ import ScreenHeader from '../components/ScreenHeader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiService } from '../services/api';
 
+const Skeleton = ({ width, height, style }: { width?: number | string; height?: number; style?: any }) => {
+  const [opacity] = useState(new Animated.Value(0.3));
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.3,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [opacity]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.skeleton,
+        { width: width || '100%', height: height || 20 },
+        style,
+        { opacity },
+      ]}
+    />
+  );
+};
+
 const SavingsScreen = () => {
   const navigation = useNavigation();
   const [pendingInvitation, setPendingInvitation] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [groupSavings, setGroupSavings] = useState<any[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
-
-  const savingsPlans = [
-    {
-      id: '1',
-      name: 'Emergency Fund',
-      rate: '5.5% p.a.',
-      saved: '৳8,000',
-      goal: '৳50,000',
-      progress: 0.16,
-    },
-    {
-      id: '2',
-      name: 'Vacation 2027',
-      rate: '4.8% p.a.',
-      saved: '৳12,000',
-      goal: '৳30,000',
-      progress: 0.4,
-    },
-  ];
 
   useEffect(() => {
     loadPendingInvitation();
@@ -169,33 +185,31 @@ const SavingsScreen = () => {
           </View>
         )}
 
-        {/* Total Savings Card */}
-        <View style={styles.totalSavingsCard}>
-          <Text style={styles.totalLabel}>Total Savings</Text>
-          <Text style={styles.totalAmount}>৳8,000.00</Text>
-
-          <View style={styles.progressInfoRow}>
-            <View style={styles.progressInfoItem}>
-              <Text style={styles.progressInfoLabel}>Monthly Goal</Text>
-              <Text style={styles.progressInfoValue}>৳10,000</Text>
-            </View>
-            <View style={styles.progressInfoItem}>
-              <Text style={styles.progressInfoLabel}>Progress</Text>
-              <Text style={styles.progressInfoValue}>80%</Text>
-            </View>
-          </View>
-
-          {/* Progress Bar */}
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: '80%' }]} />
-          </View>
-        </View>
-
         {/* Group Savings Cards */}
         {isDataLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Loading...</Text>
-          </View>
+          <>
+            {[1, 2, 3].map((i) => (
+              <View key={i} style={styles.savingsPlanCard}>
+                <View style={styles.planHeader}>
+                  <Skeleton width={120} height={20} />
+                  <Skeleton width={60} height={20} />
+                </View>
+                <View style={styles.planInfoRow}>
+                  <Skeleton width={40} height={14} />
+                  <Skeleton width={80} height={14} />
+                </View>
+                <View style={styles.planInfoRow}>
+                  <Skeleton width={40} height={14} />
+                  <Skeleton width={80} height={14} />
+                </View>
+                <View style={styles.planInfoRow}>
+                  <Skeleton width={50} height={14} />
+                  <Skeleton width={40} height={14} />
+                </View>
+                <Skeleton width="100%" height={8} />
+              </View>
+            ))}
+          </>
         ) : groupSavings.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>No group savings yet</Text>
@@ -231,27 +245,6 @@ const SavingsScreen = () => {
             </TouchableOpacity>
           ))
         )}
-
-        {/* Savings Plans Section */}
-        <Text style={styles.sectionTitle}>Savings Plans</Text>
-
-        {savingsPlans.map((plan) => (
-          <View key={plan.id} style={styles.planCard}>
-            <View style={styles.planHeader}>
-              <Text style={styles.planName}>{plan.name}</Text>
-              <View style={styles.ratePill}>
-                <Text style={styles.rateText}>{plan.rate}</Text>
-              </View>
-            </View>
-            <View style={styles.planDetailsRow}>
-              <Text style={styles.planSaved}>{plan.saved} saved</Text>
-              <Text style={styles.planGoal}>Goal: {plan.goal}</Text>
-            </View>
-            <View style={styles.planProgressBarBg}>
-              <View style={[styles.planProgressBarFill, { width: `${plan.progress * 100}%` }]} />
-            </View>
-          </View>
-        ))}
 
         {/* Buttons */}
         <View style={styles.buttonContainer}>
@@ -536,13 +529,9 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 8,
   },
-  loadingContainer: {
-    padding: 40,
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#9ca3af',
+  skeleton: {
+    backgroundColor: '#e5e7eb',
+    borderRadius: 4,
   },
   emptyContainer: {
     padding: 40,
